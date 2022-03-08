@@ -1,0 +1,10 @@
+name: github-build
+on: push
+jobs:
+  genalgnav-build:
+    runs-on: ubuntu-latest
+    container: andersonjwan/cmake:3.22.1
+    steps:
+      - uses: actions/checkout@v2
+      - run: cmake -B build
+      - run: cmake --build build
