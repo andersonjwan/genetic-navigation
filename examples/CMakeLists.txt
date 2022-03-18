@@ -18,3 +18,10 @@ add_executable(example03
 add_dependencies(example03 genalg)
 target_include_directories(example03 PRIVATE
   ${PROJECT_SOURCE_DIR}/src)
+
+add_executable(example04
+  example04.cpp)
+
+add_dependencies(example04 genalg)
+target_include_directories(example04 PRIVATE
+  ${PROJECT_SOURCE_DIR}/src)
