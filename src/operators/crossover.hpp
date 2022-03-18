@@ -19,6 +19,18 @@ namespace genalg {
 	public:
 	    virtual std::array<T, 2> crossover(const T& p1, const T& p2) override;
 	};
+
+	template<typename T>
+	class MultiPointCrossover : public CrossoverOperator<T> {
+	private:
+	    std::size_t n_points;
+
+	public:
+	    MultiPointCrossover(std::size_t n)
+		: n_points {n} { assert(n_points > 0); }
+
+	    virtual std::array<T, 2> crossover(const T& p1, const T& p2) override;
+	};
     }
 }
 
