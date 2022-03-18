@@ -8,3 +8,4 @@ set(CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(src)
+add_subdirectory(examples)
