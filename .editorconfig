@@ -1,0 +1,19 @@
+;; genetic-navigation coding styles
+;; For more information on enabling EditorConfig in your Editor,
+;; see the following:
+;;
+;; https://editorconfig.org/#download
+
+root = true
+
+;; C++ file styling
+[*.cpp, *.hpp]
+charset = utf-8
+
+indent_style = space
+indent_size = 4
+
+end_of_line = lf
+trim_trailing_whitespace = true
+
+insert_final_newline = true
