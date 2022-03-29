@@ -30,7 +30,7 @@ main(void) {
 	population[i] = distr(gen);
     }
 
-    genalg::operators::TournamentSelection<int, double> ts(5, 0.5);
+    genalg::operators::TournamentSelection<std::mt19937, int, double> ts(gen, 2, 0.25);
     std::vector<int> wins(population.size());
 
     for(int i = 0; i < 500; ++i) {
