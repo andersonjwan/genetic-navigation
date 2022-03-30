@@ -27,9 +27,11 @@ public:
     }
 };
 
+using MyIndividual = Species<genome, fitness>;
+
 int
 main(int argc, char **argv) {
-    Population<Species<genome, fitness>, fitness> population(POPULATION_SIZE);
+    Population<MyIndividual, fitness> population(POPULATION_SIZE);
 
     std::mt19937* rng;
     if(argc == 2) {
@@ -44,7 +46,7 @@ main(int argc, char **argv) {
 
     // randomly initialize population
     for(int i = 0; i < POPULATION_SIZE; ++i) {
-	population.add(Species<genome, fitness>(uniform(*rng)));
+	population.add(MyIndividual(uniform(*rng)));
     }
 
     for(int i = 0; i < POPULATION_SIZE; ++i) {
