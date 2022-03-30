@@ -18,7 +18,7 @@ public:
 	: Individual<T, F>(g) {}
 
     F fitness() override {
-	return std::abs(this->genome()) * this->genome();
+	return std::abs(this->m_genome) * this->m_genome;
     }
 };
 
