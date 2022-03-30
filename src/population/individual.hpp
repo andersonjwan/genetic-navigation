@@ -1,23 +1,28 @@
 #ifndef GENALG_POPULATION_INDIVIDUAL_HPP
 #define GENALG_POPULATION_INDIVIDUAL_HPP
 
+#include <cstddef>
+
 namespace genalg {
     namespace population {
-	template<typename T>
+	template<typename T, typename F>
 	class Individual {
 	public:
+	    T genome;
+	    std::size_t age;
+
 	    Individual(T g)
 		: genome{g} {}
 
-	    T genome;
+	    virtual F fitness() = 0;
 	};
     }
 }
 
 namespace genalg {
     namespace population {
-	template<typename T>
-        bool operator<(const Individual<T>& i1, const Individual<T>& i2) {
+	template<typename T, typename F>
+        bool operator<(const Individual<T, F>& i1, const Individual<T, F>& i2) {
 	    return i1.genome > i2.genome;
 	}
     }
