@@ -15,7 +15,7 @@ namespace genalg {
 	    Individual(G g)
 		: genome{g} {}
 
-	    G get_genome(void);
+	    G get_genome(void) const;
 	    virtual F fitness(void) const = 0;
 	};
     }
@@ -24,7 +24,7 @@ namespace genalg {
 namespace genalg {
     namespace population {
 	template<typename G, typename F>
-	G Individual<G, F>::get_genome(void) { return this->genome; }
+	G Individual<G, F>::get_genome(void) const { return this->genome; }
     }
 }
 
