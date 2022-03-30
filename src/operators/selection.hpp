@@ -37,7 +37,7 @@ namespace genalg {
 	    TournamentSelection<R, T, F>(R r, std::size_t size, double prob)
 		: rng{r}, tournament_size{size}, p{prob} {}
 
-	    virtual T select(std::map<T, F>) override;
+	    T select(std::map<T, F>) override;
 	};
     }
 }
