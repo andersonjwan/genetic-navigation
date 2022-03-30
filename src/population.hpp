@@ -16,6 +16,9 @@ namespace genalg {
 	std::size_t size;
 	std::vector<std::pair<I, F>> individuals;
 
+        static bool cmp_individuals(const std::pair<I, F>& lhs,
+				    const std::pair<I, F>& rhs);
+
     public:
 	explicit Population(std::size_t s)
 	    : size{s} {}
@@ -28,11 +31,6 @@ namespace genalg {
 
 	// operations
 	const std::pair<I, F>& operator[](int i) const;
-
-	// custom comparators
-	static
-	bool _cmp_individuals(const std::pair<I, F>& lhs,
-			      const std::pair<I, F>& rhs);
     };
 }
 
@@ -50,14 +48,14 @@ namespace genalg {
     const std::pair<I, F>& Population<I, F>::best() const {
 	return *std::max_element(this->individuals.begin(),
 				 this->individuals.end(),
-				 Population<I, F>::_cmp_individuals);
+				 Population<I, F>::cmp_individuals);
     }
 
     template<typename I, typename F>
     const std::pair<I, F>& Population<I, F>::worst() const {
 	return *std::min_element(this->individuals.begin(),
 				 this->individuals.end(),
-				 Population<I, F>::_cmp_individuals);
+				 Population<I, F>::cmp_individuals);
     }
 
     template<typename I, typename F>
@@ -67,8 +65,8 @@ namespace genalg {
     }
 
     template<typename I, typename F>
-    bool Population<I, F>::_cmp_individuals(const std::pair<I, F>& lhs,
-						  const std::pair<I, F>& rhs) {
+    bool Population<I, F>::cmp_individuals(const std::pair<I, F>& lhs,
+					   const std::pair<I, F>& rhs) {
 	return lhs.second < rhs.second;
     }
 }
