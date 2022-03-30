@@ -57,5 +57,19 @@ main(int argc, char **argv) {
 		  << "}\n";
     }
 
+    auto best = population.best();
+    std::cout << "\nBEST SOLUTION:  " << "{"
+	      << best.first.get_genome()
+	      << " , "
+	      << best.second
+	      << "}\n";
+
+    auto worst = population.worst();
+    std::cout << "WORST SOLUTION: " << "{"
+	      << worst.first.get_genome()
+	      << " , "
+	      << worst.second
+	      << "}\n";
+
     delete rng;
 }
