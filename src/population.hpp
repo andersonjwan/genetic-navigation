@@ -16,21 +16,25 @@ namespace genalg {
 	std::size_t size;
 	std::vector<std::pair<I, F>> individuals;
 
-        static bool cmp_individuals(const std::pair<I, F>& lhs,
-				    const std::pair<I, F>& rhs);
-
     public:
 	explicit Population(std::size_t s)
 	    : size{s} {}
 
+	explicit Population(std::size_t s,
+			    const population::IndividualFactory<I>& factory)
+	    : size{s} {
+	    for(int i = 0; i < this->size; ++i) {
+		add(factory.make_individual());
+	    }
+	}
+
 	void add(const I& individual);
 
-	// analytics
-	const std::pair<I, F>& best(void) const;
-	const std::pair<I, F>& worst(void) const;
+	inline const std::pair<I, F>& best(void) const;
+	inline const std::pair<I, F>& worst(void) const;
 
-	// operations
-	const std::pair<I, F>& operator[](int i) const;
+	// operators
+	std::pair<I, F>& operator[](int i);
     };
 }
 
@@ -48,26 +52,24 @@ namespace genalg {
     const std::pair<I, F>& Population<I, F>::best() const {
 	return *std::max_element(this->individuals.begin(),
 				 this->individuals.end(),
-				 Population<I, F>::cmp_individuals);
+				 [](const auto& lhs, const auto& rhs) {
+				     return lhs.second < rhs.second;
+				 });
     }
 
     template<typename I, typename F>
     const std::pair<I, F>& Population<I, F>::worst() const {
 	return *std::min_element(this->individuals.begin(),
 				 this->individuals.end(),
-				 Population<I, F>::cmp_individuals);
+				 [](const auto& lhs, const auto& rhs) {
+				     return lhs.second < rhs.second;
+				 });
     }
 
     template<typename I, typename F>
-    const std::pair<I, F>& Population<I, F>::operator[](int i) const {
+    std::pair<I, F>& Population<I, F>::operator[](int i) {
 	assert(i >= 0);
 	return individuals[i];
-    }
-
-    template<typename I, typename F>
-    bool Population<I, F>::cmp_individuals(const std::pair<I, F>& lhs,
-					   const std::pair<I, F>& rhs) {
-	return lhs.second < rhs.second;
     }
 }
 
