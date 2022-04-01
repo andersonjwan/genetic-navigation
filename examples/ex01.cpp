@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <random>
 #include <string>
 #include <vector>
@@ -8,8 +9,8 @@
 
 using genalg::population::Individual;
 
-using genome = double;
-using fitness = double;
+using Genome = double;
+using Fitness = double;
 
 #define POPULATION_SIZE 25
 
@@ -27,22 +28,21 @@ public:
 
 int
 main(int argc, char **argv) {
-    std::vector<Species<genome, fitness>> population;
+    std::vector<Species<Genome, Fitness>> population;
+    std::unique_ptr<std::mt19937> rng;
 
-    std::mt19937* rng;
     if(argc == 2) {
-	// use provided SEED
-	rng = new std::mt19937(std::stoi(argv[1]));
+	rng = std::make_unique<std::mt19937>(std::stoi(argv[1]));
     } else {
 	std::random_device rd;
-	rng = new std::mt19937(rd());
+	rng = std::make_unique<std::mt19937>(rd());
     }
 
+    // randomly initialize population
     std::uniform_real_distribution<double> uniform(-10.0, 10.0);
 
-    // randomly initialize population
     for(int i = 0; i < POPULATION_SIZE; ++i) {
-	population.push_back(Species<genome, fitness>(uniform(*rng)));
+	population.push_back(Species<Genome, Fitness>(uniform(*rng)));
     }
 
     for(int i = 0; i < POPULATION_SIZE; ++i) {
@@ -52,6 +52,4 @@ main(int argc, char **argv) {
 		  << population[i].fitness()
 		  << "}\n";
     }
-
-    delete rng;
 }
