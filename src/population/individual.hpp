@@ -18,6 +18,12 @@ namespace genalg {
 	    G get_genome(void) const;
 	    virtual F fitness(void) const = 0;
 	};
+
+	template<typename I>
+	class IndividualFactory {
+	public:
+	    virtual I make_individual() const = 0;
+	};
     }
 }
 
