@@ -11,3 +11,10 @@ add_executable(ex02
 add_dependencies(ex02 genalg)
 target_include_directories(ex02 PRIVATE
   ${PROJECT_SOURCE_DIR}/src)
+
+add_executable(ex03
+  ex03.cpp)
+
+add_dependencies(ex03 genalg)
+target_include_directories(ex03 PRIVATE
+  ${PROJECT_SOURCE_DIR}/src)
