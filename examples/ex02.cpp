@@ -17,22 +17,19 @@ using Fitness = double;
 #define POPULATION_SIZE 25
 
 // custom individual
-template<typename G, typename F>
-class Species : public Individual<G, F> {
+class Species : public Individual<Genome, Fitness> {
 public:
-    Species(G g)
-	: Individual<G, F>(g) {}
+    Species(Genome g)
+	: Individual<Genome, Fitness>(g) {}
 
-    F fitness(void) const override {
+    Fitness fitness(void) const override {
 	return std::sin(this->genome) - 0.2 * std::abs(this->genome);
     }
 };
 
-using MyIndividual = Species<Genome, Fitness>;
-
 int
 main(int argc, char **argv) {
-    Population<MyIndividual, Fitness> population(POPULATION_SIZE);
+    Population<Species, Fitness> population(POPULATION_SIZE);
     std::unique_ptr<std::mt19937> rng;
 
     if(argc == 2) {
@@ -46,7 +43,7 @@ main(int argc, char **argv) {
     std::uniform_real_distribution<double> uniform(-10.0, 10.0);
 
     for(int i = 0; i < POPULATION_SIZE; ++i) {
-	population.add(MyIndividual(uniform(*rng)));
+	population.add(Species(uniform(*rng)));
     }
 
     for(int i = 0; i < POPULATION_SIZE; ++i) {
