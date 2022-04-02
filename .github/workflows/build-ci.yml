@@ -6,5 +6,9 @@ jobs:
     container: andersonjwan/cmake:3.22.1
     steps:
       - uses: actions/checkout@v3
+      - run: apt-get -y update
+      - run: apt-get -y install gcc-11 g++-11
+      - run: update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+      - run: update-alternatives --config g++
       - run: cmake -B build
       - run: cmake --build build
