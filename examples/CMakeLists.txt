@@ -18,10 +18,3 @@ add_executable(ex03
 add_dependencies(ex03 genalg)
 target_include_directories(ex03 PRIVATE
   ${PROJECT_SOURCE_DIR}/src)
-
-add_executable(ex04
-  ex04.cpp)
-
-add_dependencies(ex04 genalg)
-target_include_directories(ex04 PRIVATE
-  ${PROJECT_SOURCE_DIR}/src)
