@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
+#include <memory>
 #include <utility>
 #include <vector>
 
+#include "operators/selection.hpp"
 #include "population/individual.hpp"
 
 namespace genalg {
@@ -15,6 +17,8 @@ namespace genalg {
     private:
         std::size_t size;
         std::vector<std::pair<I, F>> individuals;
+
+        const std::shared_ptr<operators::SelectionOperator<I,F>> sop;
 
     public:
         explicit Population(std::size_t s)
@@ -28,10 +32,24 @@ namespace genalg {
             }
         }
 
+        explicit Population(std::size_t s,
+                            const population::IndividualFactory<I>& factory,
+                            std::shared_ptr<operators::SelectionOperator<I, F>> op)
+            : size{s}, sop{op} {
+            for(int i = 0; i < this->size; ++i) {
+                this->add(factory.make_individual());
+            }
+        }
+
         void add(const I& individual);
 
         inline const std::pair<I, F>& best(void) const;
         inline const std::pair<I, F>& worst(void) const;
+
+        // GA operations
+        I select() {
+            return sop->select(this->individuals);
+        }
 
         // operators
         std::pair<I, F>& operator[](int i);
