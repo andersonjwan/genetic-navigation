@@ -52,19 +52,21 @@ public:
         }
 
         double max = 0;
-        for(int i = 0; i < this->genome.size(); ++i) {
+        for(int i = 1; i < this->genome.size(); ++i) {
             max += std::pow(2, i);
         }
 
         if(sign) {
-            return -((value / max) * 10);
+            return -((value / max) * 10.0);
         } else {
-            return (value / max) * 10;
+            return (value / max) * 10.0;
         }
     }
 
+
     Fitness fitness(void) const override {
-        return std::sin(this->decimal()) - 0.2 * std::abs(this->decimal());
+        double x = this->decimal();
+        return std::sin(x) - 0.2 * std::abs(x);
     }
 };
 
@@ -86,12 +88,6 @@ public:
         for(int i = 0; i < Species::length; ++i) {
             genome.push_back(idistr(this->rng));
         }
-
-        std::cout << "generated... ";
-        for(int i = 0; i < genome.size(); ++i) {
-            std::cout << genome[i];
-        }
-        std::cout << "\n";
 
         return Species(genome);
     }
@@ -146,7 +142,7 @@ main(int argc, char **argv) {
         rng = std::make_unique<std::mt19937>(rd());
     }
 
-    Options options(10, 1000, 0.05);
+    Options options(100, 100, 0.05);
     SpeciesFactory<std::mt19937> generator(*rng);
     GenerationLimit<Species, Fitness> termination(options.n_generations);
 
