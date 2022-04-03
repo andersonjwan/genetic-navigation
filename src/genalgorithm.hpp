@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 
+#include "algorithm/result.hpp"
 #include "options.hpp"
 #include "operators.hpp"
 #include "population.hpp"
@@ -37,11 +38,12 @@ namespace genalg {
              typename M,
              typename X,
              typename R>
-    double genalgorithm(Options& options,
-                        Operators<I, F, S, C, M>& operators,
-                        G& generator,
-                        X& termination,
-                        R& rng) {
+    algorithm::Result<I, F>
+    genalgorithm(Options& options,
+                 Operators<I, F, S, C, M>& operators,
+                 G& generator,
+                 X& termination,
+                 R& rng) {
         std::vector<Population<I, F>> generations;
         generations.push_back(Population<I, F>(options.population_size, generator));
 
@@ -73,7 +75,7 @@ namespace genalg {
             }
         }
 
-        return 0.0;
+        return algorithm::Result<I, F>(generations);
     }
 }
 
