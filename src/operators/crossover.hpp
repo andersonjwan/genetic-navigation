@@ -13,7 +13,7 @@ namespace genalg {
         template<typename I>
         class CrossoverOperator {
         public:
-            virtual std::array<I, 2> crossover(const I& p1, const I& p2) const = 0;
+            virtual std::array<I, 2> cross(const I& p1, const I& p2) const = 0;
         };
 
         template<typename I, typename R>
@@ -26,7 +26,7 @@ namespace genalg {
             MultiPointCrossover(R& r, std::size_t n)
                 : rng{r}, n_points{n} {}
 
-            std::array<I, 2> crossover(const I& p1, const I& p2) const override;
+            std::array<I, 2> cross(const I& p1, const I& p2) const override;
         };
 
         template<typename I, typename R>
@@ -35,7 +35,7 @@ namespace genalg {
             SinglePointCrossover(R& r)
                 : MultiPointCrossover<I, R>(r, 1) {}
 
-            std::array<I, 2> crossover(const I& p1, const I& p2) const override {
+            std::array<I, 2> cross(const I& p1, const I& p2) const override {
                 MultiPointCrossover<I, R>::crossover(p1, p2);
             }
         };
@@ -45,7 +45,7 @@ namespace genalg {
 namespace genalg {
     namespace operators {
         template<typename I, typename R>
-        std::array<I, 2> MultiPointCrossover<I, R>::crossover(const I &p1, const I &p2) const {
+        std::array<I, 2> MultiPointCrossover<I, R>::cross(const I &p1, const I &p2) const {
             assert(p1.get_genome().size() == p2.get_genome().size());
             assert(this->n_points <= p1.get_genome().size());
 
