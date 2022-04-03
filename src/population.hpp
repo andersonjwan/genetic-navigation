@@ -35,6 +35,8 @@ namespace genalg {
         inline const std::pair<I, F>& best(void) const;
         inline const std::pair<I, F>& worst(void) const;
 
+        std::vector<std::pair<I, F>>& solutions() { return this->individuals; }
+
         // operators
         std::pair<I, F>& operator[](int i);
     };
