@@ -55,7 +55,7 @@ namespace genalg {
             std::vector<std::size_t> indexes(p1.get_genome().size() - 1);
             std::iota(indexes.begin(), indexes.end(), 1);
 
-            std::vector<std::size_t> points(this->n_points);
+            std::vector<std::size_t> points;
             std::sample(indexes.begin(), indexes.end(),
                         std::back_inserter(points), this->n_points, this->rng);
 
