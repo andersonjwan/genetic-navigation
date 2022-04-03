@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstddef>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <memory>
@@ -11,7 +12,9 @@
 #include "genalgorithm.hpp"
 
 #include "options.hpp"
+#include "algorithm/result.hpp"
 #include "algorithm/termination.hpp"
+
 
 #include "population/individual.hpp"
 
@@ -142,7 +145,7 @@ main(int argc, char **argv) {
         rng = std::make_unique<std::mt19937>(rd());
     }
 
-    Options options(100, 100, 0.05);
+    Options options(10, 100, 0.05);
     SpeciesFactory<std::mt19937> generator(*rng);
     GenerationLimit<Species, Fitness> termination(options.n_generations);
 
@@ -157,13 +160,21 @@ main(int argc, char **argv) {
               MutationOperation<std::mt19937>>
         operators(selection, crossover, mutation);
 
-    genalg::genalgorithm<Species,
-                         Fitness,
-                         SpeciesFactory<std::mt19937>,
-                         TournamentSelection<Species, Fitness, std::mt19937>,
-                         MultiPointCrossover<Species, std::mt19937>,
-                         MutationOperation<std::mt19937>,
-                         GenerationLimit<Species, Fitness>,
-                         std::mt19937>
+    auto res = genalg::genalgorithm<Species,
+                                    Fitness,
+                                    SpeciesFactory<std::mt19937>,
+                                    TournamentSelection<Species, Fitness, std::mt19937>,
+                                    MultiPointCrossover<Species, std::mt19937>,
+                                    MutationOperation<std::mt19937>,
+                                    GenerationLimit<Species, Fitness>,
+                                    std::mt19937>
         (options, operators, generator, termination, *rng);
+
+    int i = 1;
+    for(auto& x : res.best()) {
+        std::cout << "GENERATION "
+                  << std::setw(3) << std::setfill('0') << i << " BEST: "
+                  << "(" << x.first.decimal() << ", " << x.second << ")\n";
+        ++i;
+    }
 }
