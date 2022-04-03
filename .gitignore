@@ -1,6 +1,0 @@
-# Editors
-*~
-*.el
-
-# Build artifacts
-build/
