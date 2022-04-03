@@ -22,7 +22,6 @@ namespace genalg {
         std::array<I, 2> offspring = operators.cross(p1, p2);
         for(int i = 0; i < 2; ++i) {
             if(rdistr(rng) < mutation_chance) {
-                std::cout << "mutating...\n";
                 offspring[i] = operators.mutate(offspring[i]);
             }
         }
@@ -47,8 +46,6 @@ namespace genalg {
         generations.push_back(Population<I, F>(options.population_size, generator));
 
         while(!termination.terminate(generations.back().solutions())) {
-            std::cout << "GENERATION " << generations.size() << "\n";
-
             // generate a new population
             generations.push_back(Population<I, F>(options.population_size));
 
@@ -71,21 +68,9 @@ namespace genalg {
                         break;
                     }
 
-                    std::cout << "added... ";
-                    std::cout << (offspring[i].get_genome()[0] == 1 ? "NEGATIVE " : "POSITIVE ");
-                    for(int j = 0; j < offspring[i].get_genome().size(); ++j) {
-                        std::cout << offspring[i].get_genome()[j];
-                    }
-                    std::cout << ": " << offspring[i].decimal() << "\n";
-
                     generations.back().add(offspring[i]);
                 }
             }
-        }
-
-        for(int i = 0; i < generations.size(); ++i) {
-            std::cout << "BEST: " << "(" << generations[i].best().first.decimal() << ", "
-                      << generations[i].best().second << ")\n";
         }
 
         return 0.0;
