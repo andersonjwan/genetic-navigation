@@ -2,7 +2,7 @@
 
 The Genetic Navigation aims to learn a navigational robot controller through a Genetic Algorithm (GA) approach.
 
-<img src="https://raw.githubusercontent.com/andersonjwan/genetic-navigation/oop-design/img/demo.gif" width=500px>
+<img src="https://raw.githubusercontent.com/andersonjwan/genetic-navigation/main/img/demo.gif" width=500px>
 
 ## Genetic Algorithm
 
