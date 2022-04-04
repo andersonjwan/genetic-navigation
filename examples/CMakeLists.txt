@@ -25,3 +25,4 @@ add_executable(ex04
 add_dependencies(ex04 genalg)
 target_include_directories(ex04 PRIVATE
   ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(ex04 PUBLIC matplot)

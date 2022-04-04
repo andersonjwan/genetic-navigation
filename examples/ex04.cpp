@@ -6,6 +6,7 @@
 #include <memory>
 #include <numeric>
 #include <random>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -14,7 +15,6 @@
 #include "options.hpp"
 #include "algorithm/result.hpp"
 #include "algorithm/termination.hpp"
-
 
 #include "population/individual.hpp"
 
@@ -33,6 +33,11 @@ using Genome = std::vector<int>;
 using Fitness = double;
 
 #define POPULATION_SIZE 25
+// #define PLOT
+
+#ifdef PLOT
+#include <matplot/matplot.h>
+#endif
 
 class Species : public Individual<Genome, Fitness> {
 public:
@@ -145,7 +150,7 @@ main(int argc, char **argv) {
         rng = std::make_unique<std::mt19937>(rd());
     }
 
-    Options options(10, 100, 0.05);
+    Options options(50, 50, 0.01);
     SpeciesFactory<std::mt19937> generator(*rng);
     GenerationLimit<Species, Fitness> termination(options.n_generations);
 
@@ -177,4 +182,47 @@ main(int argc, char **argv) {
                   << "(" << x.first.decimal() << ", " << x.second << ")\n";
         ++i;
     }
+
+#ifdef PLOT
+    std::vector<double> x(options.n_generations);
+    std::iota(x.begin(), x.end(), 0);
+
+    std::vector<double> best;
+    std::vector<double> worst;
+
+    for(auto& b : res.best()) {
+        best.push_back(b.second);
+    }
+
+    for(auto& w : res.worst()) {
+        worst.push_back(w.second);
+    }
+
+    matplot::plot(x, best);
+    matplot::hold(matplot::on);
+
+    matplot::plot(x, worst);
+    matplot::hold(matplot::off);
+
+    matplot::save("img/fitness", "svg");
+
+    for(int i = 0; i < options.n_generations; ++i) {
+        matplot::fplot([](double x) { return std::sin(x) - 0.2 * std::abs(x); },
+                       std::array<double, 2>{-10.0, 10.0});
+        matplot::hold(matplot::on);
+
+        for(int j = 0; j < options.population_size; ++j) {
+            matplot::plot({((res[i])[j]).first.decimal()}, {((res[i])[j]).second}, ".");
+        }
+
+        std::ostringstream ss;
+        ss << std::setw(3) << std::setfill('0') << i + 1;
+        std::string s(ss.str());
+
+        matplot::title("Generation " + s);
+        matplot::save("img/generation_" + std::to_string(i), "svg");
+        matplot::hold(matplot::off);
+    }
+
+#endif
 }
