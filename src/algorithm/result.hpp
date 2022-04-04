@@ -10,15 +10,14 @@ namespace genalg {
     namespace algorithm {
         template<typename I, typename F>
         class Result {
-        private:
-            std::vector<Population<I, F>> generations;
-
         public:
+            const std::vector<Population<I, F>> generations;
+
             Result(std::vector<Population<I, F>> gens)
                 : generations{gens} {}
 
-            std::vector<std::pair<I, F>> best();
-            std::vector<std::pair<I, F>> worst();
+            std::vector<std::pair<I, F>> best() const;
+            std::vector<std::pair<I, F>> worst() const;
         };
     }
 }
@@ -26,7 +25,7 @@ namespace genalg {
 namespace genalg {
     namespace algorithm {
         template<typename I, typename F>
-        std::vector<std::pair<I, F>> Result<I, F>::best() {
+        std::vector<std::pair<I, F>> Result<I, F>::best() const {
             std::vector<std::pair<I, F>> maximums;
 
             for(auto& x : this->generations) {
@@ -37,11 +36,11 @@ namespace genalg {
         }
 
         template<typename I, typename F>
-        std::vector<std::pair<I, F>> Result<I, F>::worst() {
+        std::vector<std::pair<I, F>> Result<I, F>::worst() const {
             std::vector<std::pair<I, F>> minimums;
 
             for(auto& x : this->generations) {
-                minimums.push_back(x.best());
+                minimums.push_back(x.worst());
             }
 
             return minimums;
