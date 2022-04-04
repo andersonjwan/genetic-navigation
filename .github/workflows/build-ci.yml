@@ -3,7 +3,7 @@ on: push
 jobs:
   genalgnav-build:
     runs-on: ubuntu-latest
-    container: andersonjwan/cmake:3.22.1
+    container: andersonjwan/cmake:latest
     steps:
       - uses: actions/checkout@v3
       - run: cmake -B build
