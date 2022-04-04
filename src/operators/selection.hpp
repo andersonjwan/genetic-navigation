@@ -2,90 +2,77 @@
 #define GENALG_OPERATORS_SELECTION_HPP
 
 #include <algorithm>
-#include <array>
+#include <cassert>
 #include <cstddef>
-#include <iterator>
-#include <map>
-#include <map>
-#include <numeric>
-#include <queue>
 #include <random>
-#include <stdexcept>
 #include <utility>
 #include <vector>
 
+#include <iostream>
+
 namespace genalg {
     namespace operators {
-	template<typename T, typename F>
-	class SelectionOperator {
-	public:
-	    virtual T select(std::map<T, F>) = 0;
-	};
+        template<typename I, typename F>
+        class SelectionOperator {
+        public:
+            virtual I select(const std::vector<std::pair<I, F>>& population) const = 0;
+        };
 
-	template<typename R, typename T, typename F>
-	class TournamentSelection : public SelectionOperator<T, F>{
-	private:
-	    R rng;
+        template<typename I, typename F, typename R>
+        class TournamentSelection : public SelectionOperator<I, F> {
+        private:
+            std::size_t tournament_size;
+            double prob;
+            R& rng;
+            bool replacement;
 
-	    std::size_t tournament_size;
-	    double p = 0.5;
+        public:
+            TournamentSelection(R& r, std::size_t s=2, double p=0.5, bool rep=true)
+                : rng{r}, tournament_size{s}, prob{p}, replacement{rep} {}
 
-	public:
-	    TournamentSelection<R, T, F>(R r, std::size_t size)
-		: rng{r}, tournament_size{size} {}
-
-	    TournamentSelection<R, T, F>(R r, std::size_t size, double prob)
-		: rng{r}, tournament_size{size}, p{prob} {}
-
-	    T select(std::map<T, F>) override;
-	};
+            I select(const std::vector<std::pair<I, F>>& population) const override;
+        };
     }
 }
 
 namespace genalg {
     namespace operators {
-	template<typename R, typename T, typename F>
-	T TournamentSelection<R, T, F>::select(std::map<T, F> population) {
-	    if(this->tournament_size > population.size()) {
-		throw std::out_of_range("tournament size must be less than or equal to population size");
-	    }
+        template<typename I, typename F, typename R>
+        I TournamentSelection<I, F, R>::select(const std::vector<std::pair<I, F>>& population) const {
+            assert(population.size() >= 1);
+            assert(this->tournament_size <= population.size());
 
-	    using competitor = std::pair<T, F>;
+            // randomly select individuals
+            std::vector<std::pair<I, F>> pool;
 
-	    std::vector<std::size_t> indices(population.size());
-	    std::iota(indices.begin(), indices.end(), 0);
+            if(this->replacement) {
+                for(int i = 0; i < this->tournament_size; ++i) {
+                    std::sample(population.begin(), population.end(),
+                                std::back_inserter(pool), 1, this->rng);
+                }
+            } else {
+                std::sample(population.begin(), population.end(),
+                            std::back_inserter(pool), this->tournament_size, this->rng);
+            }
 
-	    std::shuffle(indices.begin(), indices.end(), rng);
+            // find best from pool
+            auto winner = std::max_element(pool.begin(), pool.end(),
+                                           [](const auto& lhs, const auto& rhs) {
+                                               return lhs.second < rhs.second;
+                                           });
 
-	    // select individuals to compete
-	    auto cmp = [](competitor c1, competitor c2) { return c1.second < c2.second; };
-	    std::priority_queue<competitor, std::vector<competitor>, decltype(cmp)> selections(cmp);
+            // select best with probability p
+            std::uniform_real_distribution<double> rdistr(0.0, 1.0);
+            if(rdistr(rng) <= this->prob) {
+                return (*winner).first;
+            } else {
+                pool.erase(winner);
+                std::sample(pool.begin(), pool.end(),
+                            std::back_inserter(pool), 1, this->rng);
 
-	    auto iter_begin = population.begin();
-	    for(std::size_t i = 0; i < this->tournament_size; ++i) {
-		auto iter = population.begin();
-		std::advance(iter, indices[i]);
-
-		auto sel = iter;
-		selections.push(std::make_pair(sel->first, sel->second));
-	    }
-
-	    // select top two competitors
-	    T c1 = (selections.top()).first;
-	    selections.pop();
-	    T c2 = (selections.top()).first;
-	    selections.pop();
-
-	    std::array<T, 2> matchup = {c1, c2};
-
-	    std::uniform_real_distribution<double> distr(0.0, 1.0);
-
-	    if(distr(rng) <= this->p) {
-		return matchup[0]; // return most fit
-	    } else {
-		return matchup[1]; // return second-most fit
-	    }
-	}
+                return pool.back().first;
+            }
+        }
     }
 }
 

@@ -3,92 +3,75 @@
 
 #include <algorithm>
 #include <array>
-#include <cassert>
 #include <cstddef>
-#include <random>
-#include <utility>
+#include <iterator>
+#include <numeric>
 #include <vector>
 
 namespace genalg {
     namespace operators {
-	template<typename T>
-	class CrossoverOperator {
-	public:
-	    virtual std::array<T, 2> crossover(const T& p1, const T& p2) = 0;
-	};
+        template<typename I>
+        class CrossoverOperator {
+        public:
+            virtual std::array<I, 2> cross(const I& p1, const I& p2) const = 0;
+        };
 
-	template<typename T>
-	class SinglePointCrossover : public CrossoverOperator<T> {
-	public:
-	    virtual std::array<T, 2> crossover(const T& p1, const T& p2) override;
-	};
+        template<typename I, typename R>
+        class MultiPointCrossover : public CrossoverOperator<I> {
+        private:
+            R& rng;
+            std::size_t n_points;
 
-	template<typename T>
-	class MultiPointCrossover : public CrossoverOperator<T> {
-	private:
-	    std::size_t n_points;
+        public:
+            MultiPointCrossover(R& r, std::size_t n)
+                : rng{r}, n_points{n} {}
 
-	public:
-	    MultiPointCrossover(std::size_t n)
-		: n_points {n} { assert(n_points > 0); }
+            std::array<I, 2> cross(const I& p1, const I& p2) const override;
+        };
 
-	    virtual std::array<T, 2> crossover(const T& p1, const T& p2) override;
-	};
+        template<typename I, typename R>
+        class SinglePointCrossover : public MultiPointCrossover<I, R> {
+        public:
+            SinglePointCrossover(R& r)
+                : MultiPointCrossover<I, R>(r, 1) {}
+
+            std::array<I, 2> cross(const I& p1, const I& p2) const override {
+                MultiPointCrossover<I, R>::crossover(p1, p2);
+            }
+        };
     }
 }
 
 namespace genalg {
     namespace operators {
-	template<typename T>
-	std::array<T, 2> SinglePointCrossover<T>::crossover(const T& p1, const T& p2) {
-	    assert(p1.size() == p2.size());
+        template<typename I, typename R>
+        std::array<I, 2> MultiPointCrossover<I, R>::cross(const I &p1, const I &p2) const {
+            assert(p1.get_genome().size() == p2.get_genome().size());
+            assert(this->n_points <= p1.get_genome().size());
 
-	    std::random_device rd;
-	    std::mt19937 gen(rd());
-	    std::uniform_int_distribution<int> distr(1, p1.size());
+            auto genome1 = p1.get_genome();
+            auto genome2 = p2.get_genome();
 
-	    int index = distr(gen);
+            std::vector<std::size_t> indexes(p1.get_genome().size() - 1);
+            std::iota(indexes.begin(), indexes.end(), 1);
 
-	    T child_genome1(p1);
-	    T child_genome2(p2);
+            std::vector<std::size_t> points;
+            std::sample(indexes.begin(), indexes.end(),
+                        std::back_inserter(points), this->n_points, this->rng);
 
-	    for(int i = index; i < child_genome1.size(); ++i) {
-		std::swap(child_genome1[i], child_genome2[i]);
-	    }
+            std::sort(points.begin(), points.end());
 
-	    return std::array<T, 2> {child_genome1, child_genome2};
-	}
+            for(int i = 0; i < points.size(); ++i) {
+                for(int j = points[i]; j < genome1.size(); ++j) {
+                    std::swap(genome1[j], genome2[j]);
+                }
+            }
 
-	template<typename T>
-	std::array<T, 2> MultiPointCrossover<T>::crossover(const T& p1, const T& p2) {
-	    assert(p1.size() == p2.size());
-	    assert(this->n_points <= p1.size());
-
-	    std::random_device rd;
-	    std::mt19937 gen(rd());
-
-	    std::vector<std::size_t> indices(p1.size() - 1);
-	    std::iota(indices.begin(), indices.end(), 1);
-
-	    std::shuffle(indices.begin(), indices.end(), gen);
-
-	    std::vector<std::size_t> points(this->n_points);
-	    for(int i = 0; i < this->n_points; ++i) {
-		points[i] = indices[i];
-	    }
-
-	    T child_genome1(p1);
-	    T child_genome2(p2);
-
-	    std::sort(points.begin(), points.end());
-	    for(int i = 0; i < points.size(); ++i) {
-		for(int j = points[i]; j < child_genome1.size(); ++j) {
-		    std::swap(child_genome1[j], child_genome2[j]);
-		}
-	    }
-
-	    return std::array<T, 2> {child_genome1, child_genome2};
-	}
+            return std::array<I, 2> {
+                I(genome1),
+                I(genome2)
+            };
+        }
     }
 }
 

@@ -5,27 +5,32 @@
 
 namespace genalg {
     namespace population {
-	template<typename T, typename F>
-	class Individual {
-	protected:
-	    T m_genome;
-	    std::size_t m_age;
+        template<typename G, typename F>
+        class Individual {
+        protected:
+            G genome;
+            std::size_t age = 0;
 
-	public:
-	    Individual(T g)
-		: m_genome{g} {}
+        public:
+            Individual(G g)
+                : genome{g} {}
 
-	    virtual F fitness() = 0;
-	};
+            G get_genome(void) const;
+            virtual F fitness(void) const = 0;
+        };
+
+        template<typename I>
+        class IndividualFactory {
+        public:
+            virtual I make_individual() const = 0;
+        };
     }
 }
 
 namespace genalg {
     namespace population {
-	template<typename T, typename F>
-        bool operator<(const Individual<T, F>& i1, const Individual<T, F>& i2) {
-	    return i1.genome > i2.genome;
-	}
+        template<typename G, typename F>
+        G Individual<G, F>::get_genome(void) const { return this->genome; }
     }
 }
 

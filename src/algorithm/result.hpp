@@ -3,47 +3,48 @@
 
 #include <utility>
 #include <vector>
-#include "algorithm/solution.hpp"
+
+#include "population.hpp"
 
 namespace genalg {
     namespace algorithm {
-	template<typename T, typename F>
-	class Result {
-	public:
-	    Result(std::vector<SolutionSet<T, F>> g)
-		: generations{g} {}
+        template<typename I, typename F>
+        class Result {
+        public:
+            const std::vector<Population<I, F>> generations;
 
-	    std::vector<SolutionSet<T, F>> generations;
+            Result(std::vector<Population<I, F>> gens)
+                : generations{gens} {}
 
-	    std::vector<std::pair<T, F>> max_per_generation();
-	    std::vector<std::pair<T, F>> min_per_generation();
-	};
+            std::vector<std::pair<I, F>> best() const;
+            std::vector<std::pair<I, F>> worst() const;
+        };
     }
 }
 
 namespace genalg {
     namespace algorithm {
-	template<typename T, typename F>
-        std::vector<std::pair<T, F>> Result<T, F>::max_per_generation() {
-	    std::vector<std::pair<T, F>> maximums;
+        template<typename I, typename F>
+        std::vector<std::pair<I, F>> Result<I, F>::best() const {
+            std::vector<std::pair<I, F>> maximums;
 
-	    for(auto& g : generations) {
-		maximums.push_back(g.max());
-	    }
+            for(auto& x : this->generations) {
+                maximums.push_back(x.best());
+            }
 
-	    return maximums;
-	}
+            return maximums;
+        }
 
-	template<typename T, typename F>
-        std::vector<std::pair<T, F>> Result<T, F>::min_per_generation() {
-	    std::vector<std::pair<T, F>> minimums;
+        template<typename I, typename F>
+        std::vector<std::pair<I, F>> Result<I, F>::worst() const {
+            std::vector<std::pair<I, F>> minimums;
 
-	    for(auto& g : generations) {
-		minimums.push_back(g.min());
-	    }
+            for(auto& x : this->generations) {
+                minimums.push_back(x.worst());
+            }
 
-	    return minimums;
-	}
+            return minimums;
+        }
     }
 }
 
