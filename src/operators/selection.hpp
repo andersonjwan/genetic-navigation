@@ -15,30 +15,32 @@ namespace genalg {
         template<typename I, typename F>
         class SelectionOperator {
         public:
-            virtual I select(const std::vector<std::pair<I, F>>& population) const = 0;
+            virtual I select(const std::vector<std::pair<I, F>>& population,
+                             std::default_random_engine& rng) const = 0;
         };
 
-        template<typename I, typename F, typename R>
+        template<typename I, typename F>
         class TournamentSelection : public SelectionOperator<I, F> {
         private:
             std::size_t tournament_size;
             double prob;
-            R& rng;
             bool replacement;
 
         public:
-            TournamentSelection(R& r, std::size_t s=2, double p=0.5, bool rep=true)
-                : rng{r}, tournament_size{s}, prob{p}, replacement{rep} {}
+            TournamentSelection(std::size_t s=2, double p=0.5, bool rep=true)
+                : tournament_size{s}, prob{p}, replacement{rep} {}
 
-            I select(const std::vector<std::pair<I, F>>& population) const override;
+            I select(const std::vector<std::pair<I, F>>& population,
+                     std::default_random_engine& rng) const override;
         };
     }
 }
 
 namespace genalg {
     namespace operators {
-        template<typename I, typename F, typename R>
-        I TournamentSelection<I, F, R>::select(const std::vector<std::pair<I, F>>& population) const {
+        template<typename I, typename F>
+        I TournamentSelection<I, F>::select(const std::vector<std::pair<I, F>>& population,
+                                            std::default_random_engine& rng) const {
             assert(population.size() >= 1);
             assert(this->tournament_size <= population.size());
 
@@ -48,11 +50,11 @@ namespace genalg {
             if(this->replacement) {
                 for(int i = 0; i < this->tournament_size; ++i) {
                     std::sample(population.begin(), population.end(),
-                                std::back_inserter(pool), 1, this->rng);
+                                std::back_inserter(pool), 1, rng);
                 }
             } else {
                 std::sample(population.begin(), population.end(),
-                            std::back_inserter(pool), this->tournament_size, this->rng);
+                            std::back_inserter(pool), this->tournament_size, rng);
             }
 
             // find best from pool
@@ -68,7 +70,7 @@ namespace genalg {
             } else {
                 pool.erase(winner);
                 std::sample(pool.begin(), pool.end(),
-                            std::back_inserter(pool), 1, this->rng);
+                            std::back_inserter(pool), 1, rng);
 
                 return pool.back().first;
             }
