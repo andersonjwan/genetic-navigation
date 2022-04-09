@@ -11,27 +11,25 @@ class Simulator:
         self.robots = robots        # The population of robots
         self.env = env              # Environment class instance
         self.max_steps = 100        # The maximum number of steps for one episode
+        self.v = 1                  # Constant linear velocity
 
     def run_episode(self):
         """Runs one episode where the current population navigates in the environment."""
 
-        # ToDo get values from controller matrix
-        v = 1
-        omega = -0.2
-
         for robot in self.robots:
-            score = 0
-            self.store_state(robot)             # Store robot's initial state (pose & obst detection)
+            score = 0                                             # Initialize score
+            self.store_state(robot)                               # Store robot's initial state (pose & obst detection)
 
             # Navigate until collision, reaching goal or max steps
             for i in range(self.max_steps):
-                robot.step(v, omega)            # Move one step
-                self.store_state(robot)         # Store robot's state (pose & obst detection)
-                x, y, theta = robot.get_pose()  # Get robot's pose
+                omega = robot.get_action()                        # Get action from GA "controller"
+                robot.step(self.v, omega)                         # Move one step
 
-                score = self.env.get_current_reward(x, y, theta)
+                self.store_state(robot)                           # Store robot's state (pose & obst detection)
+                x, y, theta = robot.get_pose()                    # Get robot's pose
+                score = self.env.get_current_reward(x, y, theta)  # Update score
 
-                # Stop moving if collision
+                # If collision, stop moving and update score
                 if self.env.is_collision(x, y):
                     print('Robot {}: Collision'.format(self.robots.index(robot)+1))
                     score += self.env.collision_reward
@@ -39,7 +37,7 @@ class Simulator:
                         self.store_state(robot)
                     break
 
-                # Stop moving if goal reached
+                # If goal reached, stop moving and update score
                 if self.env.is_goal_reached(x, y):
                     print('Robot {}: Goal reached!'.format(self.robots.index(robot)+1))
                     score += self.env.goal_reward
@@ -52,6 +50,7 @@ class Simulator:
 
             robot.set_fitness(score)
             print('Fitness: {}'.format(robot.fitness))
+            # ToDo change fitness in GA
 
     def store_state(self, robot):
         """Stores the current robot state (pose & obstacle detection results).
@@ -68,7 +67,7 @@ class Simulator:
             obs_history.append(self.env.obstacle_detection(x, y, theta, sensor_angle))
         robot.obs_detection_history.append(obs_history)
 
-    def display_env(self, is_testing=False):
+    def display_env(self):
         """Displays the environment."""
 
         global ax

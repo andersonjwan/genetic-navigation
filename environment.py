@@ -17,7 +17,7 @@ class Env:
 
     @staticmethod
     def define_obstacle(x, y, dx, dy):
-        """Define a rectangular obstacle as a convex polygon with half-space representation (AX<=B).
+        """Defines a rectangular obstacle as a convex polygon with half-space representation (AX<=B).
 
         Inputs:
           - x(float):      x-position of bottom-left corner of rectangular
@@ -42,6 +42,7 @@ class Env:
 
         Detects whether any of 5 points on sensor ray (starting from the end-point) intersect the obstacle
         (which is given by the half-space representation matrices A,B).
+
         Inputs:
           - A(np.ndarray):         Coefficient matrix of obstacle half-space representation [4x2]
           - B(np.ndarray):         Constant vector of obstacle half-space representation    [4x1]
@@ -51,7 +52,7 @@ class Env:
         Returns:
           - (bool):                Whether the obstacle is detected or not
         """
-        for i in range(5, 0, -1):
+        for i in range(5, -1, -1):
             u = i/5
             x = X_sensor[0].item() * u + x_rob * (1 - u)
             y = X_sensor[1].item() * u + y_rob * (1 - u)
@@ -63,6 +64,7 @@ class Env:
         """Whether a wall is detected by the sensor.
 
         Detects whether the given point goes beyond the walls.
+
         Inputs:
           - x(float): x-position of point to check
           - y(float): y-position of point to check
@@ -87,7 +89,7 @@ class Env:
           - dx(float):       The x-position offset wrt the robot of the ray point that intersects with the obstacle
           - dy(float):       The y-position offset wrt the robot of the ray point that intersects with the obstacle
         """
-        num_of_points = 500
+        num_of_points = 1500
         for i in range(num_of_points+1):
             u = i / num_of_points
             x = x_sensor * u + x_rob * (1 - u)
@@ -207,6 +209,7 @@ class Env:
 
         0: No obstacle detected
         1: Obstacle detected
+
         Inputs:
           - x_rob(float): Robot's x-position
           - y_rob(float): Robot's y-position
@@ -232,6 +235,36 @@ class Env:
                 sensor_readings[config.sensors.index(sensor_angle)] = 1
 
         return sensor_readings
+
+    def get_angle_area(self, x_rob, y_rob, theta):
+        """Computes the interval in which the angle to the goal belongs to (one-hot encoding).
+
+        0: Angle does not belong in this interval
+        1: Angle belongs in this interval
+        E.g. If angle ∈ interval_1, then:
+        angle_area = [in interval_0, in interval_1, in interval_2, in interval_3] = [0,1,0,0]
+
+        Inputs:
+          - x_rob(float): Robot's x-position
+          - y_rob(float): Robot's y-position
+          - theta(float): Robot's heading angle
+        Returns:
+          - angle_area(list): The intervals in one-hot encoding
+        """
+        angle_area = 4*[0]  # One-hot encoding of 2pi divided into 4 intervals
+        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)                 # Actual goal angle
+        heading_error = np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta))  # Relative goal angle
+
+        if -np.pi <= heading_error <= -np.pi/2 or 3*np.pi/4 <= heading_error <= np.pi:
+            angle_area[0] = 1
+        elif np.pi/2 <= heading_error <= 3*np.pi/4:
+            angle_area[1] = 1
+        elif np.pi/4 <= heading_error <= np.pi/2:
+            angle_area[2] = 1
+        else:
+            angle_area[3] = 1
+
+        return angle_area
 
     def get_current_reward(self, x_rob, y_rob, theta):
         """Computes the reward at the current time-step.

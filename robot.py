@@ -8,6 +8,15 @@ class Robot:
     sensor_range = config.sensor_range                             # Sensor range
     sensors = config.sensors                                       # Sensor angles wrt robot heading angle [rad]
     dt = config.dt                                                 # Sample time [s]
+    num_actions = config.num_actions                               # Number of actions
+    actions = {'000': round(-np.pi/2, 2),
+               '001': round(-np.pi/3, 2),
+               '010': round(-np.pi/6, 2),
+               '011': 0,
+               '100': round(np.pi/6, 2),
+               '101': round(np.pi/3, 2),
+               '110': round(np.pi/2, 2),
+               '111': round(np.pi, 2)}                             # Actions encoding (binary->angular velocity)
 
     def __init__(self, env):
         self.env = env                                             # Environment class instance
@@ -18,6 +27,8 @@ class Robot:
         self.q_history = []                                        # Robot's pose history
         self.obs_detection_history = []                            # Robot's obstacle detection history
         self.fitness = None                                        # Robot's fitness
+
+        self.chromosome = ''.join(str(i) for i in np.random.randint(2, size=2**9*3))  # ToDO Get it from GA
 
     def set_initial_pose(self):
         """Sets robot's initial pose at random within the workspace."""
@@ -39,6 +50,7 @@ class Robot:
         """Simulates robot motion over one time interval step and sets the new pose.
 
         Uses the unicycle model.
+
         Inputs:
           - v(float):     The desired linear velocity
           - omega(float): The desired angular velocity
@@ -64,3 +76,25 @@ class Robot:
           - fitness(float): The individual's fitness
         """
         self.fitness = int(fitness)
+
+    def get_action(self):
+        """Get the next action by decoding the chromosome.
+
+        Returns:
+          - action(float):  The next action to take (angular velocity)
+        """
+
+        # Get extended sensor inputs as a binary string
+        encoded_input = self.env.read_sensors(*self.get_pose()) + self.env.get_angle_area(*self.get_pose())
+        encoded_input_string = ''.join(str(i) for i in encoded_input)
+
+        # Find position in chromosome that represents the binary input (by converting binary to decimal)
+        pos = int(encoded_input_string, 2)
+
+        # Get the action in that position (as binary string)
+        binary_action = self.chromosome[pos: pos + int(np.log2(self.num_actions))]
+
+        # Decode binary action into angular velocity
+        action = self.actions[binary_action]
+
+        return action
