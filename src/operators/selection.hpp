@@ -8,8 +8,6 @@
 #include <utility>
 #include <vector>
 
-#include <iostream>
-
 namespace genalg {
     namespace operators {
         template<typename I, typename F>
