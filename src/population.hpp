@@ -15,17 +15,17 @@ namespace genalg {
     template<typename I, typename F>
     class Population {
     private:
-        std::size_t size;
+        std::size_t capacity;
         std::vector<std::pair<I, F>> individuals;
 
     public:
         explicit Population(std::size_t s)
-            : size{s} {}
+            : capacity{s} {}
 
         explicit Population(std::size_t s,
                             const population::IndividualFactory<I>& factory)
-            : size{s} {
-            for(int i = 0; i < this->size; ++i) {
+            : capacity{s} {
+            for(int i = 0; i < this->capacity; ++i) {
                 add(factory.make_individual());
             }
         }
@@ -35,9 +35,10 @@ namespace genalg {
         inline const std::pair<I, F>& best(void) const;
         inline const std::pair<I, F>& worst(void) const;
 
-        std::vector<std::pair<I, F>>& solutions() { return this->individuals; }
+        const std::vector<std::pair<I, F>>& solutions() const { return this->individuals; }
 
         // operators
+        std::size_t size() const { return this->individuals.size(); }
         std::pair<I, F>& operator[](int i);
     };
 }
@@ -45,7 +46,7 @@ namespace genalg {
 namespace genalg {
     template<typename I, typename F>
     void Population<I, F>::add(const I& individual) {
-        assert(this->individuals.size() < this->size);
+        assert(this->individuals.size() < this->capacity);
 
         // add individual and computed fitness
         this->individuals.push_back(std::make_pair(individual,
