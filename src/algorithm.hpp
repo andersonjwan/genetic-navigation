@@ -59,7 +59,8 @@ namespace genalg {
     /// Perform the GA algorithm steps to generate a new population.
     ///
     /// Execute the series of GA steps to produce a new population: (1) selection,
-    /// (2) recombination, and (3) mutation.
+    /// (2) recombination, and (3) mutation. Note: This is an internal function.
+    /// Therefore, you should use the publicly exposed interfaces: update or next.
     ///
     /// @param population The base population to generate from
     /// @return The newly generated population
