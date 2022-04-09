@@ -1,0 +1,14 @@
+include src/algorithm.hpp
+include src/algorithm/options.hpp
+include src/algorithm/result.hpp
+include src/algorithm/termination.hpp
+
+include src/operators/crossover.hpp
+include src/operators/mutation.hpp
+include src/operators/selection.hpp
+
+include src/population.hpp
+include src/population/individual.hpp
+
+include bindings/cppoptions.pxd
+include bindings/optionsplusplus.pyx
