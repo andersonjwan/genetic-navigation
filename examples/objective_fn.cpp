@@ -118,12 +118,14 @@ main(int argc, char** argv) {
     std::vector<double> index;
     std::vector<double> best;
     std::vector<double> worst;
+    std::vector<double> average;
 
     ga.initialize(initial_population);
 
     index.push_back(0);
     best.push_back(initial_population.best().second);
     worst.push_back(initial_population.worst().second);
+    average.push_back(initial_population.average());
 
     for(std::size_t i = 1; i < options->n_generations; ++i) {
         auto next = ga.next();
@@ -136,18 +138,20 @@ main(int argc, char** argv) {
         index.push_back(i);
         best.push_back(next.best().second);
         worst.push_back(next.worst().second);
+        average.push_back(next.average());
     }
 
     #ifdef PLOT
-    matplot::title("Best and Worst Fitness per Generation");
+    matplot::title("Best, Worst, and Average Fitness per Generation");
     matplot::xlabel("Generation");
     matplot::ylabel("Fitness");
 
     matplot::hold(matplot::on);
     matplot::plot(index, best);
     matplot::plot(index, worst);
+    matplot::plot(index, average);
 
-    auto l = matplot::legend({"best", "worst"});
+    auto l = matplot::legend({"best", "worst", "avg"});
     l->location(matplot::legend::general_alignment::bottomright);
 
     matplot::show();
