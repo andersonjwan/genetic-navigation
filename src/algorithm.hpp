@@ -1,6 +1,7 @@
 #ifndef GENALG_ALGORITHM_HPP
 #define GENALG_ALGORITHM_HPP
 
+#include <cassert>
 #include <cstddef>
 #include <memory>
 #include <random>
@@ -80,7 +81,7 @@ namespace genalg {
             // mutation
             for(int i = 0; i < offspring.size(); ++i) {
                 if(rdistr(this->rng) < this->options.mutation_chance) {
-                    offspring[i] = this->mutation->mutate(offspring[i]);
+                    offspring[i] = this->mutation->mutate(offspring[i], this->rng);
                 }
             }
 
@@ -116,6 +117,8 @@ namespace genalg {
     /// @return The newly generated population
     template<typename I, typename F>
     Population<I, F> GeneticAlgorithm<I, F>::next(void) {
+        assert(this->generations.size() > 0);
+
         this->generations.push_back(this->generate(this->generations.back()));
         return this->generations.back();
     }
