@@ -28,9 +28,14 @@ using genalg::population::Individual;
 using Genome = std::vector<bool>;
 using Fitness = double;
 
-#define POPULATION_SIZE 25
-#define K_GENERATIONS 500
-#define P_MUTATION 0.1
+// #define PLOT
+#ifdef PLOT
+#include <matplot/matplot.h>
+#endif
+
+#define POPULATION_SIZE 50
+#define K_GENERATIONS 20
+#define P_MUTATION 0.01
 
 class Solution : public Individual<Genome, Fitness> {
 public:
@@ -88,7 +93,7 @@ main(int argc, char** argv) {
     }
 
     // GA operations
-    TournamentSelection<Solution, Fitness> selection(2, 1.0);
+    TournamentSelection<Solution, Fitness> selection(2, 0.85);
     MultiPointCrossover<Solution> crossover(2);
     InversionMutation<Solution> mutation;
 
@@ -110,12 +115,41 @@ main(int argc, char** argv) {
         initial_population.add(Solution(genome));
     }
 
+    std::vector<double> index;
+    std::vector<double> best;
+    std::vector<double> worst;
+
     ga.initialize(initial_population);
-    for(std::size_t i = 0; i < options->n_generations; ++i) {
+
+    index.push_back(0);
+    best.push_back(initial_population.best().second);
+    worst.push_back(initial_population.worst().second);
+
+    for(std::size_t i = 1; i < options->n_generations; ++i) {
         auto next = ga.next();
         std::cout << "GENERATION " << std::setw(3) << std::setfill('0') << i
                   << " BEST: "
                   << "{" << next.best().first.decimal() << ", "
                   << next.best().second << "}\n";
+
+        // plotting statistics
+        index.push_back(i);
+        best.push_back(next.best().second);
+        worst.push_back(next.worst().second);
     }
+
+    #ifdef PLOT
+    matplot::title("Best and Worst Fitness per Generation");
+    matplot::xlabel("Generation");
+    matplot::ylabel("Fitness");
+
+    matplot::hold(matplot::on);
+    matplot::plot(index, best);
+    matplot::plot(index, worst);
+
+    auto l = matplot::legend({"best", "worst"});
+    l->location(matplot::legend::general_alignment::bottomright);
+
+    matplot::show();
+    #endif
 }
