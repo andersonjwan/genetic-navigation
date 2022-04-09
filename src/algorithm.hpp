@@ -41,7 +41,7 @@ namespace genalg {
 
         void initialize(const Population<I, F>& population);
 
-        // Population<I, F> update(const Population<I, F>& population);
+        Population<I, F> update(const Population<I, F>& population);
         Population<I, F> next(void);
     };
 }
@@ -51,7 +51,7 @@ namespace genalg {
     ///
     /// Provide a population of initial solutions to generate from.
     ///
-    /// @param population The initial Population set.
+    /// @param population The initial Population set
     template<typename I, typename F>
     void GeneticAlgorithm<I, F>::initialize(const Population<I, F>& population) {
         assert(population.size() == this->options.population_size);
@@ -103,10 +103,11 @@ namespace genalg {
     ///
     /// @param population The base population to evolve from
     /// @return The newly generated population
-    // template<typename I, typename F>
-    // Population<I, F> GeneticAlgorithm<I, F>::update(const Population<I, F>& population) {
-    //     return generate(population);
-    // }
+    template<typename I, typename F>
+    Population<I, F> GeneticAlgorithm<I, F>::update(const Population<I, F>& population) {
+        this->generations.push_back(this->generate(population));
+        return this->generations.back();
+    }
 
     /// Generate a new population based on the previous population.
     ///
