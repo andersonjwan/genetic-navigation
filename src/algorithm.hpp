@@ -18,16 +18,16 @@ namespace genalg {
     public:
         std::vector<Population<I, F>> generations;
 
-        operators::SelectionOperator<I, F>* selection;
-        operators::CrossoverOperator<I>* crossover;
-        operators::MutationOperator<I>* mutation;
+        const operators::SelectionOperator<I, F>* selection;
+        const operators::CrossoverOperator<I>* crossover;
+        const operators::MutationOperator<I>* mutation;
 
         const algorithm::Options options;
 
         std::size_t seed;
         std::default_random_engine rng;
 
-        // Population<I, F> generate(const Population<I, F>& population);
+        Population<I, F> generate(const Population<I, F>& population);
         // std::array<I, 2> select_breeders(const Population<I, F>& population);
         // std::array<I, 2> breed(const I& p1, const I& p2);
 
@@ -39,33 +39,24 @@ namespace genalg {
             : selection{s}, crossover{c}, mutation{m}, options{o},
               seed{options.seed}, rng{std::default_random_engine(seed)} {}
 
+        void initialize(const Population<I, F>& population);
+
         // Population<I, F> update(const Population<I, F>& population);
-        // Population<I, F> next(void);
+        Population<I, F> next(void);
     };
 }
 
 namespace genalg {
-    /// Select two breeders from the population.
+    /// Initialize the GA with the first generation.
     ///
-    /// The set selection method is used to select two individuals from the
-    /// provided population.
+    /// Provide a population of initial solutions to generate from.
     ///
-    /// @param population The population to select breeders from
-    /// @return Two breeders
-    // template<typename I, typename F>
-    // std::array<I, 2> GeneticAlgorithm<I, F>::select_breeders(const Population<I, F>& population) {
-    //     return std::array<I, 2>(select(population), select(population));
-    // }
-
-    /// Breed (recombine) two selected individuals.
-    ///
-    /// @param p1 The first selected breeder
-    /// @param p2 The second selected breeder
-    /// @return Two new individuals
-    // template<typename I, typename F>
-    // std::array<I, 2> GeneticAlgorithm<I, F>::breed(const I& p1, const I& p2) {
-    //     return crossover(p1, p2);
-    // }
+    /// @param population The initial Population set.
+    template<typename I, typename F>
+    void GeneticAlgorithm<I, F>::initialize(const Population<I, F>& population) {
+        assert(population.size() == this->options.population_size);
+        this->generations.push_back(population);
+    }
 
     /// Perform the GA algorithm steps to generate a new population.
     ///
@@ -74,16 +65,36 @@ namespace genalg {
     ///
     /// @param population The base population to generate from
     /// @return The newly generated population
-    // template<typename I, typename F>
-    // Population<I, F> GeneticAlgorithm<I, F>::generate(const Population<I, F>& population) {
-    //     // selection
-    //     std::array<I, 2> breeders = select_breeders(population);
+    template<typename I, typename F>
+    Population<I, F> GeneticAlgorithm<I, F>::generate(const Population<I, F>& population) {
+        Population<I, F> new_population(options.population_size);
+        std::uniform_real_distribution<double> rdistr(0.0, 1.0);
 
-    //     // recombination
-    //     std::array<I, 2> offspring = breed<I, F>(breeders[0], breeders[1]);
+        while(new_population.size() < this->options.population_size) {
+            // selection
+            I p1 = this->selection->select(population.solutions(), this->rng);
+            I p2 = this->selection->select(population.solutions(), this->rng);
 
-    //     // mutation
-    // }
+            // recombination
+            std::array<I, 2> offspring = this->crossover->cross(p1, p2, this->rng);
+
+            // mutation
+            for(int i = 0; i < offspring.size(); ++i) {
+                if(rdistr(this->rng) < this->options.mutation_chance) {
+                    offspring[i] = this->mutation->mutate(offspring[i]);
+                }
+            }
+
+            // add to population
+            for(auto& x : offspring) {
+                if(new_population.size() < this->options.population_size) {
+                    new_population.add(x);
+                }
+            }
+        }
+
+        return new_population;
+    }
 
     /// Generate a new population based on the provided population.
     ///
@@ -103,10 +114,11 @@ namespace genalg {
     /// individuals within the population (e.g., an objective function)
     ///
     /// @return The newly generated population
-    // template<typename I, typename F>
-    // Population<I, F> GeneticAlgorithm<I, F>::next(void) {
-    //     return generate(generations.back());
-    // }
+    template<typename I, typename F>
+    Population<I, F> GeneticAlgorithm<I, F>::next(void) {
+        this->generations.push_back(this->generate(this->generations.back()));
+        return this->generations.back();
+    }
 }
 
 #endif
