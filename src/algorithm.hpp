@@ -28,8 +28,6 @@ namespace genalg {
         std::default_random_engine rng;
 
         Population<I, F> generate(const Population<I, F>& population);
-        // std::array<I, 2> select_breeders(const Population<I, F>& population);
-        // std::array<I, 2> breed(const I& p1, const I& p2);
 
     public:
         explicit GeneticAlgorithm(operators::SelectionOperator<I, F>* s,
