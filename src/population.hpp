@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstddef>
 #include <memory>
+#include <numeric>
 #include <utility>
 #include <vector>
 
@@ -32,6 +33,7 @@ namespace genalg {
 
         void add(const I& individual);
 
+        const F average(void) const;
         inline const std::pair<I, F>& best(void) const;
         inline const std::pair<I, F>& worst(void) const;
 
@@ -49,8 +51,19 @@ namespace genalg {
         assert(this->individuals.size() < this->capacity);
 
         // add individual and computed fitness
-        this->individuals.push_back(std::make_pair(individual,
-                                                   individual.fitness()));
+        this->individuals.push_back
+            (std::make_pair(individual, individual.fitness()));
+    }
+
+    template<typename I, typename F>
+    const F Population<I, F>::average() const {
+        double sum = std::accumulate
+            (this->individuals.begin(), this->individuals.end(), 0,
+             [](double sum, const auto& op){
+                return std::move(sum) + op.second;
+            });
+
+        return sum / (double)capacity;
     }
 
     template<typename I, typename F>
