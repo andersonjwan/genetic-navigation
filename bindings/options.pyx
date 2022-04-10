@@ -8,27 +8,33 @@ cdef class Options:
 
     def __cinit__(
             self,
-            population_size,
+            capacity,
             n_generations,
-            mutation_chance,
+            p_mutation,
             seed:
             Optional[int]=None
     ):
         """Create a new Options interface.
+
+        Arguments:
+            capacity: The number of individuals per population.
+            n_generations: The number of generations to create.
+            p_mutation: The probability of a mutation occuring in a given individual.
+            seed: A selected seed for RNG engine.
         """
 
         if seed is not None:
             self.cpp_options = new cppOptions(
-                population_size,
+                capacity,
                 n_generations,
-                mutation_chance,
+                p_mutation,
                 seed
             )
         else:
             self.cpp_options = new cppOptions(
-                population_size,
+                capacity,
                 n_generations,
-                mutation_chance
+                p_mutation
             )
 
 
