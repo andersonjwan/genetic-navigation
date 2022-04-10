@@ -14,13 +14,7 @@ cdef class Options:
             seed:
             Optional[int]=None
     ):
-        """Dynamically instantiate a new Python GA options interface.
-
-        Arguments:
-            population_size: The number of individuals per generation
-            n_generations: The total number of generations
-            mutation_chance: The probability of an individual mutating
-            seed: The seed to provide to the random number generator engine
+        """Create a new Options interface.
         """
 
         if seed is not None:
@@ -43,7 +37,7 @@ cdef class Options:
         return self.cpp_options.seed
 
     def __dealloc__(self):
-        """Deallocate dynamically instantiated options interface.
+        """Destroy previously allocated Options interface.
         """
 
         del self.cpp_options
