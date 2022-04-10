@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>environment module &mdash; Genetic Navigation 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="config module" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Genetic Navigation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genetic_algos.html">Genetic Algorithms (GA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">genetic-navigation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robot.html">robot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulator.html">simulator module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Genetic Navigation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">genetic-navigation</a> &raquo;</li>
+      <li>environment module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/environment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-environment">
+<span id="environment-module"></span><h1>environment module<a class="headerlink" href="#module-environment" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="environment.Env">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">environment.</span></span><span class="sig-name descname"><span class="pre">Env</span></span><a class="headerlink" href="#environment.Env" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.define_obstacle">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">define_obstacle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.define_obstacle" title="Permalink to this definition"></a></dt>
+<dd><p>Defines a rectangular obstacle as a convex polygon with half-space representation (AX&lt;=B).</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x(float):      x-position of bottom-left corner of rectangular</p></li>
+<li><p>y(float):      y-position of bottom-left corner of rectangular</p></li>
+<li><p>dx(float):     Width of rectangular</p></li>
+<li><p>dy(float):     Height of rectangular</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>A(np.ndarray): Coefficient matrix of obstacle half-space representation [4x2]</p></li>
+<li><p>B(np.ndarray): Constant vector of obstacle half-space representation    [4x1]</p></li>
+<li><p>(list):        List with the x,y position of bottom-left corner and obstacle width,height</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.find_detected_obs_point">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_detected_obs_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_sensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_sensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.find_detected_obs_point" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the point where the sensor ray detects the obstacle.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>A(np.ndarray):   Coefficient matrix of obstacle half-space representation [4x2]</p></li>
+<li><p>B(np.ndarray):   Constant vector of obstacle half-space representation    [4x1]</p></li>
+<li><p>x_rob(float):    Robot’s x-position</p></li>
+<li><p>y_rob(float):    Robot’s y-position</p></li>
+<li><p>x_sensor(float): x-position of sensor ray end-point</p></li>
+<li><p>y_sensor(float): y-position of sensor ray end-point</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>dx(float):       The x-position offset wrt the robot of the ray point that intersects with the obstacle</p></li>
+<li><p>dy(float):       The y-position offset wrt the robot of the ray point that intersects with the obstacle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.find_detected_wall_point">
+<span class="sig-name descname"><span class="pre">find_detected_wall_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_sensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_sensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.find_detected_wall_point" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the point where the sensor ray detects the wall.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_sensor(float): x-position of sensor ray end-point</p></li>
+<li><p>y_sensor(float): y-position of sensor ray end-point</p></li>
+<li><p>x_rob(float):    Robot’s x-position</p></li>
+<li><p>y_rob(float):    Robot’s y-position</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>dx(float):       The x-position offset wrt the robot of the ray point that intersects with the obstacle</p></li>
+<li><p>dy(float):       The y-position offset wrt the robot of the ray point that intersects with the obstacle</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.get_angle_area">
+<span class="sig-name descname"><span class="pre">get_angle_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.get_angle_area" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the interval in which the angle to the goal belongs to (one-hot encoding).</p>
+<p>0: Angle does not belong in this interval
+1: Angle belongs in this interval
+E.g. If angle ∈ interval_1, then:
+angle_area = [in interval_0, in interval_1, in interval_2, in interval_3] = [0,1,0,0]</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_rob(float): Robot’s x-position</p></li>
+<li><p>y_rob(float): Robot’s y-position</p></li>
+<li><p>theta(float): Robot’s heading angle</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>angle_area(list): The intervals in one-hot encoding</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.get_current_reward">
+<span class="sig-name descname"><span class="pre">get_current_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.get_current_reward" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the reward at the current time-step.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_rob(float): Robot’s x-position</p></li>
+<li><p>y_rob(float): Robot’s y-position</p></li>
+<li><p>theta(float): Robot’s heading angle</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>reward(float):  The reward at the current time-step</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.is_collision">
+<span class="sig-name descname"><span class="pre">is_collision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.is_collision" title="Permalink to this definition"></a></dt>
+<dd><p>Detects whether the robot has collided with a wall or obstacle.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_rob(float): Robot’s x-position</p></li>
+<li><p>y_rob(float): Robot’s y-position</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>(bool): Whether there is a collision</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.is_goal_reached">
+<span class="sig-name descname"><span class="pre">is_goal_reached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.is_goal_reached" title="Permalink to this definition"></a></dt>
+<dd><p>Detects whether the robot has reached the goal.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_rob(float): Robot’s x-position</p></li>
+<li><p>y_rob(float): Robot’s y-position</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>(bool): Whether the robot has reached the goal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.is_obstacle_detected">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_obstacle_detected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_sensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.is_obstacle_detected" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the given obstacle is detected by the sensor.</p>
+<p>Detects whether any of 5 points on sensor ray (starting from the end-point) intersect the obstacle
+(which is given by the half-space representation matrices A,B).</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>A(np.ndarray):         Coefficient matrix of obstacle half-space representation [4x2]</p></li>
+<li><p>B(np.ndarray):         Constant vector of obstacle half-space representation    [4x1]</p></li>
+<li><p>x_rob(float):          Robot’s x-position</p></li>
+<li><p>y_rob(float):          Robot’s y-position</p></li>
+<li><p>X_sensor(np.ndarray):  Sensor ray end-point</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>(bool):                Whether the obstacle is detected or not</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.is_wall_detected">
+<span class="sig-name descname"><span class="pre">is_wall_detected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.is_wall_detected" title="Permalink to this definition"></a></dt>
+<dd><p>Whether a wall is detected by the sensor.</p>
+<p>Detects whether the given point goes beyond the walls.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x(float): x-position of point to check</p></li>
+<li><p>y(float): y-position of point to check</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>(bool):   Whether a wall is detected or not</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.obstacle_detection">
+<span class="sig-name descname"><span class="pre">obstacle_detection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensor_angle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.obstacle_detection" title="Permalink to this definition"></a></dt>
+<dd><p>Detects whether a wall or obstacle is detected by the sensor and computes the intersection point, if any.</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_rob(float):        Robot’s x-position</p></li>
+<li><p>y_rob(float):        Robot’s y-position</p></li>
+<li><p>theta(float):        Robot’s heading angle</p></li>
+<li><p>sensor_angle(float): The sensor angle wrt to the robot’s heading</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>dx(float):          The x-position offset wrt the robot of the ray point  (sensor end-point or intersection)</p></li>
+<li><p>dy(float):          The y-position offset wrt the robot of the ray point  (sensor end-point or intersection)</p></li>
+<li><p>c(str):             The sensor’s color</p></li>
+<li><p>obs_detected(bool): Whether an obstacle or wall was detected</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment.Env.read_sensors">
+<span class="sig-name descname"><span class="pre">read_sensors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_rob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment.Env.read_sensors" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the current sensor readings in binary format.</p>
+<p>0: No obstacle detected
+1: Obstacle detected</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><ul class="simple">
+<li><p>x_rob(float): Robot’s x-position</p></li>
+<li><p>y_rob(float): Robot’s y-position</p></li>
+<li><p>theta(float): Robot’s heading angle</p></li>
+</ul>
+</dd>
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p>sensor_readings(list):  The sensor readings in binary format</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-left" title="config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="main module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Elena Oikonomou, Jacob Anderson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
