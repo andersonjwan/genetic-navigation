@@ -1,10 +1,9 @@
-from pygenalg.genalgplusplus import Options
+from pygenalg.algorithmplusplus import GeneticAlgorithm
 
 if __name__ == "__main__":
-    options = Options(
+    ga = GeneticAlgorithm(
         capacity=50,
         n_generations=100,
-        p_mutation=0.01
+        p_mutation=0.01,
+        seed=12345
     )
-
-    print(options.seed)

@@ -2,6 +2,7 @@
 #define GENALG_POPULATION_INDIVIDUAL_HPP
 
 #include <cstddef>
+#include <vector>
 
 namespace genalg {
     namespace population {
@@ -12,11 +13,20 @@ namespace genalg {
             std::size_t age = 0;
 
         public:
-            Individual(G g)
+            explicit Individual(const G& g)
                 : genome{g} {}
 
             G get_genome(void) const;
             virtual F fitness(void) const = 0;
+        };
+
+        class BinaryIndividual : public Individual<std::vector<bool>, double> {
+        public:
+            explicit BinaryIndividual(const std::vector<bool>& g)
+                : Individual<std::vector<bool>, double>(g) {}
+
+            double fitness() const override { return 0.0; }
+
         };
 
         template<typename I>

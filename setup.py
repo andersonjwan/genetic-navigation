@@ -3,8 +3,16 @@ from Cython.Build import cythonize
 
 extensions = [
     Extension(
-        name="genalgplusplus",
-        sources=["bindings/options.pyx"],
+        name="algorithmplusplus",
+        sources=[
+            "bindings/algorithmplusplus.pyx",
+            "bindings/crossoverplusplus.pyx",
+            "bindings/mutationplusplus.pyx",
+            "bindings/optionsplusplus.pyx",
+            "bindings/populationplusplus.pyx",
+            "bindings/selectionplusplus.pyx",
+            "bindings/individualplusplus.pyx"
+        ],
         include_dirs=["src"]
     )
 ]
