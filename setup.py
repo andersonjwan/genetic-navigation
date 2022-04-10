@@ -3,18 +3,40 @@ from Cython.Build import cythonize
 
 extensions = [
     Extension(
-        name="algorithmplusplus",
-        sources=[
-            "bindings/algorithmplusplus.pyx",
-            "bindings/crossoverplusplus.pyx",
-            "bindings/mutationplusplus.pyx",
-            "bindings/optionsplusplus.pyx",
-            "bindings/populationplusplus.pyx",
-            "bindings/selectionplusplus.pyx",
-            "bindings/individualplusplus.pyx"
-        ],
+        name="algorithm",
+        sources=["bindings/algorithmplusplus.pyx"],
         include_dirs=["src"]
-    )
+    ),
+    Extension(
+        name="crossover",
+        sources=["bindings/crossoverplusplus.pyx"],
+        include_dirs=["src"]
+    ),
+    Extension(
+        name="mutation",
+        sources=["bindings/mutationplusplus.pyx"],
+        include_dirs=["src"]
+    ),
+    Extension(
+        name="options",
+        sources=["bindings/optionsplusplus.pyx",],
+        include_dirs=["src"]
+    ),
+    Extension(
+        name="population",
+        sources=["bindings/populationplusplus.pyx",],
+        include_dirs=["src"]
+    ),
+    Extension(
+        name="selection",
+        sources=["bindings/selectionplusplus.pyx",],
+        include_dirs=["src"]
+    ),
+    Extension(
+        name="individual",
+        sources=["bindings/individualplusplus.pyx"],
+        include_dirs=["src"]
+    ),
 ]
 
 setup(
