@@ -4,37 +4,37 @@ from Cython.Build import cythonize
 extensions = [
     Extension(
         name="algorithm",
-        sources=["bindings/algorithmplusplus.pyx"],
+        sources=["bindings/algorithm.pyx"],
         include_dirs=["src"]
     ),
     Extension(
         name="crossover",
-        sources=["bindings/crossoverplusplus.pyx"],
+        sources=["bindings/crossover.pyx"],
         include_dirs=["src"]
     ),
     Extension(
         name="mutation",
-        sources=["bindings/mutationplusplus.pyx"],
+        sources=["bindings/mutation.pyx"],
         include_dirs=["src"]
     ),
     Extension(
         name="options",
-        sources=["bindings/optionsplusplus.pyx",],
+        sources=["bindings/options.pyx",],
         include_dirs=["src"]
     ),
     Extension(
         name="population",
-        sources=["bindings/populationplusplus.pyx",],
+        sources=["bindings/population.pyx",],
         include_dirs=["src"]
     ),
     Extension(
         name="selection",
-        sources=["bindings/selectionplusplus.pyx",],
+        sources=["bindings/selection.pyx",],
         include_dirs=["src"]
     ),
     Extension(
         name="individual",
-        sources=["bindings/individualplusplus.pyx"],
+        sources=["bindings/individual.pyx"],
         include_dirs=["src"]
     ),
 ]
