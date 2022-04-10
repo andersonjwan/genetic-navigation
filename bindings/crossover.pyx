@@ -1,7 +1,7 @@
 # distutils: language = c++
 
-from cpp_individual cimport BinaryIndividual
-from cpp_crossover cimport MultiPointCrossover as cppMultiPointCrossover
+from individual_cpp cimport BinaryIndividual
+from crossover_cpp cimport MultiPointCrossover as cppMultiPointCrossover
 
 cdef class MultiPointCrossover:
     cdef cppMultiPointCrossover[BinaryIndividual]* cpp_crossover

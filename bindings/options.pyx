@@ -1,7 +1,7 @@
 # distutils: language = c++
 
 from typing import Optional
-from cpp_options cimport Options as cppOptions
+from options_cpp cimport Options as cppOptions
 
 cdef class Options:
     cdef cppOptions* cpp_options

@@ -1,7 +1,7 @@
 # distutils: language = c++
 
-from cpp_individual cimport BinaryIndividual
-from cpp_selection cimport TournamentSelection as cppTournamentSelection
+from individual_cpp cimport BinaryIndividual
+from selection_cpp cimport TournamentSelection as cppTournamentSelection
 
 cdef class TournamentSelection:
     cdef cppTournamentSelection[BinaryIndividual, double]* cpp_selection

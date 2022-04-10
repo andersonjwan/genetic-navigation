@@ -1,11 +1,11 @@
-from cpp_individual cimport BinaryIndividual
+from individual_cpp cimport BinaryIndividual
 
-from cpp_selection cimport SelectionOperator, TournamentSelection
-from cpp_crossover cimport CrossoverOperator, MultiPointCrossover
-from cpp_mutation cimport MutationOperator, InversionMutation
+from selection_cpp cimport SelectionOperator, TournamentSelection
+from crossover_cpp cimport CrossoverOperator, MultiPointCrossover
+from mutation_cpp cimport MutationOperator, InversionMutation
 
-from cpp_options cimport Options
-from cpp_population cimport Population
+from options_cpp cimport Options
+from population_cpp cimport Population
 
 cdef extern from "algorithm.hpp" namespace "genalg":
     cdef cppclass GeneticAlgorithm[I, F]:

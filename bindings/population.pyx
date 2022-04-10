@@ -1,6 +1,6 @@
 # distutils: language = c++
 
-from cpp_population cimport Population as cppPopulation
+from population_cpp cimport Population as cppPopulation
 
 cdef class Population:
     cdef cppPopulation[double, double]* cpp_population

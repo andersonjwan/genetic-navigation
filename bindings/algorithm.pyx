@@ -4,14 +4,14 @@ from typing import Optional
 
 from cython.operator cimport dereference as deref
 
-from cpp_algorithm cimport GeneticAlgorithm as cppGeneticAlgorithm
-from cpp_individual cimport BinaryIndividual
+from algorithm_cpp cimport GeneticAlgorithm as cppGeneticAlgorithm
+from individual_cpp cimport BinaryIndividual
 
-from cpp_options cimport Options as cppOptions
+from options_cpp cimport Options as cppOptions
 
-from cpp_selection cimport TournamentSelection as cppTournamentSelection
-from cpp_crossover cimport MultiPointCrossover as cppMultiPointCrossover
-from cpp_mutation cimport InversionMutation as cppInversionMutation
+from selection_cpp cimport TournamentSelection as cppTournamentSelection
+from crossover_cpp cimport MultiPointCrossover as cppMultiPointCrossover
+from mutation_cpp cimport InversionMutation as cppInversionMutation
 
 cdef class GeneticAlgorithm:
     cdef cppGeneticAlgorithm[BinaryIndividual, double]* cpp_ga

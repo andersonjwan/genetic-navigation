@@ -1,6 +1,6 @@
 # distutils: language = c++
 
-from cpp_individual cimport BinaryIndividual as cppBinaryIndividual
+from individual_cpp cimport BinaryIndividual as cppBinaryIndividual
 
 cdef class BinaryIndividual:
     cdef cppBinaryIndividual* cpp_individual

@@ -1,7 +1,7 @@
 # distutils: language = c++
 
-from cpp_individual cimport BinaryIndividual
-from cpp_mutation cimport InversionMutation as cppInversionMutation
+from individual_cpp cimport BinaryIndividual
+from mutation_cpp cimport InversionMutation as cppInversionMutation
 
 cdef class InversionMutation:
     cdef cppInversionMutation[BinaryIndividual]* cpp_mutation
