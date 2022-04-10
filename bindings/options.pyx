@@ -1,10 +1,10 @@
 # distutils: language = c++
 
 from typing import Optional
-from cppoptions cimport Options
+from cpp_options cimport Options as cppOptions
 
-cdef class PyOptions:
-    cdef Options* cpp_options
+cdef class Options:
+    cdef cppOptions* cpp_options
 
     def __cinit__(
             self,
@@ -24,14 +24,14 @@ cdef class PyOptions:
         """
 
         if seed is not None:
-            self.cpp_options = new Options(
+            self.cpp_options = new cppOptions(
                 population_size,
                 n_generations,
                 mutation_chance,
                 seed
             )
         else:
-            self.cpp_options = new Options(
+            self.cpp_options = new cppOptions(
                 population_size,
                 n_generations,
                 mutation_chance

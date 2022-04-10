@@ -10,5 +10,5 @@ include src/operators/selection.hpp
 include src/population.hpp
 include src/population/individual.hpp
 
-include bindings/cppoptions.pxd
-include bindings/optionsplusplus.pyx
+include bindings/cpp_options.pxd
+include bindings/options.pyx

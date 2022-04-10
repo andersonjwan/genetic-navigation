@@ -4,7 +4,7 @@ from Cython.Build import cythonize
 extensions = [
     Extension(
         name="genalgplusplus",
-        sources=["bindings/optionsplusplus.pyx"],
+        sources=["bindings/options.pyx"],
         include_dirs=["src"]
     )
 ]
