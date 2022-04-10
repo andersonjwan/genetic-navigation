@@ -18,5 +18,3 @@ include bindings/mutation.pyx bindings/cpp_mutation.pxd
 include bindings/options.pyx bindings/cpp_options.pxd
 include bindings/population.pyx bindings/cpp_population.pxd
 include bindings/selection.pyx bindings/cpp_selection.pxd
-
-
