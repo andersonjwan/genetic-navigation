@@ -1,5 +1,7 @@
 # distutils: language = c++
 
+from typing import Optional
+
 from cython.operator cimport dereference as deref
 
 from cpp_algorithm cimport GeneticAlgorithm as cppGeneticAlgorithm
@@ -19,11 +21,15 @@ cdef class GeneticAlgorithm:
     cdef cppInversionMutation[BinaryIndividual]* cpp_mutation
     cdef cppOptions* cpp_options;
 
-    def __cinit__(self, capacity, n_generations, p_mutation, seed=None):
+    def __cinit__(self, capacity, n_generations, p_mutation, seed: Optional[int]=None):
         """Create Genetic Algorithm interface.
         """
 
-        self.cpp_options = new cppOptions(capacity, n_generations, p_mutation, seed)
+        if seed is not None:
+            self.cpp_options = new cppOptions(capacity, n_generations, p_mutation, seed)
+        else:
+            self.cpp_options = new cppOptions(capacity, n_generations, p_mutation)
+
         print(deref(self.cpp_options).seed)
 
         self.cpp_selection = new cppTournamentSelection[BinaryIndividual, double](2, 0.5, True)
