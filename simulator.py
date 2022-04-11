@@ -17,6 +17,7 @@ class Simulator:
         """Runs one episode where the current population navigates in the environment."""
 
         for robot in self.robots:
+            print('> Individual: {} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:100]), end=' ')
             score = 0                                             # Initialize score
             self.store_state(robot)                               # Store robot's initial state (pose & obst detection)
 
@@ -31,7 +32,7 @@ class Simulator:
 
                 # If collision, stop moving and update score
                 if self.env.is_collision(x, y):
-                    print('Robot {}: Collision'.format(self.robots.index(robot)+1))
+                    print('| Collision    ', end=' ')
                     score += self.env.collision_reward
                     for j in range(i, self.max_steps):
                         self.store_state(robot)
@@ -39,18 +40,19 @@ class Simulator:
 
                 # If goal reached, stop moving and update score
                 if self.env.is_goal_reached(x, y):
-                    print('Robot {}: Goal reached!'.format(self.robots.index(robot)+1))
+                    print('| Goal reached!', end=' ')
                     score += self.env.goal_reward
                     for j in range(i, self.max_steps):
                         self.store_state(robot)
                     break
 
                 if i == self.max_steps-1:  # Maximum steps exceeded
-                    print('Robot {}: Time-out'.format(self.robots.index(robot)+1))
+                    print('| Time-out     ', end=' ')
 
             robot.set_fitness(score)
-            print('Fitness: {}'.format(robot.fitness))
+            print('| Fitness: {}'.format(robot.fitness))
             # ToDo change fitness in GA
+        print('='*30)
 
     def store_state(self, robot):
         """Stores the current robot state (pose & obstacle detection results).
