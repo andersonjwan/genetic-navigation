@@ -1,4 +1,7 @@
+# cython: language_level = 3
 # distutils: language = c++
+
+from typing import Optional
 
 from libcpp cimport bool
 from libcpp.vector cimport vector
@@ -19,13 +22,13 @@ cdef class Population:
     cdef cppPopulation[cppBinaryIndividual, double]* cpp_population
     cdef size_t n
 
-    def __cinit__(self, capacity):
+    def __cinit__(self, size_t capacity):
         """Allocate a new Population of BinaryIndividual's (C++).
         """
 
         self.cpp_population = new cppPopulation[cppBinaryIndividual, double](capacity)
 
-    def add(self, individual):
+    def add(self, individual, fitness: Optional[float]=None):
         """Add a new individual to the population.
         """
 
@@ -37,7 +40,10 @@ cdef class Population:
         cdef cppBinaryIndividual* cpp_individual = new cppBinaryIndividual(cpp_genome)
 
         # add to population
-        self.cpp_population.add(deref(cpp_individual))
+        if fitness:
+            self.cpp_population.add(deref(cpp_individual), fitness)
+        else:
+            self.cpp_population.add(deref(cpp_individual))
 
 
     def __len__(self):
