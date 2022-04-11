@@ -1,3 +1,4 @@
+# cython: language_level = 3
 # distutils: language = c++
 
 from individual_cpp cimport BinaryIndividual
