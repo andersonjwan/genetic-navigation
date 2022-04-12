@@ -2,16 +2,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Circle
 from matplotlib.animation import FuncAnimation, PillowWriter
+import seaborn as sns
 
 import config
 
 
 class Simulator:
-    def __init__(self, robots, env):
-        self.robots = robots        # The population of robots
-        self.env = env              # Environment class instance
-        self.max_steps = 100        # The maximum number of steps for one episode
-        self.v = 1                  # Constant linear velocity
+    def __init__(self, env):
+        self.env = env                     # Environment class instance
+        self.max_steps = config.max_steps  # The maximum number of steps for one episode
+        self.v = config.v                  # Constant linear velocity
+        self.robots = None                 # The population of robots (list of robot class instances)
+
+    def set_population(self, robots):
+        """Sets the current population of robots for the simulation.
+
+        Inputs:
+          - robots(list): The population of robots
+        """
+        self.robots = robots
 
     def run_episode(self):
         """Runs one episode where the current population navigates in the environment."""
@@ -52,7 +61,6 @@ class Simulator:
             robot.set_fitness(score)
             print('| Fitness: {}'.format(robot.fitness))
             # ToDo change fitness in GA
-        print('='*30)
 
     def store_state(self, robot):
         """Stores the current robot state (pose & obstacle detection results).
@@ -73,6 +81,7 @@ class Simulator:
         """Displays the environment."""
 
         global ax
+        sns.set_style("white")
 
         fig, ax = plt.subplots(figsize=(12, 9))
         ax.set_title('Robot Navigation')

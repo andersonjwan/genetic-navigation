@@ -12,8 +12,8 @@ class Env:
         obs1 = self.define_obstacle(x=2, y=3, dx=1, dy=1)                 # Define obstacle 1
         obs2 = self.define_obstacle(x=8, y=1, dx=0.5, dy=1)               # Define obstacle 2
         self.obstacles = [obs1, obs2]                                     # List of all obstacles
-        self.goal_reward = 1000                                           # Reward for reaching the goal
-        self.collision_reward = -100                                      # Reward for collision
+        self.goal_reward = config.goal_reward                             # Reward for reaching the goal
+        self.collision_reward = config.collision_reward                   # Reward for collision
 
     @staticmethod
     def define_obstacle(x, y, dx, dy):
@@ -89,12 +89,13 @@ class Env:
           - dx(float):       The x-position offset wrt the robot of the ray point that intersects with the obstacle
           - dy(float):       The y-position offset wrt the robot of the ray point that intersects with the obstacle
         """
-        num_of_points = 1500
+        # Todo fix error
+        num_of_points = 500
         for i in range(num_of_points+1):
             u = i / num_of_points
             x = x_sensor * u + x_rob * (1 - u)
             y = y_sensor * u + y_rob * (1 - u)
-            X = np.array([x, y]).reshape(2, 1)
+            X = np.array([round(x, 2), round(y, 2)]).reshape(2, 1)
             if np.all(np.dot(A, X) <= B):       # If point intersects obstacle
                 dx = x - x_rob
                 dy = y - y_rob

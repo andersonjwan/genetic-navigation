@@ -8,15 +8,8 @@ class Robot:
     sensor_range = config.sensor_range                             # Sensor range
     sensors = config.sensors                                       # Sensor angles wrt robot heading angle [rad]
     dt = config.dt                                                 # Sample time [s]
-    num_actions = config.num_actions                               # Number of actions
-    actions = {'000': round(-np.pi/2, 2),
-               '001': round(-np.pi/3, 2),
-               '010': round(-np.pi/6, 2),
-               '011': 0,
-               '100': round(np.pi/6, 2),
-               '101': round(np.pi/3, 2),
-               '110': round(np.pi/2, 2),
-               '111': round(np.pi, 2)}                             # Actions encoding (binary->angular velocity)
+    actions = config.actions                                       # Actions encoding (binary->angular velocity)
+    num_actions = len(actions)                                     # Number of actions
 
     def __init__(self, env):
         self.env = env                                             # Environment class instance
