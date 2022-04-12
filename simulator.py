@@ -22,13 +22,17 @@ class Simulator:
         """
         self.robots = robots
 
-    def run_episode(self):
-        """Runs one episode where the current population navigates in the environment."""
+    def run_episode(self, disp_results):
+        """Runs one episode where the current population navigates in the environment.
+
+        Inputs:
+          - disp_results(bool): Whether to display results during training
+        """
 
         for robot in self.robots:
-            print('> Individual: {} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:100]), end=' ')
             score = 0                                             # Initialize score
             self.store_state(robot)                               # Store robot's initial state (pose & obst detection)
+            termination_reason = 'Time-out'                       # Initialize reason for robot's episode termination
 
             # Navigate until collision, reaching goal or max steps
             for i in range(self.max_steps):
@@ -41,7 +45,7 @@ class Simulator:
 
                 # If collision, stop moving and update score
                 if self.env.is_collision(x, y):
-                    print('| Collision    ', end=' ')
+                    termination_reason = 'Collision'
                     score += self.env.collision_reward
                     for j in range(i, self.max_steps):
                         self.store_state(robot)
@@ -49,17 +53,18 @@ class Simulator:
 
                 # If goal reached, stop moving and update score
                 if self.env.is_goal_reached(x, y):
-                    print('| Goal reached!', end=' ')
+                    termination_reason = 'Goal reached!'
                     score += self.env.goal_reward
                     for j in range(i, self.max_steps):
                         self.store_state(robot)
                     break
 
-                if i == self.max_steps-1:  # Maximum steps exceeded
-                    print('| Time-out     ', end=' ')
+            robot.set_fitness(score)                               # Update fitness of individual
 
-            robot.set_fitness(score)
-            print('| Fitness: {}'.format(robot.fitness))
+            if disp_results:
+                print('> Individual: {} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:100]), end=' ')
+                print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
+                print('| Fitness: {}'.format(robot.fitness))
             # ToDo change fitness in GA
 
     def store_state(self, robot):
