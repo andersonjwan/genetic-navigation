@@ -20,6 +20,9 @@ namespace genalg {
         std::vector<std::pair<I, F>> individuals;
 
     public:
+        explicit Population()
+            : capacity{0} {}
+
         explicit Population(std::size_t s)
             : capacity{s} {}
 
@@ -32,6 +35,7 @@ namespace genalg {
         }
 
         void add(const I& individual);
+        void add(const I& individual, F fitness);
 
         const F average(void) const;
         inline const std::pair<I, F>& best(void) const;
@@ -41,7 +45,12 @@ namespace genalg {
 
         // operators
         std::size_t size() const { return this->individuals.size(); }
-        std::pair<I, F>& operator[](int i);
+
+        Population<I, F>& operator=(const Population& population); // copy assignment
+
+        const std::pair<I, F>& operator[](const int i) const;
+        std::pair<I, F>& operator[](const int i);
+
     };
 }
 
@@ -53,6 +62,15 @@ namespace genalg {
         // add individual and computed fitness
         this->individuals.push_back
             (std::make_pair(individual, individual.fitness()));
+    }
+
+    template<typename I, typename F>
+    void Population<I, F>::add(const I& individual, F fitness) {
+        assert(this->individuals.size() < this->capacity);
+
+        // add individual and computed fitness
+        this->individuals.push_back
+            (std::make_pair(individual, fitness));
     }
 
     template<typename I, typename F>
@@ -82,6 +100,24 @@ namespace genalg {
                                  [](const auto& lhs, const auto& rhs) {
                                      return lhs.second < rhs.second;
                                  });
+    }
+
+    template<typename I, typename F>
+    Population<I, F>& Population<I, F>::operator=(const Population& population) {
+        this->capacity = population.size();
+
+        this->individuals.clear();
+        for(int i = 0; i < population.size(); ++i) {
+            this->add(population[i].first, population[i].second);
+        }
+
+        return *this;
+    }
+
+    template<typename I, typename F>
+    const std::pair<I, F>& Population<I, F>::operator[](int i) const {
+        assert(i >= 0);
+        return individuals[i];
     }
 
     template<typename I, typename F>

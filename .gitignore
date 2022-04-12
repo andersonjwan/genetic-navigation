@@ -4,3 +4,9 @@
 
 # Build artifacts
 build/
+
+# Python
+venv/
+
+# Cython
+bindings/**/*.cpp
