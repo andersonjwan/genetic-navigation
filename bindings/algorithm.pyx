@@ -3,6 +3,10 @@
 
 from typing import Optional
 
+from .individual import BinaryIndividual
+from .population import Population
+from .options import Options
+
 from libcpp cimport bool
 from libcpp.vector cimport vector
 from libcpp.utility cimport pair
@@ -19,27 +23,32 @@ from selection_cpp cimport TournamentSelection as cppTournamentSelection
 from crossover_cpp cimport MultiPointCrossover as cppMultiPointCrossover
 from mutation_cpp cimport InversionMutation as cppInversionMutation
 
-from .population import Population
-from .individual import BinaryIndividual
-
 cdef class GeneticAlgorithm:
     cdef cppGeneticAlgorithm[cppBinaryIndividual, double]* cpp_ga
+
+    cdef cppOptions* cpp_options
 
     cdef cppTournamentSelection[cppBinaryIndividual, double]* cpp_selection
     cdef cppMultiPointCrossover[cppBinaryIndividual]* cpp_crossover
     cdef cppInversionMutation[cppBinaryIndividual]* cpp_mutation
-    cdef cppOptions* cpp_options
 
-    def __cinit__(self, capacity, n_generations, p_mutation, seed: Optional[int]=None):
+    def __cinit__(self, options: Options):
         """Create Genetic Algorithm interface.
         """
 
-        if seed is not None:
-            self.cpp_options = new cppOptions(capacity, n_generations, p_mutation, seed)
-        else:
-            self.cpp_options = new cppOptions(capacity, n_generations, p_mutation)
+        self.cpp_options = new cppOptions(
+            options.capacity,
+            options.n_generations,
+            options.p_mutation,
+            options.seed
+        )
 
-        self.cpp_selection = new cppTournamentSelection[cppBinaryIndividual, double](2, 0.5, True)
+        self.cpp_selection = new cppTournamentSelection[cppBinaryIndividual, double](
+            options.tournament_size,
+            options.p_fittest,
+            options.replacement
+        )
+
         self.cpp_crossover = new cppMultiPointCrossover[cppBinaryIndividual](2)
         self.cpp_mutation = new cppInversionMutation[cppBinaryIndividual]()
 
