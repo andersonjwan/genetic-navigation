@@ -4,9 +4,11 @@
 
 # Build artifacts
 build/
+docs/
 
 # Python
 venv/
+__pycache__
 
 # Cython
 bindings/**/*.cpp
