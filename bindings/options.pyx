@@ -10,6 +10,7 @@ cdef class Options:
     tournament_size: int
     p_fittest: float
     replacement: bool
+    n_crossovers: int
 
     def __cinit__(
             self,
@@ -19,6 +20,7 @@ cdef class Options:
             tournament_size=2,
             p_fittest=0.5,
             replacement=True,
+            n_crossovers=2,
             seed: Optional[int]=None
     ):
         """Create a new Options interface.
@@ -33,6 +35,7 @@ cdef class Options:
         self.tournament_size = tournament_size
         self.p_fittest = p_fittest
         self.replacement = replacement
+        self.n_crossovers = n_crossovers
 
         if seed is not None:
             self.cpp_options = new cppOptions(
@@ -59,6 +62,10 @@ cdef class Options:
     @property
     def replacement(self):
         return self.replacement
+
+    @property
+    def n_crossovers(self):
+        return self.n_crossovers
 
     @property
     def capacity(self):

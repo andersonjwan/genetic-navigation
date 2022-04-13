@@ -49,7 +49,10 @@ cdef class GeneticAlgorithm:
             options.replacement
         )
 
-        self.cpp_crossover = new cppMultiPointCrossover[cppBinaryIndividual](2)
+        self.cpp_crossover = new cppMultiPointCrossover[cppBinaryIndividual](
+            options.n_crossovers
+        )
+
         self.cpp_mutation = new cppInversionMutation[cppBinaryIndividual]()
 
         self.cpp_ga = new cppGeneticAlgorithm[cppBinaryIndividual, double](
