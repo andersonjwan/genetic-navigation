@@ -1,3 +1,14 @@
+# Editors
+*~
+*.el
+
+# Build artifacts
+build/
+docs/
+
+# Python
+venv/
 __pycache__
-docs/build/
-docs/source/_templates
+
+# Cython
+bindings/**/*.cpp

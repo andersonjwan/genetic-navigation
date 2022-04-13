@@ -1,0 +1,83 @@
+# cython: language_level = 3
+# distutils: language = c++
+
+from typing import Optional
+from options_cpp cimport Options as cppOptions
+
+cdef class Options:
+    cdef cppOptions* cpp_options
+
+    tournament_size: int
+    p_fittest: float
+    replacement: bool
+
+    def __cinit__(
+            self,
+            capacity,
+            n_generations,
+            p_mutation,
+            tournament_size=2,
+            p_fittest=0.5,
+            replacement=True,
+            seed: Optional[int]=None
+    ):
+        """Create a new Options interface.
+
+        Arguments:
+            capacity: The number of individuals per population.
+            n_generations: The number of generations to create.
+            p_mutation: The probability of a mutation occuring in a given individual.
+            seed: A selected seed for RNG engine.
+        """
+
+        self.tournament_size = tournament_size
+        self.p_fittest = p_fittest
+        self.replacement = replacement
+
+        if seed is not None:
+            self.cpp_options = new cppOptions(
+                capacity,
+                n_generations,
+                p_mutation,
+                seed
+            )
+        else:
+            self.cpp_options = new cppOptions(
+                capacity,
+                n_generations,
+                p_mutation
+            )
+
+    @property
+    def tournament_size(self):
+        return self.tournament_size
+
+    @property
+    def p_fittest(self):
+        return self.p_fittest
+
+    @property
+    def replacement(self):
+        return self.replacement
+
+    @property
+    def capacity(self):
+        return self.cpp_options.population_size
+
+    @property
+    def n_generations(self):
+        return self.cpp_options.n_generations
+
+    @property
+    def p_mutation(self):
+        return self.cpp_options.n_generations
+
+    @property
+    def seed(self):
+        return self.cpp_options.seed
+
+    def __dealloc__(self):
+        """Destroy previously allocated Options interface.
+        """
+
+        del self.cpp_options
