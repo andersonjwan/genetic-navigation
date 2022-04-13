@@ -2,7 +2,6 @@ import numpy as np
 
 import config
 
-
 class Robot:
     robot_radius = config.robot_radius                             # Robot's radius
     sensor_range = config.sensor_range                             # Sensor range
@@ -11,7 +10,7 @@ class Robot:
     actions = config.actions                                       # Actions encoding (binary->angular velocity)
     num_actions = len(actions)                                     # Number of actions
 
-    def __init__(self, env):
+    def __init__(self, env, chromosome: str):
         self.env = env                                             # Environment class instance
         self.x_robot = None                                        # Robot's x-position
         self.y_robot = None                                        # Robot's y-position
@@ -21,7 +20,7 @@ class Robot:
         self.obs_detection_history = []                            # Robot's obstacle detection history
         self.fitness = None                                        # Robot's fitness
 
-        self.chromosome = ''.join(str(i) for i in np.random.randint(2, size=2**9*3))  # ToDO Get it from GA
+        self.chromosome = chromosome
 
     def set_initial_pose(self):
         """Sets robot's initial pose at random within the workspace."""
