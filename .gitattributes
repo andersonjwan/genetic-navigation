@@ -1,0 +1,8 @@
+# Set default behavior (i.e. core.autocrlf not set)
+* text=auto
+
+# Files that should be normalized and converted to the native
+# line endings on checkout of the system
+*.cpp text
+*.hpp text
+*.txt text
