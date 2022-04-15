@@ -24,7 +24,7 @@ namespace genalg {
     template<typename I, typename F>
     class Population {
     private:
-        const std::size_t capacity_;
+        std::size_t capacity_;
         std::vector<std::pair<I, F>> individuals_;
 
     public:
