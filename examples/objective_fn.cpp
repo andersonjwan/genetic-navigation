@@ -40,8 +40,8 @@ using Fitness = double;
 #endif
 
 #define POPULATION_SIZE 10
-#define K_GENERATIONS 300
-#define P_MUTATION 0.1
+#define K_GENERATIONS 500
+#define P_MUTATION 0.4
 
 class Solution : public Individual<Genome, Fitness> {
 public:
@@ -52,17 +52,17 @@ public:
         : Individual<Genome, Fitness>(g) {}
 
     double decimal() const {
-        bool sign = this->genome[0];
+        bool sign = this->genome_[0];
         double value = 0;
 
         // right to left
-        for(int i = this->genome.size() - 1; i > 0; --i) {
-            value += std::pow(2, (this->genome.size() - 1) - i) * this->genome[i];
+        for(int i = this->genome_.size() - 1; i > 0; --i) {
+            value += std::pow(2, (this->genome_.size() - 1) - i) * this->genome_[i];
         }
 
         // maximum
         double max = 0;
-        for(std::size_t i = 0; i < this->genome.size(); ++i) {
+        for(std::size_t i = 0; i < this->genome_.size(); ++i) {
             max += std::pow(2, i);
         }
 
@@ -103,7 +103,7 @@ main(int argc, char** argv) {
     MultiPointCrossover<Solution> crossover(2);
     InversionMutation<Solution> mutation;
 
-    BestLimit<Solution, Fitness> termination(50);
+    BestLimit<Solution, Fitness> termination(100);
 
     genalg::GeneticAlgorithm<Solution, Fitness>
         ga(&selection, &crossover, &mutation, *options);
