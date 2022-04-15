@@ -43,15 +43,16 @@ def evaluate(population):
 
     return new_population
 
+K_GENERATIONS = 500
+
 if __name__ == "__main__":
     """Optimize the maximum value for sin(x) - 0.2 * abs(x) within
     the range [-10, 10].
     """
 
     options = Options(
-        capacity=25,
-        n_generations=500,
-        p_mutation=0.01,
+        population_capacity=25,
+        p_mutation=0.1,
         tournament_size=2,
         p_fittest=0.85
     )
@@ -61,11 +62,11 @@ if __name__ == "__main__":
     # initialize a random population
     population = Population(options.capacity)
 
-    for i in range(options.capacity):
+    for i in range(options.population_capacity):
         genome = random.choices([0, 1], k=20)
         population.add(BinaryIndividual(genome), fitness(genome))
 
-    for i in range(options.n_generations):
+    for i in range(K_GENERATIONS):
         population = ga.update(population)
 
         # update the fitness of each individual based on an external
