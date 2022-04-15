@@ -58,6 +58,7 @@ namespace genalg {
             ///
             /// @param p1 The first parent
             /// @param p2 The second parent
+            /// @param rng The Random Number Generator engine
             /// @return Two newly crossed individuals
             std::array<I, 2> cross(const I& p1, const I& p2,
                                    std::default_random_engine& rng) const override {
@@ -73,6 +74,7 @@ namespace genalg {
         ///
         /// @param p1 The first parent
         /// @param p2 The second parent
+        /// @param rng The Random Number Generator engine
         /// @return Two newly crossed individuals
         template<typename I>
         std::array<I, 2> MultiPointCrossover<I>::cross(const I &p1, const I &p2,
