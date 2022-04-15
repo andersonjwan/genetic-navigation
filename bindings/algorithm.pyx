@@ -37,8 +37,7 @@ cdef class GeneticAlgorithm:
         """
 
         self.cpp_options = new cppOptions(
-            options.capacity,
-            options.n_generations,
+            options.population_capacity,
             options.p_mutation,
             options.seed
         )
@@ -86,7 +85,7 @@ cdef class GeneticAlgorithm:
 
         for i in range(cpp_new_population.size()):
             new_population.add(
-                BinaryIndividual(cpp_new_population[i].first.get_genome()),
+                BinaryIndividual(cpp_new_population[i].first.genome()),
                 cpp_new_population[i].second
             )
 

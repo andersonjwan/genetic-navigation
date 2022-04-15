@@ -14,8 +14,7 @@ cdef class Options:
 
     def __cinit__(
             self,
-            capacity,
-            n_generations,
+            population_capacity,
             p_mutation,
             tournament_size=2,
             p_fittest=0.5,
@@ -39,15 +38,13 @@ cdef class Options:
 
         if seed is not None:
             self.cpp_options = new cppOptions(
-                capacity,
-                n_generations,
+                population_capacity,
                 p_mutation,
                 seed
             )
         else:
             self.cpp_options = new cppOptions(
-                capacity,
-                n_generations,
+                population_capacity,
                 p_mutation
             )
 
@@ -68,16 +65,12 @@ cdef class Options:
         return self.n_crossovers
 
     @property
-    def capacity(self):
-        return self.cpp_options.population_size
-
-    @property
-    def n_generations(self):
-        return self.cpp_options.n_generations
+    def population_capacity(self):
+        return self.cpp_options.population_capacity
 
     @property
     def p_mutation(self):
-        return self.cpp_options.n_generations
+        return self.cpp_options.p_mutation
 
     @property
     def seed(self):

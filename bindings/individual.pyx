@@ -25,7 +25,7 @@ cdef class BinaryIndividual:
 
     @property
     def genome(self):
-        return self.cpp_individual.get_genome()
+        return self.cpp_individual.genome()
 
 
     def __dealloc__(self):

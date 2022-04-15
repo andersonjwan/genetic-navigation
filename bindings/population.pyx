@@ -91,7 +91,7 @@ cdef class Population:
         cdef pair[cppBinaryIndividual, double]* solution = &deref(self.cpp_population)[index]
 
         return [
-            solution.first.get_genome(),
+            solution.first.genome(),
             solution.second
         ]
 
