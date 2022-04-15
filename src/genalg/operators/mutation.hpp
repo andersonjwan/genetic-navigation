@@ -41,8 +41,8 @@ namespace genalg {
         template<typename I>
         I InversionMutation<I>::mutate(const I& individual,
                                        std::default_random_engine& rng) const {
-            auto genome = individual.get_genome();
-            assert(genome.size() == individual.get_genome().size());
+            auto genome = individual.genome();
+            assert(genome.size() == individual.genome().size());
 
             std::uniform_real_distribution<double> rdistr(0.0, 1.0);
             double inversion_chance = 1.0 / genome.size();

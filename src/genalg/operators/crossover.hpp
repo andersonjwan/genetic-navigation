@@ -79,13 +79,13 @@ namespace genalg {
         template<typename I>
         std::array<I, 2> MultiPointCrossover<I>::cross(const I &p1, const I &p2,
                                                        std::default_random_engine& rng) const {
-            assert(p1.get_genome().size() == p2.get_genome().size());
-            assert(this->n_crossovers_ <= p1.get_genome().size());
+            assert(p1.genome().size() == p2.genome().size());
+            assert(this->n_crossovers_ <= p1.genome().size());
 
-            auto genome1 = p1.get_genome();
-            auto genome2 = p2.get_genome();
+            auto genome1 = p1.genome();
+            auto genome2 = p2.genome();
 
-            std::vector<std::size_t> indexes(p1.get_genome().size() - 1);
+            std::vector<std::size_t> indexes(p1.genome().size() - 1);
             std::iota(indexes.begin(), indexes.end(), 1);
 
             std::vector<std::size_t> points;
