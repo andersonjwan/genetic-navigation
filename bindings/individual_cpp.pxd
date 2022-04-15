@@ -6,5 +6,5 @@ cdef extern from "population/individual.hpp" namespace "genalg::population":
         BinaryIndividual(vector[bool] genome)
 
         # methods
-        vector[bool] get_genome() const
+        vector[bool] genome() const
         double fitness() const

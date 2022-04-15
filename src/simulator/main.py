@@ -54,17 +54,17 @@ if __name__ == '__main__':
     # --------------------------------------------------------------------------
 
     disp_results = True                                   # Display results during training
+    K_GENERATIONS = 25
 
     options = Options(
-        capacity=25,      # Total number of robots (population size)
-        n_generations=25, # Total number of generations
+        population_capacity=10,      # Total number of robots (population size)
         p_mutation=0.01,
         p_fittest=0.85,
         n_crossovers=100
     )
 
     ga = GeneticAlgorithm(options)
-    population = Population(options.capacity)
+    population = Population(options.population_capacity)
 
     env = Env()                                           # Define the environment
     sim = Simulator(env)                                  # Define the simulator
@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     # initial population
     robots = []
-    for individual in range(options.capacity):
+    for individual in range(options.population_capacity):
         genome = random.choices([0, 1], k=((2 ** 9) * 3))
         population.add(BinaryIndividual(genome))
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # print('Maximum fitness: {}'.format(max(population_fitness_history[-1])))
     # print('='*30)
 
-    for i in range(options.n_generations):
+    for i in range(K_GENERATIONS):
         print(f"Generation: {i:02d}")
 
         sim.set_population(robots)  # Set the current population of robots in the simulator
