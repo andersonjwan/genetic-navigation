@@ -28,14 +28,18 @@ using genalg::population::Individual;
 using Genome = std::vector<bool>;
 using Fitness = double;
 
+// DEFINE for plotting functionality
+// Note: Ensure you set -DMATPLOTPLUSPLUS=ON to CMake
+
 // #define PLOT
+
 #ifdef PLOT
 #include <matplot/matplot.h>
 #endif
 
-#define POPULATION_SIZE 50
-#define K_GENERATIONS 20
-#define P_MUTATION 0.01
+#define POPULATION_SIZE 10
+#define K_GENERATIONS 300
+#define P_MUTATION 0.1
 
 class Solution : public Individual<Genome, Fitness> {
 public:
@@ -115,17 +119,7 @@ main(int argc, char** argv) {
         initial_population.add(Solution(genome));
     }
 
-    std::vector<double> index;
-    std::vector<double> best;
-    std::vector<double> worst;
-    std::vector<double> average;
-
     ga.initialize(initial_population);
-
-    index.push_back(0);
-    best.push_back(initial_population.best().second);
-    worst.push_back(initial_population.worst().second);
-    average.push_back(initial_population.average());
 
     for(std::size_t i = 1; i < options->n_generations; ++i) {
         auto next = ga.next();
@@ -133,15 +127,24 @@ main(int argc, char** argv) {
                   << " BEST: "
                   << "{" << next.best().first.decimal() << ", "
                   << next.best().second << "}\n";
-
-        // plotting statistics
-        index.push_back(i);
-        best.push_back(next.best().second);
-        worst.push_back(next.worst().second);
-        average.push_back(next.average());
     }
 
     #ifdef PLOT
+    auto results = ga.generations();
+
+    std::vector<double> index;
+    std::vector<double> best;
+    std::vector<double> worst;
+    std::vector<double> average;
+
+    for(int i = 0; i < results.size(); ++i) {
+        index.push_back(i);
+
+        best.push_back(results[i].best().second);
+        worst.push_back(results[i].worst().second);
+        average.push_back(results[i].average());
+    }
+
     matplot::title("Best, Worst, and Average Fitness per Generation");
     matplot::xlabel("Generation");
     matplot::ylabel("Fitness");
