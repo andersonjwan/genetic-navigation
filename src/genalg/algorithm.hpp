@@ -7,36 +7,49 @@
 #include <random>
 #include <vector>
 
+#include "algorithm/options.hpp"
 #include "operators/crossover.hpp"
 #include "operators/selection.hpp"
 #include "operators/mutation.hpp"
-#include "algorithm/options.hpp"
 #include "population.hpp"
 
 namespace genalg {
+    /// The entry point interface to run the Genetic Algorithm (GA) flow.
+    ///
+    /// The Genetic Algorithm (GA) is broken down into to two main steps: (1)
+    /// initialize the first population---usually performed randomly---with
+    /// \ref initialize and (2) running the \ref update or \ref next functions
+    /// to perform the GA for one step of a generation.
+    ///
+    /// @tparam I An individual
+    /// @tparam F The metric used to evaluate fitness
     template<typename I, typename F>
     class GeneticAlgorithm {
-    public:
-        std::vector<Population<I, F>> generations;
+    private:
+        std::vector<Population<I, F>> generations_;
 
-        const operators::SelectionOperator<I, F>* selection;
-        const operators::CrossoverOperator<I>* crossover;
-        const operators::MutationOperator<I>* mutation;
+        const operators::SelectionOperator<I, F>* selection_;
+        const operators::CrossoverOperator<I>* crossover_;
+        const operators::MutationOperator<I>* mutation_;
+        const algorithm::Options options_;
 
-        const algorithm::Options options;
+        const std::size_t seed_;
+        std::default_random_engine rng_;
 
-        std::size_t seed;
-        std::default_random_engine rng;
-
-        Population<I, F> generate(const Population<I, F>& population);
+        // internal functions
+        Population<I, F> generate_(const Population<I, F>& population);
 
     public:
         explicit GeneticAlgorithm(operators::SelectionOperator<I, F>* s,
                                   operators::CrossoverOperator<I>* c,
                                   operators::MutationOperator<I>* m,
                                   algorithm::Options o)
-            : selection{s}, crossover{c}, mutation{m}, options{o},
-              seed{options.seed}, rng{std::default_random_engine(seed)} {}
+            : selection_{s},crossover_{c}, mutation_{m}, options_{o},
+              seed_{options_.seed}, rng_{std::default_random_engine(this->seed_)} {}
+
+        // accessors
+        const std::size_t& seed() const { return this->options_.seed; }
+        const std::vector<Population<I, F>>& generations() const { return this->generations_; }
 
         void initialize(const Population<I, F>& population);
 
@@ -46,48 +59,49 @@ namespace genalg {
 }
 
 namespace genalg {
-    /// Initialize the GA with the first generation.
+    /// Initialize the GA with the first \ref Population.
     ///
-    /// Provide a population of initial solutions to generate from.
+    /// Provide a \ref Population of initial solutions to generate from.
     ///
-    /// @param population The initial Population set
+    /// @param population An initial \ref Population set
     template<typename I, typename F>
     void GeneticAlgorithm<I, F>::initialize(const Population<I, F>& population) {
-        assert(population.size() == this->options.population_size);
-        this->generations.push_back(population);
+        assert(population.size() == this->options_.population_size);
+        this->generations_.push_back(population);
     }
 
-    /// Perform the GA algorithm steps to generate a new population.
+    /// Perform the GA algorithm steps to generate a new \ref Population.
     ///
-    /// Execute the series of GA steps to produce a new population: (1) selection,
+    /// Execute the series of GA steps to produce a new \ref Population: (1) selection,
     /// (2) recombination, and (3) mutation. Note: This is an internal function.
-    /// Therefore, you should use the publicly exposed interfaces: update or next.
+    /// Therefore, you should use the publicly exposed interfaces:
+    /// \ref update or \ref next.
     ///
-    /// @param population The base population to generate from
-    /// @return The newly generated population
+    /// @param population The base \ref Population to generate from
+    /// @return A newly generated \ref Population
     template<typename I, typename F>
-    Population<I, F> GeneticAlgorithm<I, F>::generate(const Population<I, F>& population) {
-        Population<I, F> new_population(options.population_size);
+    Population<I, F> GeneticAlgorithm<I, F>::generate_(const Population<I, F>& population) {
+        Population<I, F> new_population(this->options_.population_size);
         std::uniform_real_distribution<double> rdistr(0.0, 1.0);
 
-        while(new_population.size() < this->options.population_size) {
+        while(new_population.size() < this->options_.population_size) {
             // selection
-            I p1 = this->selection->select(population.solutions(), this->rng);
-            I p2 = this->selection->select(population.solutions(), this->rng);
+            I p1 = this->selection_->select(population.solutions(), this->rng_);
+            I p2 = this->selection_->select(population.solutions(), this->rng_);
 
             // recombination
-            std::array<I, 2> offspring = this->crossover->cross(p1, p2, this->rng);
+            std::array<I, 2> offspring = this->crossover_->cross(p1, p2, this->rng_);
 
             // mutation
             for(int i = 0; i < offspring.size(); ++i) {
-                if(rdistr(this->rng) < this->options.mutation_chance) {
-                    offspring[i] = this->mutation->mutate(offspring[i], this->rng);
+                if(rdistr(this->rng_) < this->options_.mutation_chance) {
+                    offspring[i] = this->mutation_->mutate(offspring[i], this->rng_);
                 }
             }
 
             // add to population
             for(auto& x : offspring) {
-                if(new_population.size() < this->options.population_size) {
+                if(new_population.size() < this->options_.population_size) {
                     new_population.add(x);
                 }
             }
@@ -102,25 +116,33 @@ namespace genalg {
     /// individuals within the population.
     ///
     /// @param population The base population to evolve from
-    /// @return The newly generated population
+    /// @return A newly generated population
     template<typename I, typename F>
     Population<I, F> GeneticAlgorithm<I, F>::update(const Population<I, F>& population) {
-        this->generations.push_back(this->generate(population));
-        return this->generations.back();
+        assert(population.size() == this->options_.population_size);
+
+        // evolve next population
+        auto new_population = this->generate_(population);
+        this->generations_.push_back(new_population);
+
+        return this->generations_.back();
     }
 
-    /// Generate a new population based on the previous population.
+    /// Generate a new \ref Population based on the previous \ref Population.
     ///
     /// This interface is useful when internal factors impact the fitness of
-    /// individuals within the population (e.g., an objective function)
+    /// individuals within the \ref Population (e.g., an objective function)
     ///
-    /// @return The newly generated population
+    /// @return A newly generated \ref Population
     template<typename I, typename F>
-    Population<I, F> GeneticAlgorithm<I, F>::next(void) {
-        assert(this->generations.size() > 0);
+    Population<I, F> GeneticAlgorithm<I, F>::next() {
+        assert(this->generations_.size() > 0);
 
-        this->generations.push_back(this->generate(this->generations.back()));
-        return this->generations.back();
+        // evolve next population
+        auto new_population = this->generate_(this->generations_.back());
+        this->generations_.push_back(new_population);
+
+        return this->generations_.back();
     }
 }
 
