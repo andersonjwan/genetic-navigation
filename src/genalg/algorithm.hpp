@@ -66,7 +66,7 @@ namespace genalg {
     /// @param population An initial \ref Population set
     template<typename I, typename F>
     void GeneticAlgorithm<I, F>::initialize(const Population<I, F>& population) {
-        assert(population.size() == this->options_.population_size);
+        assert(population.size() == this->options_.population_capacity);
         this->generations_.push_back(population);
     }
 
@@ -81,10 +81,10 @@ namespace genalg {
     /// @return A newly generated \ref Population
     template<typename I, typename F>
     Population<I, F> GeneticAlgorithm<I, F>::generate_(const Population<I, F>& population) {
-        Population<I, F> new_population(this->options_.population_size);
+        Population<I, F> new_population(this->options_.population_capacity);
         std::uniform_real_distribution<double> rdistr(0.0, 1.0);
 
-        while(new_population.size() < this->options_.population_size) {
+        while(new_population.size() < this->options_.population_capacity) {
             // selection
             I p1 = this->selection_->select(population.solutions(), this->rng_);
             I p2 = this->selection_->select(population.solutions(), this->rng_);
@@ -94,14 +94,14 @@ namespace genalg {
 
             // mutation
             for(int i = 0; i < offspring.size(); ++i) {
-                if(rdistr(this->rng_) < this->options_.mutation_chance) {
+                if(rdistr(this->rng_) < this->options_.p_mutation) {
                     offspring[i] = this->mutation_->mutate(offspring[i], this->rng_);
                 }
             }
 
             // add to population
             for(auto& x : offspring) {
-                if(new_population.size() < this->options_.population_size) {
+                if(new_population.size() < this->options_.population_capacity) {
                     new_population.add(x);
                 }
             }
@@ -119,7 +119,7 @@ namespace genalg {
     /// @return A newly generated population
     template<typename I, typename F>
     Population<I, F> GeneticAlgorithm<I, F>::update(const Population<I, F>& population) {
-        assert(population.size() == this->options_.population_size);
+        assert(population.size() == this->options_.population_capacity);
 
         // evolve next population
         auto new_population = this->generate_(population);
