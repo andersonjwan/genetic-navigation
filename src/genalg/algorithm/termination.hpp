@@ -28,11 +28,11 @@ namespace genalg {
         class GenerationLimit : public TerminationCondition<I, F> {
         private:
             const std::size_t limit_;
-            std::size_t current_ = 0;
+            std::size_t current_;
 
         public:
             explicit GenerationLimit(std::size_t l)
-                : limit_{l} {}
+                : limit_{l}, current_{0} {}
 
             bool terminate(const std::vector<std::pair<I, F>>& population) override;
         };
@@ -52,7 +52,7 @@ namespace genalg {
         template<typename I, typename F>
         bool GenerationLimit<I, F>::terminate(const std::vector<std::pair<I, F>>& population) {
             this->current_++;
-            return this->current >= this->limit_;
+            return this->current_ >= (this->limit_ - 1);
         }
     }
 }
