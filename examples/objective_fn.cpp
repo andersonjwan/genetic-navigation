@@ -8,6 +8,7 @@
 
 #include "algorithm.hpp"
 #include "algorithm/options.hpp"
+#include "algorithm/termination.hpp"
 
 #include "operators/crossover.hpp"
 #include "operators/mutation.hpp"
@@ -17,6 +18,7 @@
 #include "population/individual.hpp"
 
 using genalg::algorithm::Options;
+using genalg::algorithm::BestLimit;
 
 using genalg::operators::MultiPointCrossover;
 using genalg::operators::TournamentSelection;
@@ -101,6 +103,8 @@ main(int argc, char** argv) {
     MultiPointCrossover<Solution> crossover(2);
     InversionMutation<Solution> mutation;
 
+    BestLimit<Solution, Fitness> termination(50);
+
     genalg::GeneticAlgorithm<Solution, Fitness>
         ga(&selection, &crossover, &mutation, *options);
 
@@ -120,14 +124,15 @@ main(int argc, char** argv) {
     }
 
     ga.initialize(population);
+    ga.run(termination);
 
-    for(std::size_t i = 0; i < K_GENERATIONS; ++i) {
+    int i = 0;
+    for(const auto& p : ga.generations()) {
         std::cout << "GENERATION " << std::setw(3) << std::setfill('0') << i + 1
                   << " BEST: "
-                  << "{" << population.best().first.decimal() << ", "
-                  << population.best().second << "}\n";
-
-        population = ga.next();
+                  << "{" << p.best().first.decimal() << ", "
+                  << p.best().second << "}\n";
+        ++i;
     }
 
     #ifdef PLOT
