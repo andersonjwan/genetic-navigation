@@ -88,8 +88,8 @@ namespace genalg {
 
         while(new_population.size() < this->options_.population_capacity) {
             // selection
-            I p1 = this->selection_->select(population.solutions(), this->rng_);
-            I p2 = this->selection_->select(population.solutions(), this->rng_);
+            I p1 = this->selection_->select(population.individuals(), this->rng_);
+            I p2 = this->selection_->select(population.individuals(), this->rng_);
 
             // recombination
             std::array<I, 2> offspring = this->crossover_->cross(p1, p2, this->rng_);
