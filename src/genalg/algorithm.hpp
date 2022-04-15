@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "algorithm/options.hpp"
+#include "algorithm/termination.hpp"
 #include "operators/crossover.hpp"
 #include "operators/selection.hpp"
 #include "operators/mutation.hpp"
@@ -53,6 +54,7 @@ namespace genalg {
 
         void initialize(const Population<I, F>& population);
 
+        void run(algorithm::TerminationCondition<I, F>& termination);
         Population<I, F> update(const Population<I, F>& population);
         Population<I, F> next(void);
     };
@@ -108,6 +110,17 @@ namespace genalg {
         }
 
         return new_population;
+    }
+
+    /// Find the optimal solution using the Genetic Algorithm.
+    ///
+    /// This will run the GA until the terminating condition is reached
+    /// as defined through the \ref TerminationCondition interface.
+    ///
+    /// @param termination The \ref TerminationCondition
+    template<typename I, typename F>
+    void GeneticAlgorithm<I, F>::run(algorithm::TerminationCondition<I, F>& termination) {
+        while(!termination.terminate(this->next().solutions()));
     }
 
     /// Generate a new population based on the provided population.
