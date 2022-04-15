@@ -12,7 +12,7 @@ namespace genalg {
         /// Interface for a terminating the Genetic Algorithm (GA).
         ///
         /// @tparam I An individual
-        /// @tparam F the metric used to evaluate fitness
+        /// @tparam F The metric used to evaluate the fitness of an individual
         template<typename I, typename F>
         class TerminationCondition {
         public:
@@ -25,7 +25,7 @@ namespace genalg {
         /// reached.
         ///
         /// @tparam I An individual
-        /// @tparam F the metric used to evaluate fitness
+        /// @tparam F The metric used to evaluate the fitness of an individual
         template<typename I, typename F>
         class GenerationLimit : public TerminationCondition<I, F> {
         private:
@@ -45,7 +45,7 @@ namespace genalg {
         /// a defined amount.
         ///
         /// @tparam I An individual
-        /// @tparam F the metric used to evaluate fitness
+        /// @tparam F The metric used to evaluate the fitness of an individual
         template<typename I, typename F>
         class BestLimit : public TerminationCondition<I, F> {
         private:
