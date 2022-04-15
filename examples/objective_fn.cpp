@@ -90,10 +90,10 @@ main(int argc, char** argv) {
     if(argc == 2) {
         // seed provided
         options = std::make_unique<Options>
-            (POPULATION_SIZE, K_GENERATIONS, P_MUTATION, std::stoul(argv[1]));
+            (POPULATION_SIZE, P_MUTATION, std::stoul(argv[1]));
     } else {
         options = std::make_unique<Options>
-            (POPULATION_SIZE, K_GENERATIONS, P_MUTATION);
+            (POPULATION_SIZE, P_MUTATION);
     }
 
     // GA operations
@@ -107,26 +107,27 @@ main(int argc, char** argv) {
     // create a random initial population
     std::default_random_engine engine(options->seed);
     std::uniform_int_distribution<int> idistr(0, 1);
-    Population<Solution, Fitness> initial_population(options->population_size);
+    Population<Solution, Fitness> population(options->population_capacity);
 
-    for(std::size_t i = 0; i < options->population_size; ++i) {
+    for(std::size_t i = 0; i < options->population_capacity; ++i) {
         std::vector<bool> genome;
 
         for(int j = 0; j < Solution::capacity; ++j) {
             genome.push_back(idistr(engine));
         }
 
-        initial_population.add(Solution(genome));
+        population.add(Solution(genome));
     }
 
-    ga.initialize(initial_population);
+    ga.initialize(population);
 
-    for(std::size_t i = 1; i < options->n_generations; ++i) {
-        auto next = ga.next();
-        std::cout << "GENERATION " << std::setw(3) << std::setfill('0') << i
+    for(std::size_t i = 0; i < K_GENERATIONS; ++i) {
+        std::cout << "GENERATION " << std::setw(3) << std::setfill('0') << i + 1
                   << " BEST: "
-                  << "{" << next.best().first.decimal() << ", "
-                  << next.best().second << "}\n";
+                  << "{" << population.best().first.decimal() << ", "
+                  << population.best().second << "}\n";
+
+        population = ga.next();
     }
 
     #ifdef PLOT
