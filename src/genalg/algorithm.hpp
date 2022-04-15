@@ -114,13 +114,13 @@ namespace genalg {
 
     /// Find the optimal solution using the Genetic Algorithm.
     ///
-    /// This will run the GA until the terminating condition is reached
+    /// This will execute the GA until the terminating condition is reached
     /// as defined through the \ref TerminationCondition interface.
     ///
     /// @param termination The \ref TerminationCondition
     template<typename I, typename F>
     void GeneticAlgorithm<I, F>::run(algorithm::TerminationCondition<I, F>& termination) {
-        while(!termination.terminate(this->next().solutions()));
+        while(!termination.terminate(this->next()));
     }
 
     /// Generate a new population based on the provided population.
