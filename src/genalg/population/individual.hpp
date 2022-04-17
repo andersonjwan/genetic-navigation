@@ -1,9 +1,6 @@
 #ifndef GENALG_POPULATION_INDIVIDUAL_HPP
 #define GENALG_POPULATION_INDIVIDUAL_HPP
 
-#include <cstddef>
-#include <vector>
-
 namespace genalg {
     namespace population {
         /// Base representation of a solution within the GA.
