@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
+#include <iterator>
 #include <vector>
 
 namespace genalg {
@@ -17,10 +18,15 @@ namespace genalg {
     template<typename I>
     class Population {
     private:
+        typedef std::vector<I> IndividualList;
+
         const std::size_t capacity_;
-        std::vector<I> individuals_;
+        IndividualList individuals_;
 
     public:
+        typedef typename IndividualList::iterator iterator;
+        typedef typename IndividualList::const_iterator const_iterator;
+
         explicit Population(std::size_t capacity)
             : capacity_{capacity} {}
 
@@ -36,6 +42,9 @@ namespace genalg {
 
         // operations
         std::size_t size() const { return this->individuals_.size(); }
+
+        iterator begin() { return this->individuals_.begin(); }
+        iterator end() { return this->individuals_.end(); }
     };
 }
 
