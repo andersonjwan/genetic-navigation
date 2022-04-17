@@ -48,7 +48,7 @@ namespace genalg {
 
 namespace genalg {
     namespace operators {
-        /// Select an individual.
+        /// Select an individual using tournament selection technique.
         ///
         /// @param population A \ref Population to select from
         /// @param rng The Random Number Generator engine
