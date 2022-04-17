@@ -14,7 +14,6 @@ namespace genalg {
     /// on said individuals.
     ///
     /// @tparam I An individual
-    /// @tparam F The metric used to evaluate the fitness of an individual
     template<typename I>
     class Population {
     private:
