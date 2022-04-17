@@ -28,6 +28,11 @@ namespace genalg {
             void fitness(const F& fitness) {
                 this->fitness_ = fitness;
             }
+
+            // operators
+            bool operator<(const Individual<G, F>& other) const {
+                return this->fitness_ < other.fitness_;
+            }
         };
     }
 }
