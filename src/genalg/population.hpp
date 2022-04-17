@@ -45,6 +45,8 @@ namespace genalg {
 
         iterator begin() { return this->individuals_.begin(); }
         iterator end() { return this->individuals_.end(); }
+        const_iterator begin() const { return this->individuals_.begin(); }
+        const_iterator end() const { return this->individuals_.end(); }
     };
 }
 
