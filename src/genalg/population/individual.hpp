@@ -13,7 +13,7 @@ namespace genalg {
         template<typename G, typename F>
         class Individual {
         protected:
-            const G genome_;
+            G genome_;
             F fitness_;
 
         public:
@@ -29,20 +29,31 @@ namespace genalg {
                 this->fitness_ = fitness;
             }
 
+            // copy operations
+            Individual(const Individual& other);
+            Individual& operator=(const Individual& other);
+
             // operators
             bool operator<(const Individual<G, F>& other) const {
                 return this->fitness_ < other.fitness_;
             }
-
-            bool operator==(const Individual<G, F>& other) const {
-                return this->genome_ == other.genome_ &&
-                    this->fitness_ == other.fitness_;
-            }
-
-            bool operator!=(const Individual<G, F>& other) const {
-                return !(*this == other);
-            }
         };
+    }
+}
+
+namespace genalg {
+    namespace population {
+        template<typename G, typename F>
+        Individual<G, F>::Individual(const Individual& other)
+            : genome_{other.genome_}, fitness_{other.fitness_} {}
+
+        template<typename G, typename F>
+        Individual<G, F>& Individual<G, F>::operator=(const Individual& other) {
+            this->genome_ = other.genome_;
+            this->fitness_ = other.fitness_;
+
+            return *this;
+        }
     }
 }
 
