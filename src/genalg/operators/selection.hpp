@@ -65,6 +65,10 @@ namespace genalg {
             std::sample(population.begin(), population.end(),
                         std::back_inserter(pool), this->pool_size_, rng);
 
+            if(this->pool_size_ == 1) {
+                return pool.back();
+            }
+
             auto fittest = std::max_element(pool.begin(), pool.end());
 
             std::uniform_real_distribution<double> rdistr(0.0, 1.0);
