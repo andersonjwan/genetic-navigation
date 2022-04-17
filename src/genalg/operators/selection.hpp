@@ -18,7 +18,7 @@ namespace genalg {
         class SelectionOperator {
         public:
             virtual I select(const Population<I>& population,
-                                    std::default_random_engine& rng) const = 0;
+                             std::default_random_engine& rng) const = 0;
         };
 
         /// Selection using a tournament selection process.
@@ -41,7 +41,7 @@ namespace genalg {
             }
 
             I select(const Population<I>& population,
-                            std::default_random_engine& rng) const override;
+                     std::default_random_engine& rng) const override;
         };
     }
 }
@@ -55,7 +55,7 @@ namespace genalg {
         /// @return An individual
         template<typename I>
         I TournamentSelection<I>::select(const Population<I>& population,
-                                                std::default_random_engine& rng) const {
+                                         std::default_random_engine& rng) const {
             assert(population.size() > 0);
             assert(this->pool_size_ <= population.size());
 
