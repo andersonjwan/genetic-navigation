@@ -71,16 +71,11 @@ namespace genalg {
             if(rdistr(rng) < this->p_fittest_) {
                 return *fittest;
             } else {
-                std::vector<I> unfit;
-                std::copy_if(pool.begin(), pool.end(), std::back_inserter(unfit),
-                             [fittest](const auto& x) {
-                                 return x != *fittest;
-                             });
+                pool.erase(fittest);
+                std::sample(pool.begin(), pool.end(),
+                            std::back_inserter(pool), 1, rng);
 
-                std::sample(unfit.begin(), unfit.end(),
-                            std::back_inserter(unfit), 1, rng);
-
-                return unfit.back();
+                return pool.back();
             }
         }
     }
