@@ -17,6 +17,7 @@ namespace genalg {
             F fitness_;
 
         public:
+            explicit Individual() {}
             explicit Individual(const G& g, const F& f)
                 : genome_{g}, fitness_{f} {}
 
