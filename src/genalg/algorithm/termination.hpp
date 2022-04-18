@@ -82,10 +82,10 @@ namespace genalg {
         template<typename I>
         bool BestLimit<I>::terminate(const Population<I>& population) {
             if(this->current_ == 0) {
-                this->best_ = population.best();
+                this->fittest_ = population.best();
             }
 
-            if(this->best_ == population.best()) {
+            if(this->fittest_ == population.best()) {
                 this->current_++;
             } else {
                 this->current_ = 0;
