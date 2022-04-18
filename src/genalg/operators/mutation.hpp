@@ -21,7 +21,13 @@ namespace genalg {
         /// @tparam G A genome representation of an individual
         template<typename G>
         class BitFlipMutation : public MutationOperator<G> {
+        private:
+            const double p_inversion_;
+
         public:
+            explicit BitFlipMutation(double p_inversion)
+                : p_inversion_{p_inversion} {}
+
             G mutate(const G& genome,
                      std::default_random_engine& rng) const override;
         };
@@ -45,10 +51,9 @@ namespace genalg {
             assert(mutated.size() == genome.size());
 
             std::uniform_real_distribution<double> rdistr(0.0, 1.0);
-            double p_inversion = 1.0 / mutated.size();
 
             for(int i = 0; i < mutated.size(); ++i) {
-                if(rdistr(rng) < p_inversion) {
+                if(rdistr(rng) < this->p_inversion_) {
                     mutated[i] = !(mutated[i] == 1);
                 }
             }
