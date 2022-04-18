@@ -16,10 +16,10 @@ namespace genalg {
             /// The number of individuals per \ref Population
             const std::size_t population_capacity;
 
-            /// The probability of a mutation occurring
+            /// The probability of a mutation occurring for an individual
             const double p_mutation = 0.01;
 
-            /// A optional value to seed the Random Number Generator (RNG) engine
+            /// A optional value to seed the random number generator engine
             unsigned long int seed;
 
             /// Initialize the options with a randomly generated seed.
