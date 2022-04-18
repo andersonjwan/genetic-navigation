@@ -6,23 +6,23 @@
 
 namespace genalg {
     namespace operators {
-        /// Interface for GA mutation operations.
+        /// Interface for Genetic Algorithm mutation operation.
         ///
-        /// @tparam I An individual
-        template<typename I>
+        /// @tparam G A genome representation of an individual
+        template<typename G>
         class MutationOperator {
         public:
-            virtual I mutate(const I& individual,
+            virtual G mutate(const G& genome,
                              std::default_random_engine& rng) const = 0;
         };
 
         /// Mutation operation to invert a specified number of bits.
         ///
-        /// @tparam I An individual
-        template<typename I>
-        class InversionMutation : public MutationOperator<I> {
+        /// @tparam G A genome representation of an individual
+        template<typename G>
+        class InversionMutation : public MutationOperator<G> {
         public:
-            I mutate(const I& individual,
+            G mutate(const G& genome,
                      std::default_random_engine& rng) const override;
         };
     }
@@ -30,30 +30,30 @@ namespace genalg {
 
 namespace genalg {
     namespace operators {
-        /// Mutate an individual by inverting its bits.
+        /// Mutate a genome by inverting its bits.
         ///
         /// The number of bits to flip is randomly selected from
-        /// 1 to the size of the individual's genome.
+        /// 1 to the size of the genome.
         ///
-        /// @param individual The individual to mutate
-        /// @param rng The Random Number Generator engine
-        /// @return A newly mutated individual
-        template<typename I>
-        I InversionMutation<I>::mutate(const I& individual,
+        /// @param genome The genome to mutate
+        /// @param rng The random number generator engine
+        /// @return A newly mutated genome
+        template<typename G>
+        G InversionMutation<G>::mutate(const G& genome,
                                        std::default_random_engine& rng) const {
-            auto genome = individual.genome();
-            assert(genome.size() == individual.genome().size());
+            G mutated = genome;
+            assert(mutated.size() == genome.size());
 
             std::uniform_real_distribution<double> rdistr(0.0, 1.0);
-            double inversion_chance = 1.0 / genome.size();
+            double p_inversion = 1.0 / mutated.size();
 
-            for(int i = 0; i < genome.size(); ++i) {
-                if(rdistr(rng) < inversion_chance) {
-                    genome[i] = !(genome[i] == 1);
+            for(int i = 0; i < mutated.size(); ++i) {
+                if(rdistr(rng) < p_inversion) {
+                    mutated[i] = !(mutated[i] == 1);
                 }
             }
 
-            return I(genome);
+            return mutated;
         }
     }
 }
