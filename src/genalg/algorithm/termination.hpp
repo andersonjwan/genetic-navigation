@@ -2,32 +2,27 @@
 #define GENALG_ALGORITHM_TERMINATION_HPP
 
 #include <cstddef>
-#include <utility>
-#include <vector>
-
 #include "population.hpp"
 
 namespace genalg {
     namespace algorithm {
-        /// Interface for a terminating the Genetic Algorithm (GA).
+        /// Interface for a terminating the Genetic Algorithm.
         ///
         /// @tparam I An individual
-        /// @tparam F The metric used to evaluate the fitness of an individual
-        template<typename I, typename F>
+        template<typename I>
         class TerminationCondition {
         public:
-            virtual bool terminate(const Population<I, F>& population) = 0;
+            virtual bool terminate(const Population<I>& population) = 0;
         };
 
-        /// Termination condition for GA based on the generation count.
+        /// Termination condition for Genetic Algorithm based on the generation count.
         ///
-        /// The GA will terminate after the defined generation limit is
-        /// reached.
+        /// The Genetic Algorithm will terminate after the specified generation
+        /// limit is reached.
         ///
         /// @tparam I An individual
-        /// @tparam F The metric used to evaluate the fitness of an individual
-        template<typename I, typename F>
-        class GenerationLimit : public TerminationCondition<I, F> {
+        template<typename I>
+        class GenerationLimit : public TerminationCondition<I> {
         private:
             const std::size_t limit_;
             std::size_t current_;
@@ -36,28 +31,27 @@ namespace genalg {
             explicit GenerationLimit(std::size_t l)
                 : limit_{l}, current_{0} {}
 
-            bool terminate(const Population<I, F>& population) override;
+            bool terminate(const Population<I>& population) override;
         };
 
-        /// Termination condition for GA based on the best fitness count.
+        /// Termination condition for Genetic Algorithm based on the best fitness.
         ///
-        /// The GA will terminate after seeing the best fitness not change for
-        /// a defined amount.
+        /// The Genetic Algorithm will terminate after seeing the best solution
+        /// plateau for a specified number of generations.
         ///
         /// @tparam I An individual
-        /// @tparam F The metric used to evaluate the fitness of an individual
-        template<typename I, typename F>
-        class BestLimit : public TerminationCondition<I, F> {
+        template<typename I>
+        class BestLimit : public TerminationCondition<I> {
         private:
             const std::size_t limit_;
             std::size_t current_;
-            F best_;
+            I fittest_;
 
         public:
             explicit BestLimit(std::size_t l)
                 : limit_{l}, current_{0} {}
 
-            bool terminate(const Population<I, F>& population) override;
+            bool terminate(const Population<I>& population) override;
         };
     }
 }
@@ -72,26 +66,26 @@ namespace genalg {
         ///
         /// @param population The latest \ref Population
         /// @return To terminate or not
-        template<typename I, typename F>
-        bool GenerationLimit<I, F>::terminate(const Population<I, F>& population) {
+        template<typename I>
+        bool GenerationLimit<I>::terminate(const Population<I>& population) {
             this->current_++;
             return this->current_ >= (this->limit_ - 1);
         }
 
-        /// Check if the best limit has been reached.
+        /// Check if the fittest individual has plateaued.
         ///
-        /// The \ref BestLimit keeps track of how many times in a row
-        /// the best fitness has remained unchanged.
+        /// The \ref BestLimit keeps track of how many sequential occurrences
+        /// the fittest individual has remained unchanged.
         ///
         /// @param population The latest \ref Population
         /// @return To terminate or not
-        template<typename I, typename F>
-        bool BestLimit<I, F>::terminate(const Population<I, F>& population) {
+        template<typename I>
+        bool BestLimit<I>::terminate(const Population<I>& population) {
             if(this->current_ == 0) {
-                this->best_ = population.best().second;
+                this->best_ = population.best();
             }
 
-            if(this->best_ == population.best().second) {
+            if(this->best_ == population.best()) {
                 this->current_++;
             } else {
                 this->current_ = 0;
