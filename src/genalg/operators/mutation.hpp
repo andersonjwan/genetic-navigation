@@ -20,7 +20,7 @@ namespace genalg {
         ///
         /// @tparam G A genome representation of an individual
         template<typename G>
-        class InversionMutation : public MutationOperator<G> {
+        class BitFlipMutation : public MutationOperator<G> {
         public:
             G mutate(const G& genome,
                      std::default_random_engine& rng) const override;
@@ -39,7 +39,7 @@ namespace genalg {
         /// @param rng The random number generator engine
         /// @return A newly mutated genome
         template<typename G>
-        G InversionMutation<G>::mutate(const G& genome,
+        G BitFlipMutation<G>::mutate(const G& genome,
                                        std::default_random_engine& rng) const {
             G mutated = genome;
             assert(mutated.size() == genome.size());
