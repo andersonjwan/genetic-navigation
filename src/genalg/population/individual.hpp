@@ -37,6 +37,11 @@ namespace genalg {
             bool operator<(const Individual<G, F>& other) const {
                 return this->fitness_ < other.fitness_;
             }
+
+            bool operator==(const Individual<G, F>& other) const {
+                return this->genome_ == other.genome_ &&
+                    this->fitness_ == other.fitness_;
+            }
         };
     }
 }
