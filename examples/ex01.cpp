@@ -17,7 +17,7 @@
 #include "population.hpp"
 #include "population/individual.hpp"
 
-#define PLOT
+// #define PLOT
 
 #ifdef PLOT
 #include <matplot/matplot.h>
