@@ -14,6 +14,6 @@ cdef extern from "algorithm.hpp" namespace "genalg":
             SelectionOperator[I]* selection,
             CrossoverOperator[G]* crossover,
             MutationOperator[G]* mutation,
-            FitnessFunction[G, F] fitness,
+            FitnessFunction[G, F]* fitness,
             Options options
         ) except +
