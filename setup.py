@@ -11,6 +11,21 @@ extensions = [
         name="pygenalg.core.options",
         sources=["bindings/pygenalg/core/options.pyx"],
         include_dirs=["src/genalg"]
+    ),
+    Extension(
+        name="pygenalg.operators.crossover",
+        sources=["bindings/pygenalg/operators/crossover.pyx"],
+        include_dirs=["src/genalg"]
+    ),
+    Extension(
+        name="pygenalg.operators.mutation",
+        sources=["bindings/pygenalg/operators/mutation.pyx"],
+        include_dirs=["src/genalg"]
+    ),
+    Extension(
+        name="pygenalg.operators.selection",
+        sources=["bindings/pygenalg/operators/selection.pyx"],
+        include_dirs=["src/genalg"]
     )
 ]
 
