@@ -56,14 +56,6 @@ void std::swap<Genome::reference>
     rhs = tmp;
 }
 
-class SolutionFitness : public FitnessFunction<Genome, Fitness> {
-public:
-    inline Fitness evaluate(const Genome& genome) const override {
-        double x = (static_cast<double>(genome.to_ulong()) / 33554431.0) * 10.0;
-        return std::sin(x) - 0.2 * std::abs(x);
-    }
-};
-
 #define K_INDIVIDUALS 25
 
 int
@@ -72,7 +64,11 @@ main() {
     std::default_random_engine rng(rd());
 
     Population<Solution> population(K_INDIVIDUALS);
-    SolutionFitness fitness;
+    FitnessFunction<Genome, Fitness> fitness
+        ([](const Genome& genome) {
+            double x = (static_cast<double>(genome.to_ulong()) / 33554431.0) * 10.0;
+            return std::sin(x) - 0.2 * std::abs(x);
+        });
 
     // initial population
     std::uniform_int_distribution<int> idistr(0, 170);
