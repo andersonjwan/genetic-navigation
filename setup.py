@@ -36,6 +36,11 @@ extensions = [
         name="pygenalg.population",
         sources=["bindings/pygenalg/population.pyx"],
         include_dirs=["src/genalg"]
+    ),
+    Extension(
+        name="pygenalg.individual",
+        sources=["bindings/pygenalg/individual.pyx"],
+        include_dirs=["src/genalg"]
     )
 ]
 
