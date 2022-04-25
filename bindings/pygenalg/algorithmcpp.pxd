@@ -17,3 +17,5 @@ cdef extern from "algorithm.hpp" namespace "genalg":
             FitnessFunction[G, F]* fitness,
             Options options
         ) except +
+
+        size_t seed() const

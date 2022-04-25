@@ -32,10 +32,10 @@ cdef class Options:
     cdef cppOptions* _objcpp
 
 cdef class GeneticAlgorithm:
-    cdef cppGeneticAlgorithm[double, vector[bool], double]* cpp_obj
+    cdef cppGeneticAlgorithm[double, vector[bool], double]* _objcpp
 
     def __cinit__(self, selection, crossover, mutation, fitness, options) -> None:
-        self.cpp_obj = new cppGeneticAlgorithm[double, vector[bool], double](
+        self._objcpp = new cppGeneticAlgorithm[double, vector[bool], double](
             (<SelectionOperator>selection)._objcpp,
             (<CrossoverOperator>crossover)._objcpp,
             (<MutationOperator>mutation)._objcpp,
@@ -46,5 +46,9 @@ cdef class GeneticAlgorithm:
         print("cython: cppGeneticAlgorithm allocated...")
 
     def __dealloc__(self) -> None:
-        del self.cpp_obj
+        del self._objcpp
         print("cython: cppGeneticAlgorithm deallocated...")
+
+    @property
+    def seed(self) -> int:
+        return self._objcpp.seed()
