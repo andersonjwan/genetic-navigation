@@ -31,6 +31,11 @@ extensions = [
         name="pygenalg.operators.selection",
         sources=["bindings/pygenalg/operators/selection.pyx"],
         include_dirs=["src/genalg"]
+    ),
+    Extension(
+        name="pygenalg.population",
+        sources=["bindings/pygenalg/population.pyx"],
+        include_dirs=["src/genalg"]
     )
 ]
 
