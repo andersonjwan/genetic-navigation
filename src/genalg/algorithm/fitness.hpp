@@ -18,6 +18,13 @@ namespace genalg {
                 return this->fn_(genome);
             }
         };
+
+        template<typename G, typename F>
+        class ZeroFitnessFunction : public FitnessFunction<G, F> {
+        public:
+            ZeroFitnessFunction()
+                : FitnessFunction<G, F>([](const G& genome) { return 0; }) {}
+        };
     }
 }
 
