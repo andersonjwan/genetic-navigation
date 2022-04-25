@@ -9,7 +9,7 @@ from .fitnesscpp cimport ZeroFitnessFunction as cppZeroFitnessFunction
 cdef class ZeroFitnessFunction:
     cdef cppZeroFitnessFunction[vector[bool], double]* _objcpp
 
-    def __cinit__(self, fn) -> None:
+    def __cinit__(self) -> None:
         self._objcpp = new cppZeroFitnessFunction[vector[bool], double]()
         print("cython: cppZeroFitnessFunction allocated...")
 

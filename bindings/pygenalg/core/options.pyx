@@ -4,12 +4,12 @@
 from .optionscpp cimport Options as cppOptions
 
 cdef class Options:
-    cdef cppOptions* _cpp_obj
+    cdef cppOptions* _objcpp
 
     def __cinit__(self, population_capacity: int, p_mutation: float) -> None:
-        self._cpp_obj = new cppOptions(population_capacity, p_mutation)
+        self._objcpp = new cppOptions(population_capacity, p_mutation)
         print("cython: cppOptions allocated...")
 
     def __dealloc__(self) -> None:
-        del self._cpp_obj
+        del self._objcpp
         print("cython: cppOptions deallocated...")

@@ -1,23 +1,50 @@
 # cython: language_level = 3
 # distutils: language = c++
 
-from cython.operator cimport dereference as deref
+from cython.operator cimport dereference
+
+from libcpp cimport bool
+from libcpp.vector cimport vector
 
 from .algorithmcpp cimport GeneticAlgorithm as cppGeneticAlgorithm
+
+from .core.fitnesscpp cimport FitnessFunction as cppFitnessFunction
 from .core.optionscpp cimport Options as cppOptions
 
-from .core.options import Options
+from .operators.crossovercpp cimport CrossoverOperator as cppCrossoverOperator
+from .operators.mutationcpp cimport MutationOperator as cppMutationOperator
+from .operators.selectioncpp cimport SelectionOperator as cppSelectionOperator
 
-# cdef class GeneticAlgorithm:
-    # cdef cppGeneticAlgorithm[double, double, double]* cpp_obj
+# Forward declarations for polymorphic behavior
+cdef class SelectionOperator:
+    cdef cppSelectionOperator[double]* _objcpp
 
-    # def __cinit__(self, options: Options):
-    #     self.cpp_obj = new cppGeneticAlgorithm[double, double, double](
-    #         NULL, NULL, NULL, NULL, deref(<cppOptions?>(options._cpp_obj))
-    #     )
+cdef class CrossoverOperator:
+    cdef cppCrossoverOperator[vector[bool]]* _objcpp
 
-    #     print("cython: cppGeneticAlgorithm allocated...")
+cdef class MutationOperator:
+    cdef cppMutationOperator[vector[bool]]* _objcpp
 
-    # def __dealloc__(self) -> None:
-    #     del self.cpp_obj
-    #     print("cython: cppGeneticAlgorithm deallocated...")
+cdef class FitnessFunction:
+    cdef cppFitnessFunction[vector[bool], double]* _objcpp
+
+cdef class Options:
+    cdef cppOptions* _objcpp
+
+cdef class GeneticAlgorithm:
+    cdef cppGeneticAlgorithm[double, vector[bool], double]* cpp_obj
+
+    def __cinit__(self, selection, crossover, mutation, fitness, options) -> None:
+        self.cpp_obj = new cppGeneticAlgorithm[double, vector[bool], double](
+            (<SelectionOperator>selection)._objcpp,
+            (<CrossoverOperator>crossover)._objcpp,
+            (<MutationOperator>mutation)._objcpp,
+            (<FitnessFunction>fitness)._objcpp,
+            dereference((<Options>options)._objcpp)
+        )
+
+        print("cython: cppGeneticAlgorithm allocated...")
+
+    def __dealloc__(self) -> None:
+        del self.cpp_obj
+        print("cython: cppGeneticAlgorithm deallocated...")

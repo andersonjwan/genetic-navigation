@@ -4,12 +4,12 @@
 from .selectioncpp cimport TournamentSelection as cppTournamentSelection
 
 cdef class TournamentSelection:
-    cdef cppTournamentSelection[double]* _cpp_obj
+    cdef cppTournamentSelection[double]* _objcpp
 
-    def __cinit__(self, size: int, prob: float):
-        _cpp_obj = new cppTournamentSelection[double](size, prob)
+    def __cinit__(self, size: int, prob: float) -> None:
+        self._objcpp = new cppTournamentSelection[double](size, prob)
         print("cython: cppTournamentSelection allocated...")
 
     def __dealloc__(self) -> None:
-        del self._cpp_obj
+        del self._objcpp
         print("cython: cppTournamentSelection deallocated...")
