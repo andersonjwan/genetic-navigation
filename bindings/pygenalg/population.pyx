@@ -20,10 +20,12 @@ cdef class Population:
     cdef cppPopulation[cppIndividual[vector[bool], double]]* _objcpp
 
     _capacity: int
-    _individuals: List[pyIndividual]=[]
+    _individuals: List[pyIndividual]
 
     def __cinit__(self, capacity: int) -> None:
         self._capacity = capacity
+        self._individuals = []
+
         self._objcpp = new cppPopulation[cppIndividual[vector[bool], double]](capacity)
 
         print("cython: cppPopulation allocated...")
