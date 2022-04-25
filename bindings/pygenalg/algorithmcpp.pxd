@@ -8,6 +8,8 @@ from .operators.crossovercpp cimport CrossoverOperator
 from .operators.mutationcpp cimport MutationOperator
 from .operators.selectioncpp cimport SelectionOperator
 
+from .populationcpp cimport Population
+
 cdef extern from "algorithm.hpp" namespace "genalg":
     cdef cppclass GeneticAlgorithm[I, G, F]:
         GeneticAlgorithm(
@@ -18,4 +20,10 @@ cdef extern from "algorithm.hpp" namespace "genalg":
             Options options
         ) except +
 
+        # accessors
         size_t seed() const
+
+        void initialize(const Population[I]& population)
+
+        Population[I] update(const Population[I]& population)
+        Population[I] next()
