@@ -2,7 +2,8 @@
 # distutils: language = c++
 
 cdef extern from "operators/mutation.hpp" namespace "genalg::operators":
-    cdef cppclass MutationOperator[G]
+    cdef cppclass MutationOperator[G]:
+        pass
 
     cdef cppclass BitFlipMutation[G]:
         BitFlipMutation(

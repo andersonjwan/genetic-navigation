@@ -2,7 +2,8 @@
 # distutils: language = c++
 
 cdef extern from "operators/crossover.hpp" namespace "genalg::operators":
-    cdef cppclass CrossoverOperator[G]
+    cdef cppclass CrossoverOperator[G]:
+        pass
 
     cdef cppclass MultiPointCrossover[G]:
         MultiPointCrossover(

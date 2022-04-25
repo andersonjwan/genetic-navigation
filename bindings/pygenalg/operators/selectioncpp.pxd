@@ -2,7 +2,8 @@
 # distutils: language = c++
 
 cdef extern from "operators/selection.hpp" namespace "genalg::operators":
-    cdef cppclass SelectionOperator[I]
+    cdef cppclass SelectionOperator[I]:
+        pass
 
     cdef cppclass TournamentSelection[I]:
         TournamentSelection(
