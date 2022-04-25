@@ -8,6 +8,11 @@ extensions = [
         include_dirs=["src/genalg"]
     ),
     Extension(
+        name="pygenalg.core.fitness",
+        sources=["bindings/pygenalg/core/fitness.pyx"],
+        include_dirs=["src/genalg"]
+    ),
+    Extension(
         name="pygenalg.core.options",
         sources=["bindings/pygenalg/core/options.pyx"],
         include_dirs=["src/genalg"]
