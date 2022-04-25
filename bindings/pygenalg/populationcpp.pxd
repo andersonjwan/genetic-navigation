@@ -5,6 +5,7 @@ from libcpp.vector cimport vector
 
 cdef extern from "population.hpp" namespace "genalg":
     cdef cppclass Population[I]:
+        Population() except +
         Population(
             size_t capacity
         ) except +
