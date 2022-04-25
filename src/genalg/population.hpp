@@ -20,12 +20,15 @@ namespace genalg {
     private:
         typedef std::vector<I> IndividualList;
 
-        const std::size_t capacity_;
+        std::size_t capacity_;
         IndividualList individuals_;
 
     public:
         typedef typename IndividualList::iterator iterator;
         typedef typename IndividualList::const_iterator const_iterator;
+
+        explicit Population()
+            : capacity_{0} {}
 
         explicit Population(std::size_t capacity)
             : capacity_{capacity} {}
