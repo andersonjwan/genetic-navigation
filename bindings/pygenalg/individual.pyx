@@ -31,3 +31,9 @@ cdef class Individual:
     @fitness.setter
     def fitness(self, fitness: float) -> None:
         self._objcpp.fitness(fitness)
+
+    def __lt__(self, other):
+        return self.fitness < other.fitness
+
+    def __eq__(self, other):
+        return self.genome == other.genome and self.fitness == other.fitness
