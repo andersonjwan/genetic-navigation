@@ -13,6 +13,11 @@ extensions = [
         include_dirs=["src/genalg"]
     ),
     Extension(
+        name="pygenalg.core.termination",
+        sources=["bindings/pygenalg/core/termination.pyx"],
+        include_dirs=["src/genalg"]
+    ),
+    Extension(
         name="pygenalg.core.options",
         sources=["bindings/pygenalg/core/options.pyx"],
         include_dirs=["src/genalg"]
