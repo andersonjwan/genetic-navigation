@@ -3,6 +3,7 @@
 
 from .core.fitnesscpp cimport FitnessFunction
 from .core.optionscpp cimport Options
+from .core.terminationcpp cimport TerminationCondition
 
 from .operators.crossovercpp cimport CrossoverOperator
 from .operators.mutationcpp cimport MutationOperator
@@ -25,5 +26,6 @@ cdef extern from "algorithm.hpp" namespace "genalg":
 
         void initialize(const Population[I]& population)
 
+        void run(TerminationCondition[I]& termination)
         Population[I] update(const Population[I]& population)
         Population[I] next()

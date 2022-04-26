@@ -1,7 +1,7 @@
 # cython: language_level = 3
 # distutils: language = c++
 
-from typing import List
+from typing import List, Union
 
 from cython.operator cimport dereference
 
@@ -12,6 +12,7 @@ from .algorithmcpp cimport GeneticAlgorithm as cppGeneticAlgorithm
 
 from .core.fitnesscpp cimport FitnessFunction as cppFitnessFunction
 from .core.optionscpp cimport Options as cppOptions
+from .core.terminationcpp cimport TerminationCondition as cppTerminationCondition
 
 from .individualcpp cimport Individual as cppIndividual
 
@@ -23,6 +24,9 @@ from .populationcpp cimport Population as cppPopulation
 
 from .individual import Individual as pyIndividual
 from .population import Population as pyPopulation
+
+from .core.termination import BestLimit as pyBestLimit
+from .core.termination import GenerationLimit as pyGenerationLimit
 
 # Forward declarations for polymorphic behavior
 cdef class SelectionOperator:
@@ -42,6 +46,9 @@ cdef class Options:
 
 cdef class Population:
     cdef cppPopulation[cppIndividual[vector[bool], double]]* _objcpp
+
+cdef class TerminationCondition:
+    cdef cppTerminationCondition[cppIndividual[vector[bool], double]]* _objcpp
 
 cdef class GeneticAlgorithm:
     cdef cppGeneticAlgorithm[cppIndividual[vector[bool], double], vector[bool], double]* _objcpp
@@ -76,6 +83,10 @@ cdef class GeneticAlgorithm:
     def initialize(self, population: pyPopulation) -> None:
         self._objcpp.initialize(dereference((<Population>population)._objcpp))
         self._generations.append(population)
+
+    def run(self, termination: Union[pyBestLimit, pyGenerationLimit]) -> None:
+        while(not(((<TerminationCondition>termination)._objcpp).terminate(dereference((<Population>self.next())._objcpp)))):
+            continue
 
     def update(self, population: pyPopulation) -> pyPopulation:
         cdef cppPopulation[cppIndividual[vector[bool], double]] new_populationcpp
