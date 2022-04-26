@@ -11,3 +11,15 @@ cdef class Options:
 
     def __dealloc__(self) -> None:
         del self._objcpp
+
+    @property
+    def population_capacity(self) -> int:
+        return self._objcpp.population_capacity
+
+    @property
+    def p_mutation(self) -> float:
+        return self._objcpp.p_mutation
+
+    @property
+    def seed(self) -> int:
+        return self._objcpp.seed
