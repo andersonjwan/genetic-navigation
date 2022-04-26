@@ -3,7 +3,7 @@ import numpy as np
 import config
 
 
-class Env:
+class Environment:
     def __init__(self):
         self.goal = config.goal                                           # Goal position
         self.goal_radius = config.goal_radius                             # Radius of goal circle
