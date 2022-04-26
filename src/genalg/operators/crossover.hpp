@@ -5,32 +5,31 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
-#include <iterator>
-#include <random>
 #include <numeric>
+#include <random>
 #include <vector>
 
 namespace genalg {
     namespace operators {
-        /// Interface for a crossover operator.
+        /// Interface for Genetic Algorithm crossover (recombination) operation.
         ///
-        /// @tparam I An individual
-        template<typename I>
+        /// @tparam G A genome representation of an individual
+        template<typename G>
         class CrossoverOperator {
         public:
-            virtual std::array<I, 2> cross(const I& p1, const I& p2,
+            virtual std::array<G, 2> cross(const G& g1, const G& g2,
                                            std::default_random_engine& rng) const = 0;
         };
 
         /// Recombination technique for crossing over at multiple points.
         ///
-        /// This operation is used primarily for sequences of items (e.g., an
-        /// array or vector of booleans). As long as the Genome of the individual
-        /// is iterable, it can be crossed.
+        /// The std::swap function is used for crossing over genes. Therefore,
+        /// the selected representation of a genome should be supported
+        /// through the swap function.
         ///
-        /// @tparam I An individual
-        template<typename I>
-        class MultiPointCrossover : public CrossoverOperator<I> {
+        /// @tparam G A genome representation of an individual
+        template<typename G>
+        class MultiPointCrossover : public CrossoverOperator<G> {
         private:
             const std::size_t n_crossovers_;
 
@@ -38,31 +37,31 @@ namespace genalg {
             explicit MultiPointCrossover(std::size_t n)
                 : n_crossovers_{n} {}
 
-            std::array<I, 2> cross(const I& p1, const I& p2,
+            std::array<G, 2> cross(const G& g1, const G& g2,
                                    std::default_random_engine& rng) const override;
         };
 
         /// Recombination technique for crossing over at a single point.
         ///
-        /// This operation is used for recombining two individuals at one
-        /// point.
+        /// This technique is a specialization of the \ref MultiPointCrossover
+        /// method with a single point of crossover.
         ///
-        /// @tparam I An individual
-        template<typename I>
-        class SinglePointCrossover : public MultiPointCrossover<I> {
+        /// @tparam G A genome representation of an individual
+        template<typename G>
+        class SinglePointCrossover : public MultiPointCrossover<G> {
         public:
             SinglePointCrossover()
-                : MultiPointCrossover<I>(1) {}
+                : MultiPointCrossover<G>(1) {}
 
-            /// Cross two individuals at one point.
+            /// Cross two individuals using single point crossover technique.
             ///
-            /// @param p1 The first parent
-            /// @param p2 The second parent
-            /// @param rng The Random Number Generator engine
-            /// @return Two newly crossed individuals
-            std::array<I, 2> cross(const I& p1, const I& p2,
+            /// @param g1 The first genome
+            /// @param g2 The second genome
+            /// @param rng A random number generator engine
+            /// @return Two newly crossed genomes
+            std::array<G, 2> cross(const G& g1, const G& g2,
                                    std::default_random_engine& rng) const override {
-                return MultiPointCrossover<I>::cross(p1, p2, rng);
+                return MultiPointCrossover<G>::cross(g1, g2, rng);
             }
         };
     }
@@ -70,39 +69,42 @@ namespace genalg {
 
 namespace genalg {
     namespace operators {
-        /// Cross two individuals at multiple points.
+        /// Cross two individuals using multi-point crossover technique.
         ///
-        /// @param p1 The first parent
-        /// @param p2 The second parent
-        /// @param rng The Random Number Generator engine
-        /// @return Two newly crossed individuals
-        template<typename I>
-        std::array<I, 2> MultiPointCrossover<I>::cross(const I &p1, const I &p2,
+        /// @param g1 The first genome
+        /// @param g2 The second genome
+        /// @param rng A random number generator engine
+        /// @return Two newly crossed genomes
+        template<typename G>
+        std::array<G, 2> MultiPointCrossover<G>::cross(const G &g1, const G &g2,
                                                        std::default_random_engine& rng) const {
-            assert(p1.genome().size() == p2.genome().size());
-            assert(this->n_crossovers_ <= p1.genome().size());
+            assert(g1.size() == g2.size());
+            assert(this->n_crossovers_ <= g1.size());
 
-            auto genome1 = p1.genome();
-            auto genome2 = p2.genome();
+            G genome1 = g1;
+            G genome2 = g2;
 
-            std::vector<std::size_t> indexes(p1.genome().size() - 1);
+            std::vector<std::size_t> indexes(g1.size());
             std::iota(indexes.begin(), indexes.end(), 1);
 
-            std::vector<std::size_t> points;
+            std::vector<std::size_t> crossovers;
             std::sample(indexes.begin(), indexes.end(),
-                        std::back_inserter(points), this->n_crossovers_, rng);
+                        std::back_inserter(crossovers), this->n_crossovers_, rng);
 
-            std::sort(points.begin(), points.end());
+            std::sort(crossovers.begin(), crossovers.end());
 
-            for(int i = 0; i < points.size(); ++i) {
-                for(int j = points[i]; j < genome1.size(); ++j) {
-                    std::swap(genome1[j], genome2[j]);
+            for(int i = 0; i < crossovers.size(); ++i) {
+                for(int j = crossovers[i]; j < genome1.size(); ++j) {
+                    auto gene1 = genome1[j];
+                    auto gene2 = genome2[j];
+
+                    std::swap(gene1, gene2);
                 }
             }
 
-            return std::array<I, 2> {
-                I(genome1),
-                I(genome2)
+            return std::array<G, 2> {
+                genome1,
+                genome2
             };
         }
     }

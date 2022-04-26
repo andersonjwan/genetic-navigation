@@ -3,52 +3,55 @@ from Cython.Build import cythonize
 
 extensions = [
     Extension(
-        name="algorithm",
-        sources=["bindings/algorithm.pyx"],
+        name="pygenalg.algorithm",
+        sources=["bindings/pygenalg/algorithm.pyx"],
         include_dirs=["src/genalg"]
     ),
     Extension(
-        name="crossover",
-        sources=["bindings/crossover.pyx"],
+        name="pygenalg.core.fitness",
+        sources=["bindings/pygenalg/core/fitness.pyx"],
         include_dirs=["src/genalg"]
     ),
     Extension(
-        name="mutation",
-        sources=["bindings/mutation.pyx"],
+        name="pygenalg.core.termination",
+        sources=["bindings/pygenalg/core/termination.pyx"],
         include_dirs=["src/genalg"]
     ),
     Extension(
-        name="options",
-        sources=["bindings/options.pyx",],
+        name="pygenalg.core.options",
+        sources=["bindings/pygenalg/core/options.pyx"],
         include_dirs=["src/genalg"]
     ),
     Extension(
-        name="population",
-        sources=["bindings/population.pyx",],
+        name="pygenalg.operators.crossover",
+        sources=["bindings/pygenalg/operators/crossover.pyx"],
         include_dirs=["src/genalg"]
     ),
     Extension(
-        name="selection",
-        sources=["bindings/selection.pyx",],
+        name="pygenalg.operators.mutation",
+        sources=["bindings/pygenalg/operators/mutation.pyx"],
         include_dirs=["src/genalg"]
     ),
     Extension(
-        name="individual",
-        sources=["bindings/individual.pyx"],
+        name="pygenalg.operators.selection",
+        sources=["bindings/pygenalg/operators/selection.pyx"],
         include_dirs=["src/genalg"]
     ),
+    Extension(
+        name="pygenalg.population",
+        sources=["bindings/pygenalg/population.pyx"],
+        include_dirs=["src/genalg"]
+    ),
+    Extension(
+        name="pygenalg.individual",
+        sources=["bindings/pygenalg/individual.pyx"],
+        include_dirs=["src/genalg"]
+    )
 ]
 
 setup(
     name="py-genalg",
     version="0.0.1",
-    ext_package="pygenalg",
     ext_modules=cythonize(extensions),
-    install_requires=[
-        "numpy",
-        "matplotlib",
-        "seaborn",
-        "pandas"
-    ],
     python_requires=">=3.8"
 )
