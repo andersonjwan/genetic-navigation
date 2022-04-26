@@ -17,11 +17,8 @@ cdef class GenerationLimit:
             limit
         )
 
-        print("cython: cppGenerationLimit allocated...")
-
     def __dealloc__(self) -> None:
         del self._objcpp
-        print("cython: cppGenerationLimit deallocated...")
 
 cdef class BestLimit:
     cdef cppBestLimit[cppIndividual[vector[bool], double]]* _objcpp
@@ -31,8 +28,5 @@ cdef class BestLimit:
             limit
         )
 
-        print("cython: cppBestLimit allocated...")
-
     def __dealloc__(self) -> None:
         del self._objcpp
-        print("cython: cppBestLimit deallocated...")

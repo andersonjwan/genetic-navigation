@@ -12,8 +12,6 @@ cdef class TournamentSelection:
 
     def __cinit__(self, size: int, prob: float) -> None:
         self._objcpp = new cppTournamentSelection[cppIndividual[vector[bool], double]](size, prob)
-        print("cython: cppTournamentSelection allocated...")
 
     def __dealloc__(self) -> None:
         del self._objcpp
-        print("cython: cppTournamentSelection deallocated...")

@@ -11,8 +11,6 @@ cdef class ZeroFitnessFunction:
 
     def __cinit__(self) -> None:
         self._objcpp = new cppZeroFitnessFunction[vector[bool], double]()
-        print("cython: cppZeroFitnessFunction allocated...")
 
     def __dealloc__(self) -> None:
         del self._objcpp
-        print("cython: cppZeroFitnessFunction deallocated...")

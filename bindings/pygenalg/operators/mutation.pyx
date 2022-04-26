@@ -11,8 +11,6 @@ cdef class BitFlipMutation:
 
     def __cinit__(self, p_inversion: float) -> None:
         self._objcpp = new cppBitFlipMutation[vector[bool]](p_inversion)
-        print("cython: cppBitFlipMutation allocated...")
 
     def __dealloc__(self) -> None:
         del self._objcpp
-        print("cython: cppBitFlipMutation deallocated...")
