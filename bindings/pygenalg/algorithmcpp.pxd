@@ -25,7 +25,4 @@ cdef extern from "algorithm.hpp" namespace "genalg":
         size_t seed() const
 
         void initialize(const Population[I]& population)
-
-        void run(TerminationCondition[I]& termination)
         Population[I] update(const Population[I]& population)
-        Population[I] next()
