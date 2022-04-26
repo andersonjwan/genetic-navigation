@@ -1,114 +1,95 @@
 """Mobile robot simulation for Genetic Algorithm based Navigation."""
 
-import math
 import random
 
 from typing import List
 
 from pygenalg.algorithm import GeneticAlgorithm
-from pygenalg.individual import BinaryIndividual
-from pygenalg.options import Options
+from pygenalg.core.options import Options
+from pygenalg.individual import Individual
+from pygenalg.operators.crossover import MultiPointCrossover
+from pygenalg.operators.mutation import BitFlipMutation
+from pygenalg.operators.selection import TournamentSelection
 from pygenalg.population import Population
 
 from environment import Env
-from plotter import plot_fitness
 from robot import Robot
 from simulator import Simulator
 
-
-def transfer(robots: List[Robot]) -> Population:
-    """Transfer the genome/fitness to the GA Population interface.
-    """
-
-    transplant = Population(len(population))
-
-    for i, robot in list(enumerate(robots)):
-        genome = [bit == "1" for bit in robot.chromosome]
-
-        transplant.add(
-            BinaryIndividual(genome),
-            robot.fitness
-        )
-
-    return transplant
-
-def build_robots(population: Population, env: Env) -> List[Robot]:
-    """Transfer the genome/fitness to the GA Population interface.
+def construct(population: Population, env: Env) -> List[Robot]:
+    """Create a Robot list from a Population.
     """
 
     robots = []
-    for individual in population:
-        chromosome = ""
-        for bit in individual[0]:
-            chromosome += str(1) if bit else str(0)
-
+    for individual in population.individuals:
         robots.append(
-            Robot(env, chromosome)
+            Robot(env, "".join("1" if x else "0" for x in individual.genome))
         )
 
     return robots
 
-if __name__ == '__main__':
-    # --------------------------------------------------------------------------
-    # Parameters
-    # --------------------------------------------------------------------------
+def deconstruct(robots: List[Robot]) -> Population:
+    """Create a population from a Robot list.
+    """
 
-    disp_results = True                                   # Display results during training
-    K_GENERATIONS = 25
+    population = Population(len(robots))
+
+    for i, robot in enumerate(robots):
+        genome = [x == "1" for x in robot.chromosome]
+
+        population.append(
+            Individual(genome, robot.fitness)
+        )
+
+    return population
+
+def fitness(genome) -> float:
+    return -1000.0
+
+if __name__ == "__main__":
+    K_GENERATIONS = 5
+    K_INDIVIDUALS = 10
 
     options = Options(
-        population_capacity=10,      # Total number of robots (population size)
-        p_mutation=0.01,
-        p_fittest=0.85,
-        n_crossovers=100
+        population_capacity=K_INDIVIDUALS,
+        p_mutation=0.1
     )
 
-    ga = GeneticAlgorithm(options)
+    # genetic algorithm
+    selection = TournamentSelection(size=2, prob=0.85)
+    crossover = MultiPointCrossover(n_crossovers=2)
+    mutation = BitFlipMutation(p_inversion=0.5)
+
+    ga = GeneticAlgorithm(
+        selection, crossover, mutation, fitness, options
+    )
+
+    # simulation
+    env = Env()
+    sim = Simulator(env)
+
+
+    # initialize population
     population = Population(options.population_capacity)
 
-    env = Env()                                           # Define the environment
-    sim = Simulator(env)                                  # Define the simulator
-    population_fitness_history = []                       # Stores the fitness for each individual in every generation
+    for i in range(options.population_capacity):
+        genome = random.choices([0, 1], k=(2 ** 9) * 3)
 
-    # initial population
-    robots = []
-    for individual in range(options.population_capacity):
-        genome = random.choices([0, 1], k=((2 ** 9) * 3))
-        population.add(BinaryIndividual(genome))
+        population.append(
+            Individual(genome, fitness(genome))
+        )
 
-        chromosome = ""
-        for bit in genome:
-            chromosome += str(bit)
+    robots = construct(population, env)
 
-        robots.append(Robot(env, chromosome))
-
-
-    # --------------------------------------------------------------------------
-    # Training
-    # --------------------------------------------------------------------------
-
-    # population_fitness_history.append([r.fitness for r in robots])  # Save current population's fitness for plotting
-    # episode: one iteration
-    # print('Generation: {}'.format(i + 1))
-    # print('='*30)
-
-    # print('Maximum fitness: {}'.format(max(population_fitness_history[-1])))
-    # print('='*30)
-
+    # simulation
     for i in range(K_GENERATIONS):
-        print(f"Generation: {i:02d}")
+        sim.set_population(robots)
+        sim.run_episode(disp_results=True)
 
-        sim.set_population(robots)  # Set the current population of robots in the simulator
-        sim.run_episode(disp_results) # Run one navigation episode
+        population = deconstruct(robots)
+        population = ga.update(population)
 
-        population = transfer(robots)
-        population = ga.update(population) # ga.update(population: Population) -> Population
+        robots = construct(population, env)
 
-        robots = build_robots(population, env)
-
-
-    # --------------------------------------------------------------------------
-    # Display animation and results
-    # --------------------------------------------------------------------------
-    sim.display_env()                                     # Display the environment
-    plot_fitness(population_fitness_history)              # Plot fitness per generation
+    # results statistics
+    sim.display_env()
