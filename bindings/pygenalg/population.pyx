@@ -28,11 +28,8 @@ cdef class Population:
 
         self._objcpp = new cppPopulation[cppIndividual[vector[bool], double]](capacity)
 
-        print("cython: cppPopulation allocated...")
-
     def __dealloc__(self) -> None:
         del self._objcpp
-        print("cython: cppPopulation deallocated...")
 
     @property
     def capacity(self) -> int:
@@ -49,10 +46,10 @@ cdef class Population:
         self._individuals.append(individual)
 
     def best(self) -> pyIndividual:
-        return max(self._individuals)
+        return max(self._individuals, key=lambda x: x.fitness)
 
     def worst(self) -> pyIndividual:
-        return min(self._individuals)
+        return min(self._individuals, key=lambda x: x.fitness)
 
     def __len__(self) -> int:
         return len(self._individuals)
