@@ -18,7 +18,7 @@ class Robot:
         self.set_initial_pose()                                    # Set initial pose at random
         self.q_history = []                                        # Robot's pose history
         self.obs_detection_history = []                            # Robot's obstacle detection history
-        self.fitness = None                                        # Robot's fitness
+        self.fitness = -1000.0                                         # Robot's fitness
 
         self.chromosome = chromosome
 
