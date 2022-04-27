@@ -67,7 +67,11 @@ if __name__ == "__main__":
 
     # simulation
     environment = Environment()
-    simulator = Simulator(environment)
+    simulator = Simulator(
+        environment,
+        disp_results=True,
+        nthreads=16
+    )
 
 
     # initialize population
@@ -84,8 +88,11 @@ if __name__ == "__main__":
 
     # simulation
     for i in range(K_GENERATIONS):
+        print(f"GENERATION {i:000d}")
+
         simulator.set_population(robots)
-        simulator.run_episode(disp_results=True)
+        simulator.set_population(simulator.simulate())
+        #simulator.set_population(robots)
 
         population = deconstruct(robots)
         population = ga.update(population)
