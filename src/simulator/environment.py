@@ -252,7 +252,7 @@ class Env:
         Returns:
           - angle_area(list): The intervals in one-hot encoding
         """
-        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)  # Actual goal angle
+        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)                 # Actual goal angle
         heading_error = np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta))  # Relative goal angle
 
         # angle_area = 4*[0]  # One-hot encoding of 2pi divided into 4 intervals
@@ -313,32 +313,49 @@ class Env:
 
         return angle_area
 
-        return angle_area
-
-    def get_current_reward(self, x_rob, y_rob, theta):
-        """Computes the reward at the current time-step.
+    def get_reward(self, x_rob, y_rob, theta):
+        """Computes the reward at the current time-step and informs whether a
+        collision or reaching the goal event occurred.
 
         Inputs:
           - x_rob(float): Robot's x-position
           - y_rob(float): Robot's y-position
           - theta(float): Robot's heading angle
         Returns:
-          - reward(float):  The reward at the current time-step
+          - reward(float):      The reward at the current time-step
+          - has_collided(bool): Whether a collision occurred
+          - goal_reached(bool): Whether the goal is reached
         """
-        # ToDo reward shaping
+        has_collided = False
+        goal_reached = False
 
-        # Reward weights
-        dist_weight = 10    # Distance weight
-        heading_weight = 1  # Heading weight
-        time_weight = 1     # Time weight
+        if self.is_collision(x_rob, y_rob):
+            has_collided = True
+            reward = self.collision_reward
+        elif self.is_goal_reached(x_rob, y_rob):
+            goal_reached = True
+            reward = self.goal_reward
+        else:
 
-        # Distance to goal
-        dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
-        # Heading error
-        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
-        heading_error = abs(np.arctan2(np.sin(theta_goal-theta), np.cos(theta_goal-theta)))
+            # Reward weights
+            dist_weight = config.dist_weight        # Distance weight
+            heading_weight = config.heading_weight  # Heading weight
+            time_weight = config.time_weight        # Time weight
 
-        # Compute current reward
-        reward = -dist_weight*dist - heading_weight*heading_error - time_weight
+            # Distance to goal
+            dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
 
-        return reward
+            if dist <= 0.05:
+                dist = 0.05         # Bound value for appropriate reward
+
+            # Heading error
+            theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
+            heading_error = abs(np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta)))
+
+            if heading_error <= 0.1:
+                heading_error = 0.1  # Bound value for appropriate reward
+
+            # Compute current reward
+            reward = dist_weight*1/dist + heading_weight*1/heading_error**0.5 - time_weight
+
+        return reward, has_collided, goal_reached

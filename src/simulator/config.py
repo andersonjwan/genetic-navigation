@@ -25,3 +25,6 @@ max_steps = 100                                      # The maximum number of ste
 v = 0.5                                              # Constant linear velocity
 goal_reward = 100                                    # Reward for reaching the goal
 collision_reward = -100                              # Reward for collision
+dist_weight = 10                                     # Distance weight
+heading_weight = 1                                   # Heading weight
+time_weight = 1/2                                    # Time weight
