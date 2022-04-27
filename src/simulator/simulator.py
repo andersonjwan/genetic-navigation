@@ -6,13 +6,17 @@ import seaborn as sns
 
 import config
 
+from multiprocessing import Pool
 
 class Simulator:
-    def __init__(self, env):
+    def __init__(self, env, disp_results=False, nthreads=1):
         self.env = env                     # Environment class instance
         self.max_steps = config.max_steps  # The maximum number of steps for one episode
         self.v = config.v                  # Constant linear velocity
         self.robots = None                 # The population of robots (list of robot class instances)
+
+        self._disp_results = disp_results
+        self._nthreads = nthreads
 
     def set_population(self, robots):
         """Sets the current population of robots for the simulation.
@@ -22,54 +26,60 @@ class Simulator:
         """
         self.robots = robots
 
-    def run_episode(self, disp_results):
+    def simulate(self):
+        with Pool(processes=self._nthreads) as pool:
+            return pool.map(self.run_episode, self.robots)
+
+    def run_episode(self, robot):
         """Runs one episode where the current population navigates in the environment.
 
         Inputs:
           - disp_results(bool): Whether to display results during training
         """
 
-        for robot in self.robots:
-            score = 0                                             # Initialize score
-            self.store_state(robot)                               # Store robot's initial state (pose & obst detection)
-            termination_reason = 'Time-out'                       # Initialize reason for robot's episode termination
+        # for robot in self.robots:
+        score = 0                                             # Initialize score
+        self.store_state(robot)                               # Store robot's initial state (pose & obst detection)
+        termination_reason = 'Time-out'                       # Initialize reason for robot's episode termination
 
-            # Navigate until collision, reaching goal or max steps
-            for i in range(self.max_steps):
-                omega = robot.get_action()                        # Get action from GA "controller"
-                robot.step(self.v, omega)                         # Move one step
+        # Navigate until collision, reaching goal or max steps
+        for i in range(self.max_steps):
+            omega = robot.get_action()                        # Get action from GA "controller"
+            robot.step(self.v, omega)                         # Move one step
 
-                self.store_state(robot)                           # Store robot's state (pose & obst detection)
-                x, y, theta = robot.get_pose()                    # Get robot's pose
-                score = self.env.get_current_reward(x, y, theta)  # Update score
+            self.store_state(robot)                           # Store robot's state (pose & obst detection)
+            x, y, theta = robot.get_pose()                    # Get robot's pose
+            score = self.env.get_current_reward(x, y, theta)  # Update score
 
-                # If collision, stop moving and update score
-                if self.env.is_collision(x, y):
-                    termination_reason = 'Collision'
-                    score += self.env.collision_reward
-                    for j in range(i, self.max_steps):
-                        self.store_state(robot)
-                    break
+            # If collision, stop moving and update score
+            if self.env.is_collision(x, y):
+                termination_reason = 'Collision'
+                score += self.env.collision_reward
+                for j in range(i, self.max_steps):
+                    self.store_state(robot)
+                break
 
-                # If goal reached, stop moving and update score
-                if self.env.is_goal_reached(x, y):
-                    termination_reason = 'Goal reached!'
-                    score += self.env.goal_reward
-                    for j in range(i, self.max_steps):
-                        self.store_state(robot)
-                    break
+            # If goal reached, stop moving and update score
+            if self.env.is_goal_reached(x, y):
+                termination_reason = 'Goal reached!'
+                score += self.env.goal_reward
+                for j in range(i, self.max_steps):
+                    self.store_state(robot)
+                break
 
-            robot.set_fitness(score)                               # Update fitness of individual
+        robot.set_fitness(score)                               # Update fitness of individual
 
-            if disp_results:
-                print('> Individual: {} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:100]), end=' ')
-                print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
-                print('| Fitness: {}'.format(robot.fitness))
-            # ToDo change fitness in GA
+        if self._disp_results:
+            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:100]), end=' ')
+            print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
+            print('| Fitness: {}'.format(robot.fitness))
+        # ToDo change fitness in GA
+
+        return robot
 
     def store_state(self, robot):
         """Stores the current robot state (pose & obstacle detection results).
-        
+
         Inputs:
           - robot(Robot class): The robot for which to store the state
         """
