@@ -2,9 +2,19 @@ import numpy as np
 
 # Environment
 env_dimension = 15                                   # The dimensions of the workspace
-goal = (6.5, 8.5)                                    # Goal position
 goal_radius = 0.8                                    # Radius of goal circle
 wall_width = 0.15                                    # Workspace wall half-width
+env_id = 0                                           # The predefined environment layout id [0-1]
+
+if env_id == 0:
+    goal = (8.0, 10.5)                               # Goal position for env 0
+elif env_id == 1:
+    goal = (2.0, 13.5)                               # Goal position for env 1
+elif env_id == 2:
+    goal = (2.0, 13.5)                               # Goal position for env 2
+elif env_id == 3:
+    # Difficult layout for final testing!!!
+    goal = (12.0, 11.25)                             # Goal position for env 3
 
 # Robot
 robot_radius = 0.35                                  # Robot's radius
@@ -21,7 +31,7 @@ actions = {'000': round(-np.pi/2, 2),
 
 # Simulator
 dt = 0.1                                             # Sample time
-max_steps = 100                                      # The maximum number of steps for one episode
+max_steps = 1000                                     # The maximum number of steps for one episode
 v = 0.5                                              # Constant linear velocity
 goal_reward = 100                                    # Reward for reaching the goal
 collision_reward = -100                              # Reward for collision

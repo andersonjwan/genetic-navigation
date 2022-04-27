@@ -9,11 +9,54 @@ class Environment:
         self.goal_radius = config.goal_radius                             # Radius of goal circle
         self.env_dimension = config.env_dimension                         # Workspace dimensions
         self.wall_width = config.wall_width                               # Workspace wall half-width
-        obs1 = self.define_obstacle(x=2, y=3, dx=1, dy=1)                 # Define obstacle 1
-        obs2 = self.define_obstacle(x=8, y=1, dx=0.5, dy=1)               # Define obstacle 2
-        self.obstacles = [obs1, obs2]                                     # List of all obstacles
+        self.obstacles = []                                               # List of all obstacles
         self.goal_reward = config.goal_reward                             # Reward for reaching the goal
         self.collision_reward = config.collision_reward                   # Reward for collision
+        self.choose_env(config.env_id)                                    # Choose an environment layout
+
+    def choose_env(self, env_id):
+        """Sets the layout of obstacles for the selected environment.
+
+        Inputs:
+          - env_id(int):  The predefined environment layout id
+        """
+        assert env_id in range(4)
+
+        if env_id == 0:  # No obstacles
+            return
+
+        elif env_id == 1:
+            self.obstacles = [self.define_obstacle(x=10, y=7, dx=5, dy=0.5),
+                              self.define_obstacle(x=0, y=4, dx=6, dy=0.5),
+                              self.define_obstacle(x=6, y=4, dx=0.5, dy=2),
+                              self.define_obstacle(x=6, y=10, dx=0.5, dy=5),
+                              self.define_obstacle(x=11, y=3, dx=1, dy=1.5),
+                              self.define_obstacle(x=1, y=7.5, dx=1, dy=1)]
+        elif env_id == 2:
+            self.obstacles = [self.define_obstacle(x=2, y=3, dx=1, dy=1),
+                              self.define_obstacle(x=8, y=1, dx=2, dy=1),
+                              self.define_obstacle(x=3, y=4, dx=5, dy=1),
+                              self.define_obstacle(x=6, y=6, dx=1, dy=1),
+                              self.define_obstacle(x=0, y=8, dx=4, dy=1),
+                              self.define_obstacle(x=6, y=13, dx=1, dy=2),
+                              self.define_obstacle(x=6, y=9, dx=1, dy=1)]
+        elif env_id == 3:
+            self.obstacles = [self.define_obstacle(x=2, y=0, dx=0.5, dy=4),
+                              self.define_obstacle(x=2, y=6, dx=0.5, dy=3),
+                              self.define_obstacle(x=0, y=9, dx=6, dy=0.5),
+                              self.define_obstacle(x=4.5, y=3, dx=2, dy=0.5),
+                              self.define_obstacle(x=5, y=3.5, dx=0.5, dy=5.5),
+                              self.define_obstacle(x=1, y=12.5, dx=1, dy=1),
+                              self.define_obstacle(x=11, y=0, dx=0.5, dy=5.5),
+                              self.define_obstacle(x=8, y=5, dx=3, dy=0.5),
+                              self.define_obstacle(x=8, y=5, dx=0.5, dy=6),
+                              self.define_obstacle(x=4, y=11, dx=4.5, dy=0.5),
+                              self.define_obstacle(x=10, y=9.5, dx=1, dy=1),
+                              self.define_obstacle(x=10, y=12, dx=1, dy=1),
+                              self.define_obstacle(x=13, y=9.5, dx=1, dy=1),
+                              self.define_obstacle(x=13, y=12, dx=1, dy=1),
+                              self.define_obstacle(x=6, y=12, dx=1, dy=1),
+                              self.define_obstacle(x=9, y=1, dx=1, dy=1)]
 
     @staticmethod
     def define_obstacle(x, y, dx, dy):
@@ -89,7 +132,6 @@ class Environment:
           - dx(float):       The x-position offset wrt the robot of the ray point that intersects with the obstacle
           - dy(float):       The y-position offset wrt the robot of the ray point that intersects with the obstacle
         """
-        # Todo fix error
         num_of_points = 500
         for i in range(num_of_points+1):
             u = i / num_of_points

@@ -69,7 +69,7 @@ class Simulator:
         robot.set_fitness(episode_reward)                   # Update fitness of individual
 
         if self._disp_results:
-            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:100]), end=' ')
+            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:50]), end=' ')
             print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
             print('| Fitness: {}'.format(robot.fitness))
 
@@ -151,6 +151,7 @@ class Simulator:
 
     def animate(self, i):
         """Draws each frame of the animation."""
+        sns.set_theme()
 
         for robot in self.robots:
             robot_ind = str(self.robots.index(robot))     # Robot index

@@ -19,25 +19,27 @@ class Robot:
         self.set_initial_pose()                                    # Set initial pose at random
         self.q_history = []                                        # Robot's pose history
         self.obs_detection_history = []                            # Robot's obstacle detection history
-        self.fitness = -1000.0                                         # Robot's fitness
-
-        self.chromosome = chromosome
+        self.fitness = -1000.0                                     # Robot's fitness
+        self.chromosome = chromosome                               # Robot's chromosome
 
     def set_initial_pose(self):
-        """Sets robot's initial pose at random within the workspace."""
+        """Sets robot's initial pose within the workspace."""
 
-        # Define lower and upper bounds on position and heading
-        pos_min = config.wall_width + self.robot_radius
-        pos_max = config.env_dimension - config.wall_width - self.robot_radius
-        theta_min, theta_max = 0, 2*np.pi
+        # # Define lower and upper bounds on position and heading
+        # pos_min = config.wall_width + self.robot_radius
+        # pos_max = config.env_dimension - config.wall_width - self.robot_radius
+        # theta_min, theta_max = 0, 2*np.pi
+        #
+        # # Sample random, obstacle free positions within the workspace bounds
+        # is_obstacle_free = False
+        # while not is_obstacle_free:
+        #     self.x_robot, self.y_robot = np.round_((pos_max - pos_min)*np.random.random_sample(size=2) + pos_min, decimals=1)
+        #     if not self.env.is_collision(self.x_robot, self.y_robot):
+        #         is_obstacle_free = True
+        # self.theta = np.round_((theta_max - theta_min)*np.random.random_sample() + theta_min, decimals=2)
 
-        # Sample random, obstacle free positions within the workspace bounds
-        is_obstacle_free = False
-        while not is_obstacle_free:
-            self.x_robot, self.y_robot = np.round_((pos_max - pos_min)*np.random.random_sample(size=2) + pos_min, decimals=1)
-            if not self.env.is_collision(self.x_robot, self.y_robot):
-                is_obstacle_free = True
-        self.theta = np.round_((theta_max - theta_min)*np.random.random_sample() + theta_min, decimals=2)
+        self.x_robot, self.y_robot = 1.0, 1.5
+        self.theta = np.pi/3
 
     def step(self, v, omega):
         """Simulates robot motion over one time interval step and sets the new pose.

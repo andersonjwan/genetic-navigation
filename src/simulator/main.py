@@ -17,6 +17,7 @@ from environment import Environment
 from robot import Robot
 from simulator import Simulator
 
+
 def construct(population: Population, environment: Environment) -> List[Robot]:
     """Create a Robot list from a Population.
     """
@@ -28,6 +29,7 @@ def construct(population: Population, environment: Environment) -> List[Robot]:
         )
 
     return robots
+
 
 def deconstruct(robots: List[Robot]) -> Population:
     """Create a population from a Robot list.
@@ -44,11 +46,13 @@ def deconstruct(robots: List[Robot]) -> Population:
 
     return population
 
+
 def fitness(genome) -> float:
     return -1000.0
 
+
 if __name__ == "__main__":
-    K_GENERATIONS = 5
+    K_GENERATIONS = 1
     K_INDIVIDUALS = 5
 
     options = Options(
@@ -72,7 +76,6 @@ if __name__ == "__main__":
         disp_results=True,
         nthreads=16
     )
-
 
     # initialize population
     population = Population(options.population_capacity)
@@ -103,7 +106,7 @@ if __name__ == "__main__":
         robots = construct(population, environment)
 
     # results statistics
-    plot = Plotter(ga)
-    plot.fitness(show=True, save=True)
+    # plot = Plotter(ga)
+    # plot.fitness(show=True, save=True)
 
     simulator.display_env(f"img/{ga.seed}_animation.gif")
