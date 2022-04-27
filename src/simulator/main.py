@@ -61,8 +61,8 @@ if __name__ == "__main__":
     )
 
     # genetic algorithm
-    selection = TournamentSelection(size=2, prob=0.85)
-    crossover = MultiPointCrossover(n_crossovers=2)
+    selection = TournamentSelection(size=4, prob=0.75)
+    crossover = MultiPointCrossover(n_crossovers=500, gene_size=3)
     mutation = BitFlipMutation(p_inversion=0.5)
 
     ga = GeneticAlgorithm(
@@ -106,7 +106,7 @@ if __name__ == "__main__":
         robots = construct(population, environment)
 
     # results statistics
-    # plot = Plotter(ga)
-    # plot.fitness(show=True, save=True)
+    plot = Plotter(ga)
+    plot.fitness(show=False, save=True)
 
-    simulator.display_env(f"img/{ga.seed}_animation.gif", show=True, save=False)
+    simulator.display_env(f"img/{ga.seed}_animation.gif", show=False, save=True)
