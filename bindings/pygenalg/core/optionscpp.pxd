@@ -11,3 +11,9 @@ cdef extern from "algorithm/options.hpp" namespace "genalg::algorithm":
             size_t population_cap,
             double p_mutation
         ) except +
+
+        Options(
+            size_t population_cap,
+            double p_mutation,
+            unsigned long int seed
+        ) except +

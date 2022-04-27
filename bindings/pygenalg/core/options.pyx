@@ -6,8 +6,11 @@ from .optionscpp cimport Options as cppOptions
 cdef class Options:
     cdef cppOptions* _objcpp
 
-    def __cinit__(self, population_capacity: int, p_mutation: float) -> None:
-        self._objcpp = new cppOptions(population_capacity, p_mutation)
+    def __cinit__(self, population_capacity: int, p_mutation: float, seed: int=None) -> None:
+        if seed:
+            self._objcpp = new cppOptions(population_capacity, p_mutation, seed)
+        else:
+            self._objcpp = new cppOptions(population_capacity, p_mutation)
 
     def __dealloc__(self) -> None:
         del self._objcpp
