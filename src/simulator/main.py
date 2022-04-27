@@ -109,4 +109,9 @@ if __name__ == "__main__":
     plot = Plotter(ga)
     plot.fitness(show=False, save=True)
 
-    simulator.display_env(f"img/{ga.seed}_animation.gif", show=False, save=True)
+    simulator.display_env(f"img/S{ga.seed}_G{K_GENERATIONS}_animation.gif", show=False, save=True)
+
+    # save last population
+    with open(f"S{ga.seed}_G{K_GENERATIONS}_solutions.txt", "w") as outfile:
+        for solution in simulator.robots:
+            outfile.write(f"{solution.chromosome},{solution.fitness}\n")
