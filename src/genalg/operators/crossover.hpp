@@ -32,10 +32,11 @@ namespace genalg {
         class MultiPointCrossover : public CrossoverOperator<G> {
         private:
             const std::size_t n_crossovers_;
+            const std::size_t gene_size_;
 
         public:
-            explicit MultiPointCrossover(std::size_t n)
-                : n_crossovers_{n} {}
+            explicit MultiPointCrossover(std::size_t n_crossovers, std::size_t gene_size=1)
+                : n_crossovers_{n_crossovers}, gene_size_{gene_size} {}
 
             std::array<G, 2> cross(const G& g1, const G& g2,
                                    std::default_random_engine& rng) const override;
@@ -50,8 +51,8 @@ namespace genalg {
         template<typename G>
         class SinglePointCrossover : public MultiPointCrossover<G> {
         public:
-            SinglePointCrossover()
-                : MultiPointCrossover<G>(1) {}
+            explicit SinglePointCrossover(std::size_t gene_size=1)
+                : MultiPointCrossover<G>(1, gene_size) {}
 
             /// Cross two individuals using single point crossover technique.
             ///
@@ -78,14 +79,17 @@ namespace genalg {
         template<typename G>
         std::array<G, 2> MultiPointCrossover<G>::cross(const G &g1, const G &g2,
                                                        std::default_random_engine& rng) const {
+            assert(g1.size() % this->gene_size_ == 0);
             assert(g1.size() == g2.size());
             assert(this->n_crossovers_ <= g1.size());
 
             G genome1 = g1;
             G genome2 = g2;
 
-            std::vector<std::size_t> indexes(g1.size());
-            std::iota(indexes.begin(), indexes.end(), 1);
+            std::vector<std::size_t> indexes(g1.size() / this->gene_size_);
+            for(int i = 0; i < indexes.size(); ++i) {
+                indexes[i] = i * this->gene_size_;
+            }
 
             std::vector<std::size_t> crossovers;
             std::sample(indexes.begin(), indexes.end(),
