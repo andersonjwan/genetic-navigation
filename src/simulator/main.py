@@ -52,8 +52,8 @@ def fitness(genome) -> float:
 
 
 if __name__ == "__main__":
-    K_GENERATIONS = 1
-    K_INDIVIDUALS = 5
+    K_GENERATIONS = 25
+    K_INDIVIDUALS = 16
 
     options = Options(
         population_capacity=K_INDIVIDUALS,
@@ -61,8 +61,8 @@ if __name__ == "__main__":
     )
 
     # genetic algorithm
-    selection = TournamentSelection(size=4, prob=0.75)
-    crossover = MultiPointCrossover(n_crossovers=500, gene_size=3)
+    selection = TournamentSelection(size=4, prob=0.95)
+    crossover = MultiPointCrossover(n_crossovers=100, gene_size=3)
     mutation = BitFlipMutation(p_inversion=0.5)
 
     ga = GeneticAlgorithm(
@@ -95,13 +95,12 @@ if __name__ == "__main__":
 
         simulator.set_population(robots)
         simulator.set_population(simulator.simulate())
-        #simulator.set_population(robots)
 
         population = deconstruct(robots)
         population = ga.update(population)
 
         for i, individual in enumerate(population.individuals):
-            individual.fitness = robots[i].fitness
+            individual.fitness = simulator.robots[i].fitness
 
         robots = construct(population, environment)
 
