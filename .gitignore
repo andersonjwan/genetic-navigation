@@ -1,6 +1,7 @@
 # Editors
 *~
 *.el
+.idea
 
 # Build artifacts
 build/

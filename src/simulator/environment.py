@@ -9,11 +9,54 @@ class Environment:
         self.goal_radius = config.goal_radius                             # Radius of goal circle
         self.env_dimension = config.env_dimension                         # Workspace dimensions
         self.wall_width = config.wall_width                               # Workspace wall half-width
-        obs1 = self.define_obstacle(x=2, y=3, dx=1, dy=1)                 # Define obstacle 1
-        obs2 = self.define_obstacle(x=8, y=1, dx=0.5, dy=1)               # Define obstacle 2
-        self.obstacles = [obs1, obs2]                                     # List of all obstacles
+        self.obstacles = []                                               # List of all obstacles
         self.goal_reward = config.goal_reward                             # Reward for reaching the goal
         self.collision_reward = config.collision_reward                   # Reward for collision
+        self.choose_env(config.env_id)                                    # Choose an environment layout
+
+    def choose_env(self, env_id):
+        """Sets the layout of obstacles for the selected environment.
+
+        Inputs:
+          - env_id(int):  The predefined environment layout id
+        """
+        assert env_id in range(4)
+
+        if env_id == 0:  # No obstacles
+            return
+
+        elif env_id == 1:
+            self.obstacles = [self.define_obstacle(x=10, y=7, dx=5, dy=0.5),
+                              self.define_obstacle(x=0, y=4, dx=6, dy=0.5),
+                              self.define_obstacle(x=6, y=4, dx=0.5, dy=2),
+                              self.define_obstacle(x=6, y=10, dx=0.5, dy=5),
+                              self.define_obstacle(x=11, y=3, dx=1, dy=1.5),
+                              self.define_obstacle(x=1, y=7.5, dx=1, dy=1)]
+        elif env_id == 2:
+            self.obstacles = [self.define_obstacle(x=2, y=3, dx=1, dy=1),
+                              self.define_obstacle(x=8, y=1, dx=2, dy=1),
+                              self.define_obstacle(x=3, y=4, dx=5, dy=1),
+                              self.define_obstacle(x=6, y=6, dx=1, dy=1),
+                              self.define_obstacle(x=0, y=8, dx=4, dy=1),
+                              self.define_obstacle(x=6, y=13, dx=1, dy=2),
+                              self.define_obstacle(x=6, y=9, dx=1, dy=1)]
+        elif env_id == 3:
+            self.obstacles = [self.define_obstacle(x=2, y=0, dx=0.5, dy=4),
+                              self.define_obstacle(x=2, y=6, dx=0.5, dy=3),
+                              self.define_obstacle(x=0, y=9, dx=6, dy=0.5),
+                              self.define_obstacle(x=4.5, y=3, dx=2, dy=0.5),
+                              self.define_obstacle(x=5, y=3.5, dx=0.5, dy=5.5),
+                              self.define_obstacle(x=1, y=12.5, dx=1, dy=1),
+                              self.define_obstacle(x=11, y=0, dx=0.5, dy=5.5),
+                              self.define_obstacle(x=8, y=5, dx=3, dy=0.5),
+                              self.define_obstacle(x=8, y=5, dx=0.5, dy=6),
+                              self.define_obstacle(x=4, y=11, dx=4.5, dy=0.5),
+                              self.define_obstacle(x=10, y=9.5, dx=1, dy=1),
+                              self.define_obstacle(x=10, y=12, dx=1, dy=1),
+                              self.define_obstacle(x=13, y=9.5, dx=1, dy=1),
+                              self.define_obstacle(x=13, y=12, dx=1, dy=1),
+                              self.define_obstacle(x=6, y=12, dx=1, dy=1),
+                              self.define_obstacle(x=9, y=1, dx=1, dy=1)]
 
     @staticmethod
     def define_obstacle(x, y, dx, dy):
@@ -89,7 +132,6 @@ class Environment:
           - dx(float):       The x-position offset wrt the robot of the ray point that intersects with the obstacle
           - dy(float):       The y-position offset wrt the robot of the ray point that intersects with the obstacle
         """
-        # Todo fix error
         num_of_points = 500
         for i in range(num_of_points+1):
             u = i / num_of_points
@@ -252,45 +294,110 @@ class Environment:
         Returns:
           - angle_area(list): The intervals in one-hot encoding
         """
-        angle_area = 4*[0]  # One-hot encoding of 2pi divided into 4 intervals
         theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)                 # Actual goal angle
         heading_error = np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta))  # Relative goal angle
 
-        if -np.pi <= heading_error <= -np.pi/2 or 3*np.pi/4 <= heading_error <= np.pi:
+        # angle_area = 4*[0]  # One-hot encoding of 2pi divided into 4 intervals
+        # if -np.pi <= heading_error <= -np.pi/2 or 3*np.pi/4 <= heading_error <= np.pi:
+        #     angle_area[0] = 1
+        # elif np.pi/2 <= heading_error <= 3*np.pi/4:
+        #     angle_area[1] = 1
+        # elif np.pi/4 <= heading_error <= np.pi/2:
+        #     angle_area[2] = 1
+        # else:
+        #     angle_area[3] = 1
+
+        # One-hot encoding of 2pi divided into 12 intervals of pi/6 (30 deg)
+        # angle_area = 12*[0]
+        # if 0 <= heading_error <= np.pi/6:
+        #     angle_area[0] = 1
+        # elif np.pi/6 <= heading_error <= 2*np.pi/6:
+        #     angle_area[1] = 1
+        # elif 2*np.pi/6 <= heading_error <= np.pi/2:
+        #     angle_area[2] = 1
+        # elif np.pi/2 <= heading_error <= 4*np.pi/6:
+        #     angle_area[3] = 1
+        # elif 4*np.pi/6 <= heading_error <= 5*np.pi/6:
+        #     angle_area[4] = 1
+        # elif 5*np.pi/6 <= heading_error <= np.pi:
+        #     angle_area[5] = 1
+        # elif -np.pi <= heading_error <= -5*np.pi/6:
+        #     angle_area[6] = 1
+        # elif -5*np.pi/6 <= heading_error <= -4*np.pi/6:
+        #     angle_area[7] = 1
+        # elif -4*np.pi/6 <= heading_error <= -np.pi/2:
+        #     angle_area[8] = 1
+        # elif -np.pi/2 <= heading_error <= -2*np.pi/6:
+        #     angle_area[9] = 1
+        # elif -2*np.pi/6 <= heading_error <= -np.pi/6:
+        #     angle_area[10] = 1
+        # else:
+        #     angle_area[11] = 1
+
+        # One-hot encoding of 2pi divided into 8 intervals of pi/4 (45 deg)
+        angle_area = 8*[0]
+        if 0 <= heading_error and heading_error <= np.pi/4:
             angle_area[0] = 1
-        elif np.pi/2 <= heading_error <= 3*np.pi/4:
+        elif np.pi/4 <= heading_error and heading_error <= np.pi/2:
             angle_area[1] = 1
-        elif np.pi/4 <= heading_error <= np.pi/2:
+        elif np.pi/2 <= heading_error and heading_error <= 3*np.pi/4:
             angle_area[2] = 1
-        else:
+        elif 3*np.pi/4 <= heading_error and heading_error <= np.pi:
             angle_area[3] = 1
+        elif -np.pi <= heading_error and heading_error <= -3*np.pi/4:
+            angle_area[4] = 1
+        elif -3*np.pi/4 <= heading_error and heading_error <= -np.pi/2:
+            angle_area[5] = 1
+        elif -np.pi/2 <= heading_error and heading_error <= -np.pi/4:
+            angle_area[6] = 1
+        else:
+            angle_area[7] = 1
 
         return angle_area
 
-    def get_current_reward(self, x_rob, y_rob, theta):
-        """Computes the reward at the current time-step.
+    def get_reward(self, x_rob, y_rob, theta):
+        """Computes the reward at the current time-step and informs whether a
+        collision or reaching the goal event occurred.
 
         Inputs:
           - x_rob(float): Robot's x-position
           - y_rob(float): Robot's y-position
           - theta(float): Robot's heading angle
         Returns:
-          - reward(float):  The reward at the current time-step
+          - reward(float):      The reward at the current time-step
+          - has_collided(bool): Whether a collision occurred
+          - goal_reached(bool): Whether the goal is reached
         """
-        # ToDo reward shaping
+        has_collided = False
+        goal_reached = False
 
-        # Reward weights
-        dist_weight = 10    # Distance weight
-        heading_weight = 1  # Heading weight
-        time_weight = 1     # Time weight
+        if self.is_collision(x_rob, y_rob):
+            has_collided = True
+            reward = self.collision_reward
+        elif self.is_goal_reached(x_rob, y_rob):
+            goal_reached = True
+            reward = self.goal_reward
+        else:
 
-        # Distance to goal
-        dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
-        # Heading error
-        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
-        heading_error = abs(np.arctan2(np.sin(theta_goal-theta), np.cos(theta_goal-theta)))
+            # Reward weights
+            dist_weight = config.dist_weight        # Distance weight
+            heading_weight = config.heading_weight  # Heading weight
+            time_weight = config.time_weight        # Time weight
 
-        # Compute current reward
-        reward = -dist_weight*dist - heading_weight*heading_error - time_weight
+            # Distance to goal
+            dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
 
-        return reward
+            if dist <= 0.05:
+                dist = 0.05                         # Bound value for appropriate reward
+
+            # Heading error
+            theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
+            heading_error = abs(np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta)))
+
+            if heading_error <= 0.1:
+                heading_error = 0.1                 # Bound value for appropriate reward
+
+            # Compute current reward
+            reward = dist_weight*1/dist + heading_weight*1/heading_error**0.5 - time_weight
+
+        return reward, has_collided, goal_reached
