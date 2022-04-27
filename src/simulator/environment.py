@@ -346,14 +346,14 @@ class Environment:
             dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
 
             if dist <= 0.05:
-                dist = 0.05         # Bound value for appropriate reward
+                dist = 0.05                         # Bound value for appropriate reward
 
             # Heading error
             theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
             heading_error = abs(np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta)))
 
             if heading_error <= 0.1:
-                heading_error = 0.1  # Bound value for appropriate reward
+                heading_error = 0.1                 # Bound value for appropriate reward
 
             # Compute current reward
             reward = dist_weight*1/dist + heading_weight*1/heading_error**0.5 - time_weight

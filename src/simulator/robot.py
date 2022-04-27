@@ -2,6 +2,7 @@ import numpy as np
 
 import config
 
+
 class Robot:
     robot_radius = config.robot_radius                             # Robot's radius
     sensor_range = config.sensor_range                             # Sensor range

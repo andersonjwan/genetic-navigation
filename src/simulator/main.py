@@ -78,7 +78,7 @@ if __name__ == "__main__":
     population = Population(options.population_capacity)
 
     for i in range(options.population_capacity):
-        genome = random.choices([0, 1], k=(2 ** 9) * 3)
+        genome = random.choices([0, 1], k=(2 ** 13) * 3)
 
         population.append(
             Individual(genome, fitness(genome))
