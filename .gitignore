@@ -1,3 +1,8 @@
+# Generic
+*.txt
+*.svg
+*.gif
+
 # Editors
 *~
 *.el
