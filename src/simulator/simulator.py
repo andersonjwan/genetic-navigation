@@ -82,7 +82,7 @@ class Simulator:
             obs_history.append(self.env.obstacle_detection(x, y, theta, sensor_angle))
         robot.obs_detection_history.append(obs_history)
 
-    def display_env(self):
+    def display_env(self, filename: str):
         """Displays the environment."""
 
         global ax
@@ -139,7 +139,7 @@ class Simulator:
         plt.show()
 
         # Save animation as gif
-        ani.save('images/robot_navigation.gif', writer=PillowWriter(fps=1/config.dt))
+        ani.save(filename, writer=PillowWriter(fps=1/config.dt))
 
     def animate(self, i):
         """Draws each frame of the animation."""

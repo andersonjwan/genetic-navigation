@@ -12,18 +12,19 @@ from pygenalg.operators.mutation import BitFlipMutation
 from pygenalg.operators.selection import TournamentSelection
 from pygenalg.population import Population
 
-from environment import Env
+from plotter import Plotter
+from environment import Environment
 from robot import Robot
 from simulator import Simulator
 
-def construct(population: Population, env: Env) -> List[Robot]:
+def construct(population: Population, environment: Environment) -> List[Robot]:
     """Create a Robot list from a Population.
     """
 
     robots = []
     for individual in population.individuals:
         robots.append(
-            Robot(env, "".join("1" if x else "0" for x in individual.genome))
+            Robot(environment, "".join("1" if x else "0" for x in individual.genome))
         )
 
     return robots
@@ -48,7 +49,7 @@ def fitness(genome) -> float:
 
 if __name__ == "__main__":
     K_GENERATIONS = 5
-    K_INDIVIDUALS = 10
+    K_INDIVIDUALS = 5
 
     options = Options(
         population_capacity=K_INDIVIDUALS,
@@ -65,8 +66,8 @@ if __name__ == "__main__":
     )
 
     # simulation
-    env = Env()
-    sim = Simulator(env)
+    environment = Environment()
+    simulator = Simulator(environment)
 
 
     # initialize population
@@ -79,17 +80,23 @@ if __name__ == "__main__":
             Individual(genome, fitness(genome))
         )
 
-    robots = construct(population, env)
+    robots = construct(population, environment)
 
     # simulation
     for i in range(K_GENERATIONS):
-        sim.set_population(robots)
-        sim.run_episode(disp_results=True)
+        simulator.set_population(robots)
+        simulator.run_episode(disp_results=True)
 
         population = deconstruct(robots)
         population = ga.update(population)
 
-        robots = construct(population, env)
+        for i, individual in enumerate(population.individuals):
+            individual.fitness = robots[i].fitness
+
+        robots = construct(population, environment)
 
     # results statistics
-    sim.display_env()
+    plot = Plotter(ga)
+    plot.fitness(show=True, save=True)
+
+    simulator.display_env(f"img/{ga.seed}_animation.gif")
