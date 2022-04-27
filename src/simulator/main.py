@@ -12,6 +12,7 @@ from pygenalg.operators.mutation import BitFlipMutation
 from pygenalg.operators.selection import TournamentSelection
 from pygenalg.population import Population
 
+from plotter import Plotter
 from environment import Environment
 from robot import Robot
 from simulator import Simulator
@@ -48,7 +49,7 @@ def fitness(genome) -> float:
 
 if __name__ == "__main__":
     K_GENERATIONS = 5
-    K_INDIVIDUALS = 10
+    K_INDIVIDUALS = 5
 
     options = Options(
         population_capacity=K_INDIVIDUALS,
@@ -89,7 +90,13 @@ if __name__ == "__main__":
         population = deconstruct(robots)
         population = ga.update(population)
 
+        for i, individual in enumerate(population.individuals):
+            individual.fitness = robots[i].fitness
+
         robots = construct(population, environment)
 
     # results statistics
-    simulator.display_env()
+    plot = Plotter(ga)
+    plot.fitness(show=True, save=True)
+
+    simulator.display_env(f"img/{ga.seed}_animation.gif")
