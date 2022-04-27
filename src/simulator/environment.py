@@ -252,18 +252,66 @@ class Env:
         Returns:
           - angle_area(list): The intervals in one-hot encoding
         """
-        angle_area = 4*[0]  # One-hot encoding of 2pi divided into 4 intervals
-        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)                 # Actual goal angle
+        theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)  # Actual goal angle
         heading_error = np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta))  # Relative goal angle
 
-        if -np.pi <= heading_error <= -np.pi/2 or 3*np.pi/4 <= heading_error <= np.pi:
+        # angle_area = 4*[0]  # One-hot encoding of 2pi divided into 4 intervals
+        # if -np.pi <= heading_error <= -np.pi/2 or 3*np.pi/4 <= heading_error <= np.pi:
+        #     angle_area[0] = 1
+        # elif np.pi/2 <= heading_error <= 3*np.pi/4:
+        #     angle_area[1] = 1
+        # elif np.pi/4 <= heading_error <= np.pi/2:
+        #     angle_area[2] = 1
+        # else:
+        #     angle_area[3] = 1
+
+        # One-hot encoding of 2pi divided into 12 intervals of pi/6 (30 deg)
+        # angle_area = 12*[0]
+        # if 0 <= heading_error <= np.pi/6:
+        #     angle_area[0] = 1
+        # elif np.pi/6 <= heading_error <= 2*np.pi/6:
+        #     angle_area[1] = 1
+        # elif 2*np.pi/6 <= heading_error <= np.pi/2:
+        #     angle_area[2] = 1
+        # elif np.pi/2 <= heading_error <= 4*np.pi/6:
+        #     angle_area[3] = 1
+        # elif 4*np.pi/6 <= heading_error <= 5*np.pi/6:
+        #     angle_area[4] = 1
+        # elif 5*np.pi/6 <= heading_error <= np.pi:
+        #     angle_area[5] = 1
+        # elif -np.pi <= heading_error <= -5*np.pi/6:
+        #     angle_area[6] = 1
+        # elif -5*np.pi/6 <= heading_error <= -4*np.pi/6:
+        #     angle_area[7] = 1
+        # elif -4*np.pi/6 <= heading_error <= -np.pi/2:
+        #     angle_area[8] = 1
+        # elif -np.pi/2 <= heading_error <= -2*np.pi/6:
+        #     angle_area[9] = 1
+        # elif -2*np.pi/6 <= heading_error <= -np.pi/6:
+        #     angle_area[10] = 1
+        # else:
+        #     angle_area[11] = 1
+
+        # One-hot encoding of 2pi divided into 8 intervals of pi/4 (45 deg)
+        angle_area = 8*[0]
+        if 0 <= heading_error and heading_error <= np.pi/4:
             angle_area[0] = 1
-        elif np.pi/2 <= heading_error <= 3*np.pi/4:
+        elif np.pi/4 <= heading_error and heading_error <= np.pi/2:
             angle_area[1] = 1
-        elif np.pi/4 <= heading_error <= np.pi/2:
+        elif np.pi/2 <= heading_error and heading_error <= 3*np.pi/4:
             angle_area[2] = 1
-        else:
+        elif 3*np.pi/4 <= heading_error and heading_error <= np.pi:
             angle_area[3] = 1
+        elif -np.pi <= heading_error and heading_error <= -3*np.pi/4:
+            angle_area[4] = 1
+        elif -3*np.pi/4 <= heading_error and heading_error <= -np.pi/2:
+            angle_area[5] = 1
+        elif -np.pi/2 <= heading_error and heading_error <= -np.pi/4:
+            angle_area[6] = 1
+        else:
+            angle_area[7] = 1
+
+        return angle_area
 
         return angle_area
 
