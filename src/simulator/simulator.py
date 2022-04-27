@@ -90,7 +90,7 @@ class Simulator:
             obs_history.append(self.env.obstacle_detection(x, y, theta, sensor_angle))
         robot.obs_detection_history.append(obs_history)
 
-    def display_env(self, filename: str):
+    def display_env(self, filename: str, show=True, save=False):
         """Displays the environment."""
 
         global ax
@@ -143,11 +143,11 @@ class Simulator:
             ax.add_patch(globals()['base%s' % robot_ind])
 
         # Run the animation
-        ani = FuncAnimation(fig, self.animate, frames=self.max_steps, interval=config.dt*1000, repeat=False)
-        plt.show()
+        ani = FuncAnimation(fig, self.animate, frames=self.max_steps, interval=config.dt*1000, repeat=False) if (show or save) else None
+        plt.show() if show else None
 
         # Save animation as gif
-        ani.save(filename, writer=PillowWriter(fps=1/config.dt))
+        ani.save(filename, writer=PillowWriter(fps=1/config.dt)) if save else None
 
     def animate(self, i):
         """Draws each frame of the animation."""

@@ -109,4 +109,4 @@ if __name__ == "__main__":
     # plot = Plotter(ga)
     # plot.fitness(show=True, save=True)
 
-    simulator.display_env(f"img/{ga.seed}_animation.gif")
+    simulator.display_env(f"img/{ga.seed}_animation.gif", show=True, save=False)
