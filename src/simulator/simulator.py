@@ -111,7 +111,7 @@ class Simulator:
             ax.add_patch(Rectangle((x, y), dx, dy, color='k'))
 
         # Goal
-        ax.add_patch(Circle((self.env.goal[0], self.env.goal[1]), self.env.goal_radius, color='r', alpha=0.3))
+        ax.add_patch(Circle((self.env.goal[0], self.env.goal[1]), self.env.goal_radius, color='limegreen'))
 
         # Robot
         for robot in self.robots:
@@ -151,8 +151,6 @@ class Simulator:
 
     def animate(self, i):
         """Draws each frame of the animation."""
-        sns.set_theme()
-
         for robot in self.robots:
             robot_ind = str(self.robots.index(robot))     # Robot index
             x_rob, y_rob, theta_rob = robot.q_history[i]  # Robot's pose at i-th time step
@@ -182,7 +180,7 @@ class Simulator:
 
             # Robot's base
             ax.patches.remove(globals()['base%s' % robot_ind])
-            globals()['base%s' % robot_ind] = Circle((x_rob, y_rob), config.robot_radius, color='b')
+            globals()['base%s' % robot_ind] = Circle((x_rob, y_rob), config.robot_radius, color='mediumblue')
             ax.add_patch(globals()['base%s' % robot_ind])
 
         return

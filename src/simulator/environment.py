@@ -186,7 +186,7 @@ class Environment:
         x_sensor = x_rob + dx                                                    # x-position of sensor end-point
         y_sensor = y_rob + dy                                                    # y-position of sensor end-point
         X_sensor = np.array([x_sensor, y_sensor]).reshape(2, 1)                  # Sensor ray end-point
-        c = 'g'                                                                  # Default sensor color (green)
+        c = 'mediumseagreen'                                                                  # Default sensor color (green)
         obs_detected = False                                                     # Whether an obstacle/wall is detected
 
         # Check if wall is detected by sensor
