@@ -54,6 +54,8 @@ def fitness(genome) -> float:
 if __name__ == "__main__":
     K_GENERATIONS = 25
     K_INDIVIDUALS = 16
+    load_population = False     # Whether to load a saved solution
+    population_fname = 'S1692676949_G1000_solutions.txt'
 
     options = Options(
         population_capacity=K_INDIVIDUALS,
@@ -80,12 +82,24 @@ if __name__ == "__main__":
     # initialize population
     population = Population(options.population_capacity)
 
-    for i in range(options.population_capacity):
-        genome = random.choices([0, 1], k=(2 ** 13) * 3)
+    if load_population:
+        # Load an already trained population
+        with open(population_fname) as f:
+            lines = f.readlines()
 
-        population.append(
-            Individual(genome, fitness(genome))
-        )
+        assert len(lines) >= K_INDIVIDUALS
+
+        # Keep only K_INDIVIDUALS from the saved population
+        for i in range(K_INDIVIDUALS):
+            genome, g_fitness = lines[i].split(',')
+            genome = [x == "1" for x in genome]
+            population.append(Individual(genome, float(g_fitness)))
+    else:
+        # Initialize with a random population
+        for i in range(options.population_capacity):
+            genome = random.choices([0, 1], k=(2 ** 13) * 3)
+
+            population.append(Individual(genome, fitness(genome)))
 
     robots = construct(population, environment)
 
