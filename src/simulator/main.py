@@ -51,7 +51,7 @@ def fitness(genome) -> float:
 
 
 if __name__ == "__main__":
-    K_GENERATIONS = 25
+    K_GENERATIONS = 20
     K_INDIVIDUALS = 16
     load_population = False     # Whether to load a saved solution
     population_fname = 'S1692676949_G1000_solutions.txt'
@@ -93,26 +93,32 @@ if __name__ == "__main__":
             population.append(Individual(genome, fitness(genome)))
 
     # SIMULATION
-    for i in range(K_GENERATIONS):
-        print(f"GENERATION {(i + 1):000d}")
+    for i in range(K_GENERATIONS + 1):
+        print(f"GENERATION {(i):04d}")
 
         simulator.robots = construct(population, environment)
         simulator.simulate(debug=True)
 
         population = deconstruct(simulator.robots)
-        for i, individual in enumerate(population.individuals):
-            individual.fitness = simulator.robots[i].fitness
+        for j, individual in enumerate(population.individuals):
+            individual.fitness = simulator.robots[j].fitness
 
         population = ga.update(population)
-        for i, individual in enumerate(population.individuals):
-            individual.fitness = simulator.robots[i].fitness
+        for j, individual in enumerate(population.individuals):
+            individual.fitness = simulator.robots[j].fitness
+
+        if i % (int(K_GENERATIONS / 4)) == 0:
+            simulator.display_env(
+                filename=f"img/S{ga.seed}_G{i:04d}_animation.gif",
+                title=f"Genetic Navigation at Generation {i}",
+                show=False,
+                save=True
+            )
 
     # results statistics
     plot = Plotter(ga)
     plot.fitness(show=False, save=True)
     plot.average(show=False, save=True)
-
-    simulator.display_env(f"img/S{ga.seed}_G{K_GENERATIONS}_animation.gif", show=False, save=True)
 
     # save last population
     with open(f"S{ga.seed}_G{K_GENERATIONS}_solutions.txt", "w") as outfile:
