@@ -397,7 +397,7 @@ class Environment:
 
             # Compute current reward
             # reward = dist_weight*1/dist + heading_weight*1/heading_error**0.5 - time_weight
-            reward = dist_weight*0.05/dist - time_weight
+            reward = dist_weight * 0.05 / dist - time_weight
             reward = round(reward, 5)
 
         return reward, has_collided, goal_reached
