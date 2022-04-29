@@ -75,7 +75,6 @@ if __name__ == "__main__":
     environment = Environment()
     simulator = Simulator(
         environment,
-        disp_results=True,
         nthreads=16
     )
 
@@ -108,17 +107,17 @@ if __name__ == "__main__":
         print(f"GENERATION {i:000d}")
 
         simulator.set_population(robots)
-        simulator.set_population(simulator.simulate())
+        simulator.set_population(simulator.simulate(debug=True))
 
         population = deconstruct(robots)
 
         for i, individual in enumerate(population.individuals):
-            individual.fitness = simulator.robots[i].fitness
+            individual.fitness = simulator._robots[i].fitness
 
         population = ga.update(population)
 
         for i, individual in enumerate(population.individuals):
-            individual.fitness = simulator.robots[i].fitness
+            individual.fitness = simulator._robots[i].fitness
 
         robots = construct(population, environment)
 
@@ -131,5 +130,5 @@ if __name__ == "__main__":
 
     # save last population
     with open(f"S{ga.seed}_G{K_GENERATIONS}_solutions.txt", "w") as outfile:
-        for solution in simulator.robots:
+        for solution in simulator._robots:
             outfile.write(f"{solution.chromosome},{solution.fitness}\n")
