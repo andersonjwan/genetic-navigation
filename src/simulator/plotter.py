@@ -110,7 +110,7 @@ class Plotter:
                 name="Worst",
                 x=data["Generation"],
                 y=data["Fitness"],
-                line=dict(color="rgb(99, 110, 250)"),
+                line=dict(color="rgb(239, 85, 59)"),
                 mode="lines",
                 showlegend=False
             )
