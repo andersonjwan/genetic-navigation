@@ -1,22 +1,46 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, Circle
-from matplotlib.animation import FuncAnimation, PillowWriter
 import seaborn as sns
-from multiprocessing import Pool
 
 import config
 
+from matplotlib.patches import Rectangle, Circle
+from matplotlib.animation import FuncAnimation, PillowWriter
+
+from multiprocessing import Pool
+from typing import List
+
+from environment import Environment
+from robot import Robot
 
 class Simulator:
-    def __init__(self, env, disp_results=False, nthreads=1):
-        self.env = env                     # Environment class instance
-        self.max_steps = config.max_steps  # The maximum number of steps for one episode
-        self.v = config.v                  # Constant linear velocity
-        self.robots = None                 # The population of robots (list of robot class instances)
+    """Simulation runner.
 
-        self._disp_results = disp_results  # Whether to display results during training
-        self._nthreads = nthreads          # Number of threads for multiprocessing
+    Attributes:
+        _environment: An Environment
+        _max_steps: The maximum number of steps for one episode
+        _nthreads: The number of parallel simulations to run
+        _robots: A list of robots per simulation
+        _velocity: The constant velocity of each robot
+        _debug: Printout solution performance
+    """
+
+    _environment: Environment
+    _max_steps: int
+    _nthreads: int
+
+    _robots: List[Robot]
+    _velocity: float
+
+    _debug: bool
+
+    def __init__(self, environment: Environment, nthreads: int):
+        self._environment = environment
+        self._max_steps = config.max_steps
+        self._nthreads = nthreads
+
+        self._robots = []
+        self._velocity = config.v
 
     def set_population(self, robots):
         """Sets the current population of robots for the simulation.
@@ -24,11 +48,13 @@ class Simulator:
         Inputs:
           - robots(list): The population of robots
         """
-        self.robots = robots
+        self._robots = robots
 
-    def simulate(self):
+    def simulate(self, debug=False):
+        self._debug = debug
+
         with Pool(processes=self._nthreads) as pool:
-            return pool.map(self.run_episode, self.robots)
+            return pool.map(self.run_episode, self._robots)
 
     def run_episode(self, robot):
         """Runs one episode where the current population navigates in the environment.
@@ -37,23 +63,23 @@ class Simulator:
           - robot(Robot class): The robot for which to run the simulation
         """
 
-        # for robot in self.robots:
+        # for robot in self._robots:
         episode_reward = 0                                  # Initialize score
         self.store_state(robot)                             # Store robot's initial state (pose & obst detection)
         termination_reason = 'Time-out'                     # Initialize reason for robot's episode termination
 
         # Navigate until collision, reaching goal or max steps
-        for i in range(self.max_steps):
+        for i in range(self._max_steps):
 
             # 1. Get action from GA controller
             omega = robot.get_action()
 
             # 2. Take action and transition to the next state
-            robot.step(self.v, omega)
+            robot.step(self._velocity, omega)
             self.store_state(robot)                         # Store robot's state (pose & obst detection)
 
             # 3. Get reward + info
-            reward, has_collided, goal_reached = self.env.get_reward(*robot.get_pose())
+            reward, has_collided, goal_reached = self._environment.get_reward(*robot.get_pose())
             episode_reward += reward                        # Update episode reward
 
             # If collision or goal reached, stop moving
@@ -62,14 +88,14 @@ class Simulator:
                     termination_reason = 'Goal reached!'
                 else:
                     termination_reason = 'Collision'
-                for j in range(i, self.max_steps):
+                for j in range(i, self._max_steps):
                     self.store_state(robot)
                 break
 
         robot.set_fitness(episode_reward)                   # Update fitness of individual
 
-        if self._disp_results:
-            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:50]), end=' ')
+        if self._debug:
+            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self._robots.index(robot)+1, robot.chromosome[:50]), end=' ')
             print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
             print('| Fitness: {}'.format(robot.fitness))
 
@@ -87,7 +113,7 @@ class Simulator:
         # Store obstacle detection results
         obs_history = []
         for sensor_angle in robot.sensors:
-            obs_history.append(self.env.obstacle_detection(x, y, theta, sensor_angle))
+            obs_history.append(self._environment.obstacle_detection(x, y, theta, sensor_angle))
         robot.obs_detection_history.append(obs_history)
 
     def display_env(self, filename: str, show=True, save=False):
@@ -101,27 +127,27 @@ class Simulator:
         plt.axis('equal')
 
         # Walls
-        ax.hlines(y=0, xmin=0, xmax=self.env.env_dimension, linewidth=10, color='k')
-        ax.hlines(y=self.env.env_dimension, xmin=0, xmax=self.env.env_dimension, linewidth=10, color='k')
-        ax.vlines(x=0, ymin=-self.env.wall_width, ymax=self.env.env_dimension+self.env.wall_width, linewidth=10, color='k')
-        ax.vlines(x=self.env.env_dimension, ymin=-self.env.wall_width, ymax=self.env.env_dimension+self.env.wall_width, linewidth=10, color='k')
+        ax.hlines(y=0, xmin=0, xmax=self._environment.env_dimension, linewidth=10, color='k')
+        ax.hlines(y=self._environment.env_dimension, xmin=0, xmax=self._environment.env_dimension, linewidth=10, color='k')
+        ax.vlines(x=0, ymin=-self._environment.wall_width, ymax=self._environment.env_dimension+self._environment.wall_width, linewidth=10, color='k')
+        ax.vlines(x=self._environment.env_dimension, ymin=-self._environment.wall_width, ymax=self._environment.env_dimension+self._environment.wall_width, linewidth=10, color='k')
 
         # Obstacles
-        for _, _, [x, y, dx, dy] in self.env.obstacles:
+        for _, _, [x, y, dx, dy] in self._environment.obstacles:
             ax.add_patch(Rectangle((x, y), dx, dy, color='k'))
 
         # Goal
-        ax.add_patch(Circle((self.env.goal[0], self.env.goal[1]), self.env.goal_radius, color='limegreen'))
+        ax.add_patch(Circle((self._environment.goal[0], self._environment.goal[1]), self._environment.goal_radius, color='limegreen'))
 
         # Robot
-        for robot in self.robots:
-            robot_ind = str(self.robots.index(robot))  # Robot index
+        for robot in self._robots:
+            robot_ind = str(self._robots.index(robot))  # Robot index
             x_rob, y_rob, theta = robot.q_history[0]   # Initial robot position
 
             # Robot's sensors
             for i in range(len(config.sensors)):
                 # Sensor ray
-                dx, dy, c, obs_detected = self.env.obstacle_detection(x_rob, y_rob, theta, config.sensors[i])
+                dx, dy, c, obs_detected = self._environment.obstacle_detection(x_rob, y_rob, theta, config.sensors[i])
                 globals()['sensor%s' % i+robot_ind] = plt.Arrow(x=x_rob, y=y_rob, dx=dx, dy=dy, color=c, width=0)
                 ax.add_patch(globals()['sensor%s' % i+robot_ind])
 
@@ -143,7 +169,7 @@ class Simulator:
             ax.add_patch(globals()['base%s' % robot_ind])
 
         # Run the animation
-        ani = FuncAnimation(fig, self.animate, frames=self.max_steps, interval=config.dt*1000, repeat=False) if (show or save) else None
+        ani = FuncAnimation(fig, self.animate, frames=self._max_steps, interval=config.dt*1000, repeat=False) if (show or save) else None
         plt.show() if show else None
 
         # Save animation as gif
@@ -151,8 +177,8 @@ class Simulator:
 
     def animate(self, i):
         """Draws each frame of the animation."""
-        for robot in self.robots:
-            robot_ind = str(self.robots.index(robot))     # Robot index
+        for robot in self._robots:
+            robot_ind = str(self._robots.index(robot))     # Robot index
             x_rob, y_rob, theta_rob = robot.q_history[i]  # Robot's pose at i-th time step
 
             # Robot's sensors
