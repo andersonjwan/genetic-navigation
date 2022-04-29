@@ -1,7 +1,5 @@
 import numpy as np
-
 import config
-
 
 class Environment:
     def __init__(self):
