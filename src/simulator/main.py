@@ -17,7 +17,6 @@ from environment import Environment
 from robot import Robot
 from simulator import Simulator
 
-
 def construct(population: Population, environment: Environment) -> List[Robot]:
     """Create a Robot list from a Population.
     """
@@ -52,19 +51,19 @@ def fitness(genome) -> float:
 
 
 if __name__ == "__main__":
-    K_GENERATIONS = 2
+    K_GENERATIONS = 25
     K_INDIVIDUALS = 16
     load_population = False     # Whether to load a saved solution
     population_fname = 'S1692676949_G1000_solutions.txt'
 
     options = Options(
         population_capacity=K_INDIVIDUALS,
-        p_mutation=0.1
+        p_mutation=0.15
     )
 
     # genetic algorithm
-    selection = TournamentSelection(size=4, prob=0.95)
-    crossover = MultiPointCrossover(n_crossovers=100, gene_size=3)
+    selection = TournamentSelection(size=4, prob=0.85)
+    crossover = MultiPointCrossover(n_crossovers=1000, gene_size=3)
     mutation = BitFlipMutation(p_inversion=0.5)
 
     ga = GeneticAlgorithm(
