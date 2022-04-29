@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 import config
 
@@ -112,10 +111,9 @@ class Simulator:
         """Displays the environment."""
 
         global ax
-        sns.set_style("white")
 
         fig, ax = plt.subplots(figsize=(12, 9))
-        ax.set_title('Robot Navigation')
+        ax.set_title('Genetic Navigation')
         plt.axis('equal')
 
         # Walls
