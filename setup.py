@@ -53,5 +53,12 @@ setup(
     name="py-genalg",
     version="0.0.1",
     ext_modules=cythonize(extensions),
-    python_requires=">=3.8"
+    python_requires=">=3.8",
+    install_requires=[
+        "kaleido",
+        "matplotlib",
+        "numpy",
+        "pandas",
+        "plotly",
+    ]
 )
