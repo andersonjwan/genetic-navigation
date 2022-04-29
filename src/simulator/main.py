@@ -52,7 +52,7 @@ def fitness(genome) -> float:
 
 
 if __name__ == "__main__":
-    K_GENERATIONS = 25
+    K_GENERATIONS = 2
     K_INDIVIDUALS = 16
     load_population = False     # Whether to load a saved solution
     population_fname = 'S1692676949_G1000_solutions.txt'
@@ -111,6 +111,10 @@ if __name__ == "__main__":
         simulator.set_population(simulator.simulate())
 
         population = deconstruct(robots)
+
+        for i, individual in enumerate(population.individuals):
+            individual.fitness = simulator.robots[i].fitness
+
         population = ga.update(population)
 
         for i, individual in enumerate(population.individuals):
@@ -121,6 +125,7 @@ if __name__ == "__main__":
     # results statistics
     plot = Plotter(ga)
     plot.fitness(show=False, save=True)
+    plot.average(show=False, save=True)
 
     simulator.display_env(f"img/S{ga.seed}_G{K_GENERATIONS}_animation.gif", show=False, save=True)
 
