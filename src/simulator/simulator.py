@@ -29,7 +29,7 @@ class Simulator:
     _max_steps: int
     _nthreads: int
 
-    _robots: List[Robot]
+    robots: List[Robot]
     _velocity: float
 
     _debug: bool
@@ -39,22 +39,14 @@ class Simulator:
         self._max_steps = config.max_steps
         self._nthreads = nthreads
 
-        self._robots = []
+        self.robots = []
         self._velocity = config.v
-
-    def set_population(self, robots):
-        """Sets the current population of robots for the simulation.
-
-        Inputs:
-          - robots(list): The population of robots
-        """
-        self._robots = robots
 
     def simulate(self, debug=False):
         self._debug = debug
 
         with Pool(processes=self._nthreads) as pool:
-            return pool.map(self.run_episode, self._robots)
+            self.robots = pool.map(self.run_episode, self.robots)
 
     def run_episode(self, robot):
         """Runs one episode where the current population navigates in the environment.
@@ -63,7 +55,7 @@ class Simulator:
           - robot(Robot class): The robot for which to run the simulation
         """
 
-        # for robot in self._robots:
+        # for robot in self.robots:
         episode_reward = 0                                  # Initialize score
         self.store_state(robot)                             # Store robot's initial state (pose & obst detection)
         termination_reason = 'Time-out'                     # Initialize reason for robot's episode termination
@@ -95,7 +87,7 @@ class Simulator:
         robot.set_fitness(episode_reward)                   # Update fitness of individual
 
         if self._debug:
-            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self._robots.index(robot)+1, robot.chromosome[:50]), end=' ')
+            print('> Individual: {:03d} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:50]), end=' ')
             print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
             print('| Fitness: {}'.format(robot.fitness))
 
@@ -140,8 +132,8 @@ class Simulator:
         ax.add_patch(Circle((self._environment.goal[0], self._environment.goal[1]), self._environment.goal_radius, color='limegreen'))
 
         # Robot
-        for robot in self._robots:
-            robot_ind = str(self._robots.index(robot))  # Robot index
+        for robot in self.robots:
+            robot_ind = str(self.robots.index(robot))  # Robot index
             x_rob, y_rob, theta = robot.q_history[0]   # Initial robot position
 
             # Robot's sensors
@@ -177,8 +169,8 @@ class Simulator:
 
     def animate(self, i):
         """Draws each frame of the animation."""
-        for robot in self._robots:
-            robot_ind = str(self._robots.index(robot))     # Robot index
+        for robot in self.robots:
+            robot_ind = str(self.robots.index(robot))     # Robot index
             x_rob, y_rob, theta_rob = robot.q_history[i]  # Robot's pose at i-th time step
 
             # Robot's sensors
