@@ -42,6 +42,9 @@ cdef class MutationOperator:
 cdef class Options:
     cdef cppOptions* _objcpp
 
+cdef class Individual:
+    cdef cppIndividual[vector[bool], double]* _objcpp
+
 cdef class Population:
     cdef cppPopulation[cppIndividual[vector[bool], double]]* _objcpp
 
@@ -87,8 +90,14 @@ cdef class GeneticAlgorithm:
         self._generations.append(population)
 
     def update(self, population: pyPopulation) -> pyPopulation:
+        cdef cppPopulation[cppIndividual[vector[bool], double]] *populationcpp
+        populationcpp = new cppPopulation[cppIndividual[vector[bool], double]](len(population.individuals))
+
+        for individual in population.individuals:
+            populationcpp.append(dereference((<Individual>individual)._objcpp))
+
         cdef cppPopulation[cppIndividual[vector[bool], double]] new_populationcpp
-        new_populationcpp = self._objcpp.update(dereference((<Population>population)._objcpp))
+        new_populationcpp = self._objcpp.update(dereference(populationcpp))
 
         cdef vector[cppIndividual[vector[bool], double]] new_individualscpp
         new_individualscpp = new_populationcpp.individuals()
