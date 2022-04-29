@@ -107,13 +107,13 @@ class Simulator:
             obs_history.append(self._environment.obstacle_detection(x, y, theta, sensor_angle))
         robot.obs_detection_history.append(obs_history)
 
-    def display_env(self, filename: str, show=True, save=False):
+    def display_env(self, filename: str, title="Genetic Navigation", show=True, save=False):
         """Displays the environment."""
 
         global ax
 
         fig, ax = plt.subplots(figsize=(12, 9))
-        ax.set_title('Genetic Navigation')
+        ax.set_title(title)
         plt.axis('equal')
 
         # Walls
