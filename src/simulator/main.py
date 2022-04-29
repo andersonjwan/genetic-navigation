@@ -71,55 +71,42 @@ if __name__ == "__main__":
         selection, crossover, mutation, fitness, options
     )
 
-    # simulation
     environment = Environment()
     simulator = Simulator(
         environment,
         nthreads=16
     )
 
-    # initialize population
+    # INITIALIZATION
     population = Population(options.population_capacity)
 
     if load_population:
-        # Load an already trained population
-        with open(population_fname) as f:
-            lines = f.readlines()
+        with open(population_fname, "r") as infile:
+            lines = infile.readlines()
+            assert len(lines) >= options.population_capacity
 
-        assert len(lines) >= K_INDIVIDUALS
-
-        # Keep only K_INDIVIDUALS from the saved population
-        for i in range(K_INDIVIDUALS):
-            genome, g_fitness = lines[i].split(',')
-            genome = [x == "1" for x in genome]
-            population.append(Individual(genome, float(g_fitness)))
+            for solution in lines:
+                genome, fitness = solution.split(',')
+                population.append(Individual([x == "1" for x in genome], float(fitness)))
     else:
-        # Initialize with a random population
         for i in range(options.population_capacity):
             genome = random.choices([0, 1], k=(2 ** 13) * 3)
-
             population.append(Individual(genome, fitness(genome)))
 
-    robots = construct(population, environment)
-
-    # simulation
+    # SIMULATION
     for i in range(K_GENERATIONS):
-        print(f"GENERATION {i:000d}")
+        print(f"GENERATION {(i + 1):000d}")
 
-        simulator.set_population(robots)
-        simulator.set_population(simulator.simulate(debug=True))
+        simulator.robots = construct(population, environment)
+        simulator.simulate(debug=True)
 
-        population = deconstruct(robots)
-
+        population = deconstruct(simulator.robots)
         for i, individual in enumerate(population.individuals):
-            individual.fitness = simulator._robots[i].fitness
+            individual.fitness = simulator.robots[i].fitness
 
         population = ga.update(population)
-
         for i, individual in enumerate(population.individuals):
-            individual.fitness = simulator._robots[i].fitness
-
-        robots = construct(population, environment)
+            individual.fitness = simulator.robots[i].fitness
 
     # results statistics
     plot = Plotter(ga)
@@ -130,5 +117,5 @@ if __name__ == "__main__":
 
     # save last population
     with open(f"S{ga.seed}_G{K_GENERATIONS}_solutions.txt", "w") as outfile:
-        for solution in simulator._robots:
+        for solution in simulator.robots:
             outfile.write(f"{solution.chromosome},{solution.fitness}\n")
