@@ -68,7 +68,8 @@ class Robot:
         Inputs:
           - fitness(float): The individual's fitness
         """
-        self.fitness = int(fitness)
+        # self.fitness = int(fitness)
+        self.fitness = fitness
 
     def get_action(self):
         """Get the next action by decoding the chromosome.
