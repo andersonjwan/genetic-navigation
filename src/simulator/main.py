@@ -117,10 +117,13 @@ if __name__ == "__main__":
 
     # results statistics
     plot = Plotter(ga)
+
+    plot.best(show=False, save=True)
+    plot.worst(show=False, save=True)
     plot.fitness(show=False, save=True)
     plot.average(show=False, save=True)
 
     # save last population
-    with open(f"S{ga.seed}_G{K_GENERATIONS}_solutions.txt", "w") as outfile:
+    with open(f"S{ga.seed}_G{K_GENERATIONS:04d}_solutions.txt", "w") as outfile:
         for solution in simulator.robots:
             outfile.write(f"{solution.chromosome},{solution.fitness}\n")
