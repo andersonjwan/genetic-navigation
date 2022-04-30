@@ -416,7 +416,8 @@ class Environment:
         """
 
         # Distance to goal
-        dist = round(np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2), 3)
+        dist = np.linalg.norm(np.array(self.goal) - np.array([x_rob, y_rob]))
+
         # dist_weight = config.dist_weight  # Distance weight
 
         if termination_reason == 'Time-out':
