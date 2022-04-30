@@ -47,20 +47,63 @@ class Simulator:
         with Pool(processes=self._nthreads) as pool:
             self.robots = pool.map(self.run_episode, self.robots)
 
+    # def run_episode(self, robot):
+    #     """Runs one episode where the current population navigates in the environment.
+    #
+    #     Inputs:
+    #       - robot(Robot class): The robot for which to run the simulation
+    #     """
+    #
+    #     # for robot in self.robots:
+    #     episode_reward = 0                                  # Initialize score
+    #     self.store_state(robot)                             # Store robot's initial state (pose & obst detection)
+    #     termination_reason = 'Time-out'                     # Initialize reason for robot's episode termination
+    #
+    #     # Navigate until collision, reaching goal or max steps
+    #     for i in range(self._max_steps):
+    #
+    #         # 1. Get action from GA controller
+    #         omega = robot.get_action()
+    #
+    #         # 2. Take action and transition to the next state
+    #         robot.step(self._velocity, omega)
+    #         self.store_state(robot)                         # Store robot's state (pose & obst detection)
+    #
+    #         # 3. Get reward + info
+    #         reward, has_collided, goal_reached = self._environment.get_reward(*robot.get_pose())
+    #         episode_reward += reward                        # Update episode reward
+    #
+    #         # If collision or goal reached, stop moving
+    #         if has_collided or goal_reached:
+    #             if goal_reached:
+    #                 termination_reason = 'Goal reached!'
+    #             else:
+    #                 termination_reason = 'Collision'
+    #             for j in range(i, self._max_steps):
+    #                 self.store_state(robot)
+    #             break
+    #
+    #     robot.set_fitness(episode_reward)                   # Update fitness of individual
+    #
+    #     if self._debug:
+    #         print('> Individual: {:03d} | Chromosome: [{}..]'.format(self.robots.index(robot)+1, robot.chromosome[:50]), end=' ')
+    #         print('| {} '.format(termination_reason + ' '*(13-len(termination_reason))), end=' ')
+    #         print('| Fitness: {}'.format(robot.fitness))
+    #
+    #     return robot
+
     def run_episode(self, robot):
-        """Runs one episode where the current population navigates in the environment.
+        """Runs one episode where the current population navigates in the environment and updates the fitness.
 
         Inputs:
           - robot(Robot class): The robot for which to run the simulation
         """
 
-        # for robot in self.robots:
-        episode_reward = 0                                  # Initialize score
         self.store_state(robot)                             # Store robot's initial state (pose & obst detection)
         termination_reason = 'Time-out'                     # Initialize reason for robot's episode termination
 
         # Navigate until collision, reaching goal or max steps
-        for i in range(self._max_steps):
+        for i in range(1, self._max_steps+1):
 
             # 1. Get action from GA controller
             omega = robot.get_action()
@@ -68,20 +111,25 @@ class Simulator:
             # 2. Take action and transition to the next state
             robot.step(self._velocity, omega)
             self.store_state(robot)                         # Store robot's state (pose & obst detection)
+            x_rob, y_rob, _ = robot.get_pose()              # Get current pose
 
-            # 3. Get reward + info
-            reward, has_collided, goal_reached = self._environment.get_reward(*robot.get_pose())
-            episode_reward += reward                        # Update episode reward
-
-            # If collision or goal reached, stop moving
-            if has_collided or goal_reached:
-                if goal_reached:
-                    termination_reason = 'Goal reached!'
-                else:
-                    termination_reason = 'Collision'
+            # 3. Check for collision or goal reached
+            if self._environment.is_collision(x_rob, y_rob):
+                termination_reason = 'Collision'
+                episode_reward = self._environment.get_final_reward(x_rob, y_rob, i, termination_reason)
+                # Stop moving
                 for j in range(i, self._max_steps):
                     self.store_state(robot)
                 break
+            elif self._environment.is_goal_reached(x_rob, y_rob):
+                termination_reason = 'Goal reached!'
+                episode_reward = self._environment.get_final_reward(x_rob, y_rob, i, termination_reason)
+                # Stop moving
+                for j in range(i, self._max_steps):
+                    self.store_state(robot)
+                break
+        if termination_reason == 'Time-out':
+            episode_reward = self._environment.get_final_reward(x_rob, y_rob, i, termination_reason)
 
         robot.set_fitness(episode_reward)                   # Update fitness of individual
 

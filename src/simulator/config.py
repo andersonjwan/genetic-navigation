@@ -4,7 +4,7 @@ import numpy as np
 env_dimension = 15                                   # The dimensions of the workspace
 goal_radius = 0.8                                    # Radius of goal circle
 wall_width = 0.15                                    # Workspace wall half-width
-env_id = 0                                           # The predefined environment layout id [0-1]
+env_id = 1                                           # The predefined environment layout id [0-1]
 
 if env_id == 0:
     goal = (8.0, 10.5)                               # Goal position for env 0
@@ -33,7 +33,7 @@ actions = {'000': round(-np.pi/2, 2),
 dt = 0.1                                             # Sample time
 max_steps = 1000                                     # The maximum number of steps for one episode
 v = 0.5                                              # Constant linear velocity
-goal_reward = 1000                                   # Reward for reaching the goal
+goal_reward = 100                                   # Reward for reaching the goal
 collision_reward = -100                             # Reward for collision
 dist_weight = 1                                      # Distance weight
 heading_weight = 1                                   # Heading weight

@@ -353,51 +353,77 @@ class Environment:
 
         return angle_area
 
-    def get_reward(self, x_rob, y_rob, theta):
+    # def get_reward(self, x_rob, y_rob, theta):
+    #     """Computes the reward at the current time-step and informs whether a
+    #     collision or reaching the goal event occurred.
+    #
+    #     Inputs:
+    #       - x_rob(float): Robot's x-position
+    #       - y_rob(float): Robot's y-position
+    #       - theta(float): Robot's heading angle
+    #     Returns:
+    #       - reward(float):      The reward at the current time-step
+    #       - has_collided(bool): Whether a collision occurred
+    #       - goal_reached(bool): Whether the goal is reached
+    #     """
+    #     has_collided = False
+    #     goal_reached = False
+    #
+    #     if self.is_collision(x_rob, y_rob):
+    #         has_collided = True
+    #         reward = self.collision_reward
+    #     elif self.is_goal_reached(x_rob, y_rob):
+    #         goal_reached = True
+    #         reward = self.goal_reward
+    #     else:
+    #
+    #         # Reward weights
+    #         dist_weight = config.dist_weight        # Distance weight
+    #         heading_weight = config.heading_weight  # Heading weight
+    #         time_weight = config.time_weight        # Time weight
+    #
+    #         # Distance to goal
+    #         dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
+    #
+    #         if dist <= 0.05:
+    #             dist = 0.05                         # Bound value for appropriate reward
+    #
+    #         # # Heading error
+    #         # theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
+    #         # heading_error = abs(np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta)))
+    #         #
+    #         # if heading_error <= 0.1:
+    #         #     heading_error = 0.1                 # Bound value for appropriate reward
+    #
+    #         # Compute current reward
+    #         # reward = dist_weight*1/dist + heading_weight*1/heading_error**0.5 - time_weight
+    #         reward = dist_weight*0.05/dist - time_weight
+    #         reward = round(reward, 5)
+    #
+    #     return reward, has_collided, goal_reached
+
+    def get_final_reward(self, x_rob, y_rob, total_time, termination_reason):
         """Computes the reward at the current time-step and informs whether a
         collision or reaching the goal event occurred.
 
         Inputs:
-          - x_rob(float): Robot's x-position
-          - y_rob(float): Robot's y-position
-          - theta(float): Robot's heading angle
+          - x_rob(float):    Robot's x-position
+          - y_rob(float):    Robot's y-position
+          - total_time(int): Total number of steps the robot took before termination
+          - termination_reason(str): The reason for this robot's episode termination
         Returns:
-          - reward(float):      The reward at the current time-step
-          - has_collided(bool): Whether a collision occurred
-          - goal_reached(bool): Whether the goal is reached
+          - reward(float):   The final reward
         """
-        has_collided = False
-        goal_reached = False
 
-        if self.is_collision(x_rob, y_rob):
-            has_collided = True
-            reward = self.collision_reward
-        elif self.is_goal_reached(x_rob, y_rob):
-            goal_reached = True
-            reward = self.goal_reward
-        else:
+        # Distance to goal
+        dist = round(np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2), 3)
+        # dist_weight = config.dist_weight  # Distance weight
 
-            # Reward weights
-            dist_weight = config.dist_weight        # Distance weight
-            heading_weight = config.heading_weight  # Heading weight
-            time_weight = config.time_weight        # Time weight
+        if termination_reason == 'Time-out':
+            reward = 1000 - total_time - dist
+        elif termination_reason == 'Collision':
+            reward = 1000 - total_time + config.collision_reward*(1000-total_time) - dist
+        else:  # Goal reached
+            reward = 1000 - total_time + config.goal_reward*(1000 - total_time) - dist
 
-            # Distance to goal
-            dist = np.sqrt((self.goal[0] - x_rob)**2 + (self.goal[1] - y_rob)**2)
-
-            if dist <= 0.05:
-                dist = 0.05                         # Bound value for appropriate reward
-
-            # # Heading error
-            # theta_goal = np.arctan2(self.goal[1] - y_rob, self.goal[0] - x_rob)
-            # heading_error = abs(np.arctan2(np.sin(theta_goal - theta), np.cos(theta_goal - theta)))
-            #
-            # if heading_error <= 0.1:
-            #     heading_error = 0.1                 # Bound value for appropriate reward
-
-            # Compute current reward
-            # reward = dist_weight*1/dist + heading_weight*1/heading_error**0.5 - time_weight
-            reward = dist_weight * 0.05 / dist - time_weight
-            reward = round(reward, 5)
-
-        return reward, has_collided, goal_reached
+        return reward
