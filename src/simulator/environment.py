@@ -402,29 +402,26 @@ class Environment:
     #
     #     return reward, has_collided, goal_reached
 
-    def get_final_reward(self, x_rob, y_rob, total_time, termination_reason):
+    def get_final_reward(self, x_rob, y_rob, time, status):
         """Computes the reward at the current time-step and informs whether a
         collision or reaching the goal event occurred.
 
         Inputs:
           - x_rob(float):    Robot's x-position
           - y_rob(float):    Robot's y-position
-          - total_time(int): Total number of steps the robot took before termination
-          - termination_reason(str): The reason for this robot's episode termination
+          - time(int): Total number of steps the robot took before termination
+          - status(str): The reason for this robot's episode termination
         Returns:
           - reward(float):   The final reward
         """
 
-        # Distance to goal
         dist = np.linalg.norm(np.array(self.goal) - np.array([x_rob, y_rob]))
 
-        # dist_weight = config.dist_weight  # Distance weight
+        if status == 'Time-out':
+            reward = config.max_steps - time - dist
+        elif status == 'Collision':
+            reward = config.max_steps - time + config.collision_reward + config.collision_reward * (config.max_steps - time) - dist
+        else:
+            reward = config.max_steps - time + config.goal_reward + config.goal_reward * (config.max_steps - time) - dist
 
-        if termination_reason == 'Time-out':
-            reward = 1000 - total_time - dist
-        elif termination_reason == 'Collision':
-            reward = 1000 - total_time + config.collision_reward*(1000-total_time) - dist
-        else:  # Goal reached
-            reward = 1000 - total_time + config.goal_reward*(1000 - total_time) - dist
-
-        return reward
+        return round(reward, 2)
