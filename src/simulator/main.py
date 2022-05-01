@@ -54,7 +54,7 @@ if __name__ == "__main__":
     K_GENERATIONS = 20
     K_INDIVIDUALS = 16
     load_population = False     # Whether to load a saved solution
-    population_fname = 'S1692676949_G1000_solutions.txt'
+    population_fname = 'S2977871431_G1000_solutions.txt'
 
     options = Options(
         population_capacity=K_INDIVIDUALS,
@@ -82,11 +82,20 @@ if __name__ == "__main__":
     if load_population:
         with open(population_fname, "r") as infile:
             lines = infile.readlines()
-            assert len(lines) >= options.population_capacity
 
+        if len(lines) >= options.population_capacity:
+            for i in range(options.population_capacity):
+                genome, fitness = lines[i].split(',')
+                population.append(Individual([x == "1" for x in genome], float(fitness)))
+        else:
             for solution in lines:
                 genome, fitness = solution.split(',')
                 population.append(Individual([x == "1" for x in genome], float(fitness)))
+
+            for i in range(options.population_capacity - len(lines)):
+                genome, fitness = random.choice(lines).split(',')
+                population.append(Individual([x == "1" for x in genome], float(fitness)))
+
     else:
         for i in range(options.population_capacity):
             genome = random.choices([0, 1], k=(2 ** 13) * 3)
