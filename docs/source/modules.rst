@@ -6,5 +6,6 @@ Modules Documentation
 
    environment
    main
+   plotter
    robot
    simulator
