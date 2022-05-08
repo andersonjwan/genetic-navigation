@@ -2,6 +2,15 @@
 
 Implementation Details
 ----------------------
+The system architectural overview is illustrated in the following figure:
+
+.. figure:: /images/overview.png
+   :align: center
+   :alt: overview
+   :scale: 90%
+
+   Architectural overview
+
 
 Observations
 ^^^^^^^^^^^^
