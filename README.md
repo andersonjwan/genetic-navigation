@@ -2,18 +2,10 @@
 
 The Genetic Navigation aims to learn a navigational robot controller through a Genetic Algorithm (GA) approach.
 
-<img src="https://raw.githubusercontent.com/andersonjwan/genetic-navigation/main/img/demo.gif" width=500px>
 
-## Genetic Algorithm
+Please visit our documentation for further information:
+[Genetic Navigation](https://genetic-navigation.readthedocs.io)
 
-The GA is generically implemented to provide an interface for user-defined solution encodings and individual representations. The framework currently supports the following features:
-
-- Selection
-  - Tournament Selection
-- Recombination
-  - Single Point Crossover
-  - Multi-Point Crossover
-- Mutation
 
 ## Getting Started
 

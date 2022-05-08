@@ -12,8 +12,9 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
-
+# sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../../src/simulator'))
+sys.path.insert(0, os.path.abspath('../../bindings/pygenalg/'))
 
 # -- Project information -----------------------------------------------------
 

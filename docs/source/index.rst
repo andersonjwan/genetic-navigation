@@ -8,32 +8,50 @@ collisions with obstacles.
 
 For more information on Genetic Algorithms, please visit the :doc:`genetic_algos` section.
 
-.. figure:: /images/robot_navigation.gif
+This algorithm utilizes four custom environments, where each environment consists
+of a goal position (indicated by the green circle), a set of obstacles, and the
+list of robots that are candidate solutions.
+
+.. figure:: /images/envs.png
    :align: center
-   :alt: Robot navigation
+   :alt: environments
+   :scale: 40%
+
+   The custom environments
+
+
+These are the results for each environment after a few generations:
+
+.. figure:: /images/env1.gif
+   :align: center
+   :alt: Environment 1
    :scale: 50%
 
-   Sample population navigating in the environment during training
+   Environment 1
 
-
-.. figure:: /images/demo.gif
+.. figure:: /images/env2.gif
    :align: center
-   :alt: GA optimization
+   :alt: Environment 2
    :scale: 50%
 
-   GA optimization of a scalar objective function
+   Environment 2
+
+.. figure:: /images/env3.gif
+   :align: center
+   :alt: Environment 3
+   :scale: 50%
+
+   Environment 3
+
+
+A solution that enables the robot to navigate to the goal while avoiding
+collisions is always found.
 
 
 
-.. admonition:: Note
 
-   This is an amazing project!
-
-Check out the :doc:`usage` section for further information on how to use
-*Genetic Navigation*.
-
-
-
+Check out the :doc:`implementation` section for further information and the
+:doc:`usage` section for instructions on how to use *Genetic Navigation*.
 
 
 .. toctree::
@@ -43,6 +61,7 @@ Check out the :doc:`usage` section for further information on how to use
 
    Home <self>
    genetic_algos
+   implementation
    usage
    modules
 

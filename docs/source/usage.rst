@@ -15,15 +15,16 @@ C++ Dependencies:
 
 Python Dependencies:
  * numpy
+ * random
  * matplotlib
+ * kaleido
+ * pandas
+ * plotly
+ * typing
+ * multiprocessing
 
 Downloading
 -----------
-
-This project uses `Matplot++ <https://github.com/alandefreitas/matplotplusplus>`_
-to visualize the demos. This is an optional dependency and is not required to
-use the Genetic Algorithm. Below are the two commands to download this project
-with/without dependencies.
 
 To download the *Genetic Navigation*:
 
@@ -31,17 +32,9 @@ To download the *Genetic Navigation*:
 
    $ git clone https://github.com/andersonjwan/genetic-navigation.git
 
-If the plotting functionality through Matplot++ is preferred,
-add :code:`--recurse-submodules` to the command above:
-
-.. code-block:: console
-
-   $ git clone https://github.com/andersonjwan/genetic-navigation.git --recurse-submodules
-
-
 Building
 --------
-With the dependencies installed, to build the project, run the following commands
+With the C++ dependencies installed, to build the project, run the following commands
 in the project's root directory:
 
 .. code-block:: console
@@ -49,11 +42,14 @@ in the project's root directory:
    $ cmake -B build
    $ cmake --build build
 
-If you opted-in to use the optional Matplot++ dependency for plotting functionality,
-add the following option to the first command for CMake: :code:`-DMATPLOTPLUSPLUS=ON`.
+To install the dependencies for the project, run:
+
+.. code-block:: console
+
+   $ pip install .
 
 To run the project, use:
 
 .. code-block:: console
 
-   $ python main.py
+   $ python3 src/simulator/main.py

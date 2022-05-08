@@ -40,8 +40,7 @@ GA Disadvantages:
  * The formulation of the fitness function is critical for convergence
 
 
-Elements of GA
---------------
+**Elements of GA**
 
 The key elements of this method are the following:
 
