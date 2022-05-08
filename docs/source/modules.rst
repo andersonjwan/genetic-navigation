@@ -1,5 +1,5 @@
-simulator
-=========
+Modules Documentation
+=====================
 
 .. toctree::
    :maxdepth: 4
