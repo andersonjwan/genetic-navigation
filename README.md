@@ -1,6 +1,6 @@
 # Genetic Navigation
 
-The Genetic Navigation aims to learn a navigational robot controller through a Genetic Algorithm (GA) approach.
+The Genetic Navigation aims to learn a navigational robot controller through a Genetic Algorithm (GA) approach developed in tandem with a custom generic Genetic Algorithm: [py-genalg](https://github.com/andersonjwan/genalg)
 
 
 Please visit our documentation for further information:
