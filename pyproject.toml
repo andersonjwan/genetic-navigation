@@ -7,8 +7,8 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-py-genalg = {git = "https://github.com/andersonjwan/genalg.git"}
-kaleido = "^0.2.1"
+py-genalg = {git = "https://github.com/andersonjwan/genalg.git", branch = "main"}
+kaleido = "==0.2.0"
 matplotlib = "^3.5.2"
 numpy = "^1.22.3"
 pandas = "^1.4.2"
